@@ -1,3 +1,7 @@
+This repository holds my custom changes to the MAME-2003-Plus project that are not likely to ever be destined for pull requests.  
+
+Original MAME-2003-Plus readme follows:
+
 ## What is MAME 2003-Plus?
 
 MAME 2003-Plus (also referred to as MAME 2003+ and mame2003-plus) is a libretro arcade system emulator core with an emphasis on high performance and broad compatibility with mobile devices, single board computers, embedded systems, and similar platforms.
