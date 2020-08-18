@@ -490,4 +490,4 @@ static DRIVER_INIT( jrpacman )
 
 /*          rom        parent    machine   inp       init */
 GAME( 1983, jrpacman,  0,        jrpacman, jrpacman, jrpacman, ROT90, "Bally Midway", "Jr. Pac-Man" )
-GAME( 1983, jrpacmanf, jrpacman, jrpacman, jrpacman, jrpacman, ROT90, "hack", "Jr. Pac-Man (speedup hack)" )
+GAME( 1983, jrpacmnf,  jrpacman, jrpacman, jrpacman, jrpacman, ROT90, "hack", "Jr. Pac-Man (speedup hack)" )
