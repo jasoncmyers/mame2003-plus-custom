@@ -1109,6 +1109,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( demoderm )	/* (c) 1984 */
 	DRIVER( sarge )		/* (c) 1985 */
 	DRIVER( rampage )	/* (c) 1986 */
+	DRIVER( rampagea)	/* dup. of rampage; test for working around control schemes */
 	DRIVER( rampage2 )	/* (c) 1986 */
 	DRIVER( powerdrv )	/* (c) 1986 */
 	DRIVER( stargrds )	/* (c) 1987 */
