@@ -4507,6 +4507,11 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( nbahangt )	/* (c) 1996 Midway */
 	DRIVER( nbamaxht )	/* (c) 1996 Midway */
 	DRIVER( rmpgwt )	/* (c) 1997 Midway */
+	DRIVER( rmpgwta )	/* Copy for player selection */
+	DRIVER( rmpgwtb )	/* Copy for player selection */
+	DRIVER( rmpgwtc )	/* Copy for player selection */
+	DRIVER( rmpgwtd )	/* Copy for player selection */
+	DRIVER( rmpgwte )	/* Copy for player selection */
 	DRIVER( rmpgwt11 )	/* (c) 1997 Midway */
 	DRIVER( crusnusa )	/* (c) 1994 Midway */
 	DRIVER( crusnu40 )	/* (c) 1994 Midway */
