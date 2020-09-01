@@ -2889,7 +2889,8 @@ Sep.1994 Quiz Ghost Hunter
 	DRIVER( spideyj )	/* (c) 1991 (Japan) */
 	DRIVER( arabfgt )	/* (c) 1991 */
 	DRIVER( arescue )	/* (c) 1992 */
-	DRIVER( f1lap )
+  DRIVER( f1lap )     /* (c) 1993 (World) */
+	DRIVER( f1lapj )    /* (c) 1993 (Japan) */
 	DRIVER( dbzvrvs )
 	DRIVER( darkedge )
 	DRIVER( slipstrm )	/* Capcom */
@@ -3646,10 +3647,11 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( ssrdrabd )	/* GX064 (c) 1991 (Asia) */
 	DRIVER( ssrdrjbd )	/* GX064 (c) 1991 (Japan) */
 	DRIVER( sunsetbl )	/* bootleg */
-	DRIVER( xmen )		/* GX065 (c) 1992 (US) */
-	DRIVER( xmen2p )	/* GX065 (c) 1992 (World) */
-	DRIVER( xmen2pj )	/* GX065 (c) 1992 (Japan) */
-	DRIVER( xmen6p )	/* GX065 (c) 1992 */
+	DRIVER( xmen )		/* GX065 (c) 1992 (US 4 Players) */
+	DRIVER( xmen2p )	/* GX065 (c) 1992 (World 2 Players) */
+	DRIVER( xmen2pj )	/* GX065 (c) 1992 (Japan 2 Players) */
+	DRIVER( xmen6p )	/* GX065 (c) 1992 (Euro 6 Players) */
+  DRIVER( xmen6pu )	/* GX065 (c) 1992 (US 6 Players) */
 	DRIVER( xexex )		/* GX067 (c) 1991 (World) */
 	DRIVER( xexexj )	/* GX067 (c) 1991 (Japan) */
 	DRIVER( asterix )	/* GX068 (c) 1992 (World) */
@@ -3676,6 +3678,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( viostrmj )	/* GX168 (c) 1993 (Japan) */
 	DRIVER( viostrma )	/* GX168 (c) 1993 (Asia) */
 	DRIVER( dadandrn )  /* GX170 (c) 1993 (Japan) */
+	DRIVER( mmaulers )  /* GX170 (c) 1993 (Europe) */
 	DRIVER( metamrph )  /* GX224 (c) 1993 (US) */
 	DRIVER( metamrpj )  /* GX224 (c) 1993 (Japan) */
 	DRIVER( mtlchamp )  /* GX234 (c) 1993 (World) */

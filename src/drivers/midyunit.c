@@ -1058,7 +1058,8 @@ MACHINE_DRIVER_END
 static MACHINE_DRIVER_START( smashtv )
 	MDRV_IMPORT_FROM(yunit_cvsd_6bit)
 	MDRV_VBLANK_DURATION(COMPUTED_VBLANK(256, 288, MKLA5_FPS))
-	MDRV_VISIBLE_AREA(0, 409, 0, 255)
+	MDRV_VISIBLE_AREA(0, 399, 0, 254)
+	// MDRV_VISIBLE_AREA(0, 409, 0, 255)
 MACHINE_DRIVER_END
 
 
@@ -1963,10 +1964,10 @@ GAME ( 1990, trogpa6,  trog,    trog,     trog,    trogpa6,  ROT0, "Midway",   "
 GAME ( 1990, trogp,    trog,    trog,     trog,    trogp,    ROT0, "Midway",   "Trog (prototype, rev 4.00 07-27-90)" )
 GAME ( 1991, strkforc, 0,       strkforc, strkforc,strkforc, ROT0, "Midway",   "Strike Force (rev 1 02-25-91)" )
 
-GAME ( 1990, smashtv,  0,       smashtv,  smashtv, smashtv,  ROT0, "Williams", "Smash T.V. (rev 8.00)" )
-GAME ( 1990, smashtv6, smashtv, smashtv,  smashtv, smashtv,  ROT0, "Williams", "Smash T.V. (rev 6.00)" )
-GAME ( 1990, smashtv5, smashtv, smashtv,  smashtv, smashtv,  ROT0, "Williams", "Smash T.V. (rev 5.00)" )
-GAME ( 1990, smashtv4, smashtv, smashtv,  smashtv, smashtv4, ROT0, "Williams", "Smash T.V. (rev 4.00)" )
+GAMEC( 1990, smashtv,  0,       smashtv,  smashtv, smashtv,  ROT0, "Williams", "Smash T.V. (rev 8.00)", &smashtv_ctrl, &smashtv_bootstrap )
+GAMEC( 1990, smashtv6, smashtv, smashtv,  smashtv, smashtv,  ROT0, "Williams", "Smash T.V. (rev 6.00)", &smashtv_ctrl, &smashtv6_bootstrap )
+GAMEC( 1990, smashtv5, smashtv, smashtv,  smashtv, smashtv,  ROT0, "Williams", "Smash T.V. (rev 5.00)", &smashtv_ctrl, &smashtv5_bootstrap )
+GAMEC( 1990, smashtv4, smashtv, smashtv,  smashtv, smashtv4, ROT0, "Williams", "Smash T.V. (rev 4.00)", &smashtv_ctrl, &smashtv4_bootstrap )
 GAME ( 1990, hiimpact, 0,       hiimpact, trog,    hiimpact, ROT0, "Williams", "High Impact Football (rev LA3 12-27-90)" )
 GAME ( 1991, shimpact, 0,       hiimpact, trog,    shimpact, ROT0, "Midway",   "Super High Impact (rev LA1 09-30-91)" )
 GAME ( 1991, shimpacp, shimpact,hiimpact, trog,    shimpacp, ROT0, "Midway",   "Super High Impact (prototype, rev 5.0 09-15-91)" )
