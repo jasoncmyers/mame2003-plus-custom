@@ -844,8 +844,8 @@ ROM_START( umk3p )
 	ROM_LOAD( "umk3-u5.bin",  ADSP2100_SIZE + 0x300000, 0x100000, CRC(3b98a09f) SHA1(edf1d02a56dcf3349e6b4bb4097acfe7592305f4) )
 
 	ROM_REGION16_LE( 0x100000, REGION_USER1, ROMREGION_DISPOSE )	/* 34010 code */
-	ROM_LOAD16_BYTE( "umk312u54.bin",  0x00000, 0x80000, CRC(a46ee73c) SHA1(2ad13bf20b9e42729773307b55fa67e430b1cf87) )
-	ROM_LOAD16_BYTE( "umk312u63.bin",  0x00001, 0x80000, CRC(4f200db2) SHA1(25bab2c52df59056e3018d88491de1f2b1a8eed2) )
+	ROM_LOAD16_BYTE( "um312u54.bin",  0x00000, 0x80000, CRC(a46ee73c) SHA1(2ad13bf20b9e42729773307b55fa67e430b1cf87) )
+	ROM_LOAD16_BYTE( "um312u63.bin",  0x00001, 0x80000, CRC(4f200db2) SHA1(25bab2c52df59056e3018d88491de1f2b1a8eed2) )
 
 	ROM_REGION( 0x2000000, REGION_GFX1, 0 )
 	ROM_LOAD( "umk-u133.bin",  0x0000000, 0x100000, CRC(79b94667) SHA1(31bba640c351fdccc6685cadb74dd79a3f910ce8) )
@@ -1298,7 +1298,7 @@ GAME ( 1994, mk3r20,  mk3,       wunit, mk3,     mk3r20,  ROT0, "Midway", "Morta
 GAME ( 1994, mk3r10,  mk3,       wunit, mk3,     mk3r10,  ROT0, "Midway", "Mortal Kombat 3 (rev 1.0)" )
 GAME ( 1994, umk3,    mk3,       wunit, mk3,     umk3,    ROT0, "Midway", "Ultimate Mortal Kombat 3 (rev 1.2)" )
 GAME ( 1994, umk3r11, mk3,       wunit, mk3,     umk3r11, ROT0, "Midway", "Ultimate Mortal Kombat 3 (rev 1.1)" )
-GAME ( 2019, umk3p,   mk3,       wunit, mk3,     umk3p,   ROT0, "hack",   "Ultimate Mortal Kombat 3 Plus" )
+GAMEC( 2019, umk3p,   mk3,       wunit, mk3,     umk3p,   ROT0, "hack",   "Ultimate Mortal Kombat 3 Plus (Beta 1)", &mk3_ctrl, &umk3p_bootstrap )
 
 GAMEC( 1995, wwfmania,0,         wunit, wwfmania,wwfmania,ROT0, "Midway", "WWF - Wrestlemania (rev 1.30 08-10-95)", &wwfmania_ctrl, &wwfmania_bootstrap )
 GAMEC( 1995, openice, 0,         wunit, openice, openice, ROT0, "Midway", "2 On 2 Open Ice Challenge (rev 1.21)", &openice_ctrl, &openice_bootstrap )
