@@ -692,7 +692,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
     if ( (Machine->drv->frames_per_second * 1000 < options.samplerate) || ( Machine->drv->frames_per_second < 60) )
     {
       info->timing.sample_rate = Machine->drv->frames_per_second * 1000;
-      log_cb(RETRO_LOG_INFO, LOGPRE "Sample timing rate too high for framerate required dropping to %f",  Machine->drv->frames_per_second * 1000);
+      log_cb(RETRO_LOG_INFO, LOGPRE "Sample timing rate too high for framerate required dropping to %f\n",  Machine->drv->frames_per_second * 1000);
     }
 
     else
@@ -762,6 +762,23 @@ static struct retro_controller_info retropad_subdevice_ports[] = {
   { controllers, 4 },
   { 0 },
 };
+
+static void remove_slash (char* temp)
+{
+  int i;
+
+  for(i=0; temp[i] != '\0'; ++i);
+
+  log_cb(RETRO_LOG_INFO, LOGPRE "Check for trailing slash in path: %s\n", temp);
+
+  if(temp[i-1] == '/')
+  {
+    temp[i-1] = 0;
+    log_cb(RETRO_LOG_INFO, LOGPRE "Removed a trailing slash in path: %s\n", temp);
+  }
+  else
+    log_cb(RETRO_LOG_INFO, LOGPRE "Trailing slash removal was not necessary for path given.\n");
+}
 
 bool retro_load_game(const struct retro_game_info *game)
 {
@@ -909,10 +926,6 @@ bool retro_load_game(const struct retro_game_info *game)
 
   options.libretro_content_path = strdup(game->path);
   path_basedir(options.libretro_content_path);
-  /*fix trailing slash in path*/
-  for(i = 0; options.libretro_content_path[i] != '\0'; ++i);
-  if ( options.libretro_content_path[i-1] == '/' || options.libretro_content_path[i-1]  == '\\' )
-   options.libretro_content_path[i-1] =0;
 
   /* Get system directory from frontend */
   options.libretro_system_path = NULL;
@@ -928,9 +941,14 @@ bool retro_load_game(const struct retro_game_info *game)
   environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY,&options.libretro_save_path);
   if (options.libretro_save_path == NULL || options.libretro_save_path[0] == '\0')
   {
-      log_cb(RETRO_LOG_INFO,  LOGPRE "libretro save path not set by frontent, using content path\n");
+      log_cb(RETRO_LOG_INFO,  LOGPRE "libretro save path not set by frontend, using content path\n");
       options.libretro_save_path = options.libretro_content_path;
   }
+
+  /* Remove trailing slashes for specified systems */
+  remove_slash(options.libretro_content_path);
+  remove_slash(options.libretro_system_path);
+  remove_slash(options.libretro_save_path);
 
   log_cb(RETRO_LOG_INFO, LOGPRE "content path: %s\n", options.libretro_content_path);
   log_cb(RETRO_LOG_INFO, LOGPRE " system path: %s\n", options.libretro_system_path);
