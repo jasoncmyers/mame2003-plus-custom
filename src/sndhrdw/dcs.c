@@ -462,7 +462,7 @@ void dcs2_init(offs_t polling_offset)
       dcs_speedup2 = install_mem_write16_handler(dcs_cpunum, ADSP_DATA_ADDR_RANGE(0x063d, 0x063d), dcs_speedup2_w);
 	    dcs_speedup3 = install_mem_write16_handler(dcs_cpunum, ADSP_DATA_ADDR_RANGE(0x063a, 0x063a), dcs_speedup3_w);
       dcs_speedup4 = install_mem_write16_handler(dcs_cpunum, ADSP_DATA_ADDR_RANGE(0x0641, 0x0641), dcs_speedup4_w);
-     }
+    }
 	
 	/* create the timer */
 	dcs.reg_timer = timer_alloc(dcs_irq);
