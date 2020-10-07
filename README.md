@@ -1,4 +1,4 @@
-This repository holds my custom changes to the MAME-2003-Plus project that are either specific changes for my setup or otherwise unlikely to be of interest to the greater community (i.e., not destined for pull requests).
+This repository holds my custom changes to the MAME-2003-Plus project that are either specific changes for my setup or otherwise unlikely to be of interest to the greater community (i.e., not destined for pull requests).  It is kept as a public repository to allow easy transfer and compiling via RetroPie scripts.
 
 Original MAME-2003-Plus readme follows:
 
