@@ -288,11 +288,7 @@ static WRITE32_HANDLER( simpl156_palette_w )
 
 	dat = paletteram16[offset]&0xffff;
 
-#define pal5bit(n)	((((n) & 0x1f) << 3) | (((n) & 0x1f) >> 2))
-
 	palette_set_color(color,pal5bit(dat >> 0),pal5bit(dat >> 5),pal5bit(dat >> 10));
-
-#undef pal5bit
 }
 
 
