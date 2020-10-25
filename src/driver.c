@@ -2698,6 +2698,7 @@ V-V                           TP-027
 	DRIVER( wbmlb )		/* bootleg? (S2) */
 	DRIVER( dakkochn )	/* 836-6483? (S2) */
 	DRIVER( ufosensi )	/* 834-6659 (S2) */
+  DRIVER( ufosensb )	/* bootleg (S2) */
 /*
 other System 1 / System 2 games:
 WarBall
@@ -3719,6 +3720,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( tkmmpzdm )	/* GX515 (c) 1995 (Japan) */
 	DRIVER( salmndr2 )	/* GX521 (c) 1996 (Japan) */
 	DRIVER( sexyparo )	/* GX533 (c) 1996 (Japan) */
+  DRIVER( sexyparoa )	/* GX533 (c) 1996 (Asia) */  
 	DRIVER( daiskiss )	/* GX535 (c) 1996 (Japan) */
 	DRIVER( tokkae )	/* GX615 (c) 1996 (Japan) */
 	DRIVER( winspike )	/* GX705 */
@@ -5352,7 +5354,8 @@ Other Sun games
 	DRIVER( starcrus )	/* [1977 Ramtek] */
 
 	/* Omori games */
-	DRIVER( battlex )	/* (c) 1982 Omori E. Co., Ltd. */
+	DRIVER( battlex )	/* (c) 1982 Omori Electric Co., Ltd. */
+	DRIVER( dodgeman )	/* (c) 1983 Omori Electric Co., Ltd. */
 	DRIVER( carjmbre )	/* (c) 1983 Omori Electric Co., Ltd. */
 	DRIVER( popper )	/* (c) 1983 Omori Electric Co., Ltd. */
 
