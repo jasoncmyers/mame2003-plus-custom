@@ -45,6 +45,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * ESPGaluda
 * F1 Super Lap (World)
 * FixEight (bootleg)
+* Flying Tiger
 * Gaia: The Last Choice Of Earth
 * Gals Panic DX
 * Ganbare! Gonta!! 2 / Party Time: Gonta the Diver II
@@ -69,6 +70,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Inca
 * Joe & Mac Returns
 * Jump Kun
+* Kabuki-Z (World)
 * Ketsui: Kizuna Jigoku Tachi
 * Knightmare
 * Last Hope
@@ -82,7 +84,6 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Mirax
 * Mobile Suit Gundam Final Shooting
 * Monster Maulers
-* Mortal Kombat 2 Plus Beta 2
 * Mouse Shooter GoGo
 * Multi Champ Deluxe
 * Opa Opa (Rev A Unprotected)
@@ -121,6 +122,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Space Launcher
 * Squash
 * Star Fire 2
+* Steel Worker
 * Success Joe
 * Super Bishi Bashi Championship (ver JAA, 2 Players)
 * Super Rider
@@ -144,7 +146,6 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Turkey Hunting
 * Tylz
 * Ufo Senshi Yohko Chan (not encrypted)
-* Ultimate Mortal Kombat 3 Plus Beta 1
 * Varia Metal
 * Vasara 2
 * Virtua Bowling
@@ -154,7 +155,6 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Wiz Warz
 * Wonderboy In Monsterland (English Virtual Console Version)
 * World Cup Volley 95
-* X-men (6 player)
 * Zintrick
 * Zupapa
 
@@ -174,18 +174,20 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Hacha Mecha Fighter (bootleg)
 * Hook (Japan Version)
 * Ikari III - The Rescue (World, 8-Way Joystick)
+* Kabuki-Z (Japan)
 * Knuckle Bash 2
 * Magical Drop
 * Magical Drop Plus 1
 * Mirax (set 2)
 * Progear No Arashi
 * Renegade (US, Bootleg)
-* Sexy Parodius (Ver AAA) This version all in English
+* Sexy Parodius (Ver AAA)
 * Super Bishi Bashi Championship (ver KAA, 3 Players)
 * Tetris the Absolute The Grand Master 2 Plus
 * The Great Ragtime Show
 * The King of Fighters 10th Anniversary
 * Undercover Cops (Alpha Renewal Version)
+* X-men (6 Players ver UCB)
 * World Cup Volley 95 Extra Version
 
 ## New Hacks
@@ -202,8 +204,10 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Ikari (joystick hack bootleg)
 * Metal Slug 2 - Turbo (Trap15, Hack)
 * Midnight Resistance (joystick hack bootleg)
+* Mortal Kombat 2 Plus Beta 2
 * TANK III (joystick hack bootleg)
 * Tron freeplay custom rom
+* Ultimate Mortal Kombat 3 Plus Beta 1
 
 
 ## Games fixed and now working
