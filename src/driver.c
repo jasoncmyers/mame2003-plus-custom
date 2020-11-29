@@ -1599,6 +1599,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( spacegun )	/* C57 (c) 1990 Taito Corporation Japan (World) */
 	DRIVER( dblaxle )	/* C78 (c) 1991 Taito America Corporation (US) */
 	DRIVER( pwheelsj )	/* C78 (c) 1991 Taito Corporation (Japan) */
+  DRIVER( racingb )	/* C84 (c) 1991 Taito Coropration (Japan) */
 
 	/* Taito Air System games */
 	DRIVER( topland )	/* B62 (c) 1988 Taito Coporation Japan (World) */
@@ -1611,6 +1612,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( undrfire )	/* D67 (c) 1993 Taito Coporation Japan (World) */
 	DRIVER( undrfiru )	/* D67 (c) 1993  Taito America Corporation (US) */
 	DRIVER( undrfirj )	/* D67 (c) 1993 Taito Coporation (Japan) */
+  DRIVER( cbombers )	/* D?? (c) 1994 Taito Coporation Japan (World) */
 
 	/* Taito F2 games */
 	DRIVER( finalb )	/* B82 (c) 1988 Taito Corporation Japan (World) */
@@ -2731,6 +2733,7 @@ DokiDoki Penguin Land *not confirmed
 	DRIVER( suprloco )	/* (c) 1982 Sega */
 	DRIVER( dotrikun )	/* cabinet test board */
 	DRIVER( dotriku2 )	/* cabinet test board */
+  DRIVER( dotriman )
 	DRIVER( spcpostn )	/* (c) 1986 Sega / Nasco" */
 	DRIVER( angelkds )	/* 833-6599 (c) 1988 Sega / Nasco? */
 
@@ -4605,7 +4608,8 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( sbagman )	/* (c) 1984 */
 	DRIVER( sbagmans )	/* (c) 1984 + Stern license */
 	DRIVER( pickin )	/* (c) 1983 */
-	DRIVER( botanic )	/* (c) 1985 */
+	DRIVER( botanic )	/* (c) 1983 */
+	DRIVER( botanicf )	/* (c) 1984 */
 	DRIVER( tankbust )	/* (c) 1985 */
 
 	/* Seibu Denshi / Seibu Kaihatsu games */
@@ -4865,6 +4869,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	/* the name "Orca" */
 	DRIVER( vastar )	/* (c) 1983 Sesame Japan */
 	DRIVER( vastar2 )	/* (c) 1983 Sesame Japan */
+  DRIVER( pprobe )  /* (c) 1985 Crux / Kyugo */
 /*
    other Orca games:
    82 Battle Cross                         Kit 2P
@@ -5230,7 +5235,11 @@ Other Sun games
 
 	/* Yun Sung games */
 	DRIVER( paradise )	/* (c) >1994 Yun Sung */
-	DRIVER( tgtball )	/* (c) 199? Yun Sung */
+	DRIVER( tgtball )	/* (c) 1995 Yun Sung */
+	DRIVER( tgtballa )	/* (c) 1995 Yun Sung */
+	DRIVER( torus ) 	/* (c) 1996 Yun Sung */
+	DRIVER( madball )	/* (c) 1998 Yun Sung */
+	DRIVER( madballn )	/* (c) 1997 Yun Sung */
 	DRIVER( cannball )	/* (c) 1995 Yun Sung / Soft Visio */
 	DRIVER( magix )		/* (c) 1995 Yun Sung */
 	DRIVER( magicbub )	/* (c) Yun Sung */
@@ -5710,6 +5719,8 @@ Other Sun games
 	DRIVER( miexchng )	/* 0231 (c) 1997 Face */
 	DRIVER( kof97 )		/* 0232 (c) 1997 SNK */
 	DRIVER( kof97a )	/* 0232 (c) 1997 SNK */
+	DRIVER( kof97pls )	/* bootleg of kof97 */
+	DRIVER( kog )	    /* bootleg of kof97 */
 	DRIVER( magdrop3 )	/* 0233 (c) 1997 Data East Corporation */
 	DRIVER( lastblad )	/* 0234 (c) 1997 SNK */
 	DRIVER( lastblda )	/* 0234 (c) 1997 SNK */
@@ -5725,6 +5736,7 @@ Other Sun games
 	DRIVER( mslug2t )	/* 0941 (c) 2015 Trap15 Hack */
 	DRIVER( kof98 )		/* 0242 (c) 1998 SNK */
 	DRIVER( kof98n )	/* 0242 (c) 1998 SNK */
+	DRIVER( kof98k )	/* 0242 (c) 1998 SNK */
 	DRIVER( lastbld2 )	/* 0243 (c) 1998 SNK */
 	DRIVER( neocup98 )	/* 0244 (c) 1998 SNK */
 	DRIVER( breakrev )	/* 0245 (c) 1998 Visco */
@@ -5752,17 +5764,32 @@ Other Sun games
 	DRIVER( nitd )		/* 0260 (c) 2000 Eleven / Gavaking */
 	DRIVER( sengoku3 )	/* 0261 (c) 2001 SNK */
 	DRIVER( kof2001 )	/* 0262 (c) 2001 Eolith */
+	DRIVER( kof2001h )	/* 0262 (c) 2001 Eolith */
+	DRIVER( cthd2003 )	/* 0262 (c) 2001 Eolith */
+	DRIVER( ct2k3sp )	/* 0262 (c) 2001 Eolith */
 	DRIVER( mslug4 )	/* 0263 (c) 2001 Mega Enterprises */
 	DRIVER( rotd )		/* 0264 (c) 2002 Evoga Entertainment */
 	DRIVER( kof2002 )	/* 0265 (c) 2002 Eolith */
+	DRIVER( kf2k2pls )	/* bootleg */
+	DRIVER( kf2k2pla )	/* bootleg */
+	DRIVER( kf2k2mp )	/* bootleg */
+	DRIVER( kf2k2mp2 )	/* bootleg */
+	DRIVER( kof2k4se )
 	DRIVER( matrim )	/* 0266 (c) 2002 Atlus / Noise Factory */
 	DRIVER( pnyaa )		/* 0267 (c) 2003 Aiky / Taito */
 	DRIVER( mslug5 )	/* 0268 (c) 2003 SNK Playmore */
 	DRIVER( svcboot )	/* 0269 (c) 2003 Bootleg */
 	DRIVER( samsho5 )	/* 0270 (c) 2003 Yuki Enterprises */
 	DRIVER( samsh5sp )	/* 0270 (c) 2003 Yuki Enterprises */
+  DRIVER( kof2003 )	/* 0271 (c) 2003 SNK Playmore */
 	DRIVER( kof2003d)	/* 0271 (c) 2003 SNK Playmore */
+	DRIVER( kf2k3bl)
+	DRIVER( kf2k3bla)
+	DRIVER( kf2k3pl)
+	DRIVER( kf2k3upl)
 	DRIVER( kof10th )       /* 2005 SNK Playmore */
+	DRIVER( kf10thep)
+	DRIVER( kf2k5uni)
 	DRIVER( lasthope )      /* (c) 2005 NG:DEV.TEAM */
 
 	/* SemiCom 68020 based hardware */

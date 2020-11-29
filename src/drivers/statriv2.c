@@ -11,7 +11,6 @@
 * in attract and fixing the questions so it actually asked more  *
 * than one per category.                                         *
 *                                                                *
-* Colours are wrong, what should they be?                        *
 * Game Speed too fast?                                           *
 *                                                                *
 * MG: Dave seems to think that the AY is hooked up wrong since   *
@@ -108,28 +107,21 @@ VIDEO_UPDATE (statriv2)
 
 PALETTE_INIT(statriv2)
 {
-	int j;
+	int i;
 
-	for (j = 0;j < 16;j++)
+	for (i = 0; i < 8; i++)
 	{
-		int r = (j & 1) >> 0;
-		int g = (j & 2) >> 1;
-		int b = (j & 4) >> 2;
-		int i = (j & 8) >> 3;
-
-		r = 0xff * r;
-		g = 0x7f * g * (i + 1);
-		b = 0x7f * b * (i + 1);
-
-		palette_set_color(j,r,g,b);
+		palette_set_color(i,
+			0xff * ((i >> 2) & 1),
+			0xff * ((i >> 0) & 1),
+			0xff * ((i >> 1) & 1));
 	}
 
-	for (j = 0;j < 256;j++)
+	for (i = 0; i < 64; i++)
 	{
-		colortable[2*j] = j & 0x0f;
-		colortable[2*j+1] = j >> 4;
+		colortable[2*i+0] = i % 8;
+		colortable[2*i+1] = i / 8;
 	}
-        palette_set_color(8,0xFF,0xFF,0xFF);
 }
 
 /* end video related */
@@ -404,7 +396,7 @@ static struct GfxDecodeInfo gfxdecodeinfo[] =
 static struct AY8910interface ay8910_interface =
 {
 	1,	/* 1 chip */
-	1500000,	/* 1.5 MHz ???? */
+	12440000/8,	/* 1.555 MHz */
 	{ 100 },
 	{ 0 },
 	{ 0 },
@@ -419,7 +411,7 @@ static INTERRUPT_GEN( statriv2_interrupt )
 
 static MACHINE_DRIVER_START( statriv2 )
 	/* basic machine hardware */
-	MDRV_CPU_ADD(8085A,12400000)              /* 12.4MHz / 4? */
+	MDRV_CPU_ADD(8085A,12440000)              /* 12.44MHz / 4? */
 	MDRV_CPU_MEMORY(statriv2_readmem,statriv2_writemem)
 	MDRV_CPU_PORTS(statriv2_readport,statriv2_writeport)
 	MDRV_CPU_VBLANK_INT(statriv2_interrupt,1)
@@ -434,8 +426,8 @@ static MACHINE_DRIVER_START( statriv2 )
 	MDRV_SCREEN_SIZE(64*8, 32*8)
 	MDRV_VISIBLE_AREA(4*8, 38*8-1, 0, 32*8-1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(16)
-	MDRV_COLORTABLE_LENGTH(2*256)
+	MDRV_PALETTE_LENGTH(8)
+	MDRV_COLORTABLE_LENGTH(2*64)
 
 	MDRV_PALETTE_INIT(statriv2)
 	MDRV_VIDEO_START(statriv2)
@@ -447,7 +439,7 @@ MACHINE_DRIVER_END
 
 static MACHINE_DRIVER_START( supertr2 )
 	/* basic machine hardware */
-	MDRV_CPU_ADD(8085A,12400000)              /* 12.4MHz / 4? */
+	MDRV_CPU_ADD(8085A,12440000)              /* 12.44MHz / 4? */
 	MDRV_CPU_MEMORY(supertr2_readmem,supertr2_writemem)
 	MDRV_CPU_PORTS(supertr2_readport,supertr2_writeport)
 	MDRV_CPU_VBLANK_INT(statriv2_interrupt,1)
@@ -462,8 +454,8 @@ static MACHINE_DRIVER_START( supertr2 )
 	MDRV_SCREEN_SIZE(64*8, 32*8)
 	MDRV_VISIBLE_AREA(2*8, 36*8-1, 0, 32*8-1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(16)
-	MDRV_COLORTABLE_LENGTH(2*256)
+	MDRV_PALETTE_LENGTH(8)
+	MDRV_COLORTABLE_LENGTH(2*64)
 
 	MDRV_PALETTE_INIT(statriv2)
 	MDRV_VIDEO_START(statriv2)
@@ -475,7 +467,7 @@ MACHINE_DRIVER_END
 
 static MACHINE_DRIVER_START( trivquiz )
 	/* basic machine hardware */
-	MDRV_CPU_ADD(8085A,12400000)              /* 12.4MHz / 4? */
+	MDRV_CPU_ADD(8085A,12440000)              /* 12.44MHz / 4? */
 	MDRV_CPU_MEMORY(supertr2_readmem,supertr2_writemem)
 	MDRV_CPU_PORTS(trivquiz_readport,trivquiz_writeport)
 	MDRV_CPU_VBLANK_INT(statriv2_interrupt,1)
@@ -488,10 +480,10 @@ static MACHINE_DRIVER_START( trivquiz )
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER )
 	MDRV_SCREEN_SIZE(64*8, 32*8)
-	MDRV_VISIBLE_AREA(4*8, 40*8-1, 0, 32*8-1)
+	MDRV_VISIBLE_AREA(4*8, 38*8-1, 0, 32*8-1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(16)
-	MDRV_COLORTABLE_LENGTH(2*256)
+	MDRV_PALETTE_LENGTH(8)
+	MDRV_COLORTABLE_LENGTH(2*64)
 
 	MDRV_PALETTE_INIT(statriv2)
 	MDRV_VIDEO_START(statriv2)
@@ -562,6 +554,6 @@ ROM_START( supertr2 )
 	ROM_LOAD( "astq2-8.rom", 0x38000, 0x08000, CRC(cd2674d5) SHA1(7fb6513172ffe8e3b9e0f4dc9ecdb42d954b1ff0) )
 ROM_END
 
-GAMEX( 1984, trivquiz, 0, trivquiz, statriv2, 0, ROT0, "Status Games", "Triv Quiz", GAME_WRONG_COLORS )
-GAMEX( 1984, statriv2, 0, statriv2, statriv2, 0, ROT0, "Status Games", "Triv Two",  GAME_WRONG_COLORS )
-GAMEX( 1986, supertr2, 0, supertr2, supertr2, 0, ROT0, "Status Games", "Super Triv II", GAME_WRONG_COLORS )
+GAME( 1984, trivquiz, 0, trivquiz, statriv2, 0, ROT0, "Status Games", "Triv Quiz" )
+GAME( 1984, statriv2, 0, statriv2, statriv2, 0, ROT0, "Status Games", "Triv Two" )
+GAME( 1986, supertr2, 0, supertr2, supertr2, 0, ROT0, "Status Games", "Super Triv II" )
