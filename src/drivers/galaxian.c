@@ -3757,11 +3757,11 @@ static MACHINE_DRIVER_START( drivfrcg )
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
 	MDRV_SCREEN_SIZE(32*8, 32*8)
 	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
-	MDRV_PALETTE_LENGTH(32)
-	MDRV_COLORTABLE_LENGTH(8*4)
+	MDRV_PALETTE_LENGTH(64)
+	MDRV_COLORTABLE_LENGTH(16*4)
 	MDRV_GFXDECODE(gmgalax_gfxdecodeinfo)
 
-/*	MDRV_PALETTE_INIT(galaxian)*/
+	MDRV_PALETTE_INIT(rockclim)
 
 	MDRV_VIDEO_START(drivfrcg)
 	MDRV_VIDEO_UPDATE(galaxian)
@@ -5234,17 +5234,15 @@ ROM_START( drivfrcg )
 	ROM_CONTINUE(			  0x6400, 0x0400 )
 
 	ROM_REGION( 0x4000, REGION_GFX1, ROMREGION_DISPOSE )
-	ROM_LOAD( "dfgj1.bin",    0x1000, 0x0800, CRC(86b60ca8) SHA1(be266e2d69e12a196c2195d48b495c0fb9ef8a43) )
-	ROM_CONTINUE(			  0x1800, 0x0800 )
-	ROM_LOAD( "dfgj2.bin",    0x0000, 0x0800, CRC(8e19f1e7) SHA1(addd5add2117ef29ce38c0c80584e5d481b9d820) )
-	ROM_CONTINUE(			  0x0800, 0x0800 )
-	ROM_LOAD( "dfgl1.bin",    0x3000, 0x0800, CRC(b7ed195c) SHA1(81b2b444153dacb962a33a5d86a280ed5088637a) )
-	ROM_CONTINUE(			  0x3800, 0x0800 )
-	ROM_LOAD( "dfgl2.bin",    0x2000, 0x0800, CRC(ea5e9959) SHA1(6b638d22adf19224cf741458c8ad34d7f7e17e58) )
-	ROM_CONTINUE(			  0x2800, 0x0800 )
+	ROM_LOAD( "dfgj2.bin",    0x0000, 0x1000, CRC(8e19f1e7) SHA1(addd5add2117ef29ce38c0c80584e5d481b9d820) )
+	ROM_LOAD( "dfgj1.bin",    0x1000, 0x1000, CRC(86b60ca8) SHA1(be266e2d69e12a196c2195d48b495c0fb9ef8a43) )
+	ROM_LOAD( "dfgl2.bin",    0x2000, 0x1000, CRC(ea5e9959) SHA1(6b638d22adf19224cf741458c8ad34d7f7e17e58) )
+	ROM_LOAD( "dfgl1.bin",    0x3000, 0x1000, CRC(b7ed195c) SHA1(81b2b444153dacb962a33a5d86a280ed5088637a) )
 
-	ROM_REGION( 0x0020, REGION_PROMS, 0 )
-	ROM_LOAD( "dfg.clr",	  0x0000, 0x0020, NO_DUMP )
+	/* piggy-backed colour proms */
+	ROM_REGION( 0x0040, REGION_PROMS, 0 )
+	ROM_LOAD( "top.clr",      0x0000, 0x0020, CRC(3110ddae) SHA1(53b2e1cc07915592f6c868131ec296c63a407f04) )
+	ROM_LOAD( "bot.clr",      0x0020, 0x0020, CRC(0f0782af) SHA1(32c0dd09ead5c70cee2657e9cb8cb9fcf54c5a6a) )
 ROM_END
 
 
@@ -5319,4 +5317,4 @@ GAME( 1981, rockclim, 0,        rockclim, rockclim, 0,		    ROT180, "Taito", "Ro
 GAME( 1983, ozon1,    0,        ozon1,    ozon1,	0,		      ROT90,  "Proma", "Ozon I" )
 GAME( 1983, ladybugg, ladybug,  batman2,  ladybugg, ladybugg, ROT270, "bootleg", "Ladybug (bootleg on Galaxian hardware)" )
 GAME( 1980, vpool,    hustler,  mooncrst, vpool,    0,        ROT90,  "bootleg", "Video Pool (bootleg on Moon Cresta hardware)" )
-GAMEX(1984, drivfrcg, drivfrcp, drivfrcg, drivfrcg, 0,		    ROT90,  "Shinkai Inc. (Magic Eletronics USA licence)", "Driving Force (Galaxian conversion)", GAME_WRONG_COLORS )
+GAME( 1984, drivfrcg, drivfrcp, drivfrcg, drivfrcg, 0,		    ROT90,  "Shinkai Inc. (Magic Eletronics USA licence)", "Driving Force (Galaxian conversion)" )

@@ -192,6 +192,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Mirax (set 2)
 * Progear No Arashi
 * Renegade (US, Bootleg)
+* Safari Rally (World) - safarir
 * Sexy Parodius (Ver AAA) * Mature *
 * Snk Vs Capcom : Svc Chaos (bootleg)
 * Super Bishi Bashi Championship (ver KAA, 3 Players)
@@ -262,6 +263,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Die Hard Arcade - Romset `diehard` - Requires a fast system; video and sound issues remain
 * Discs Of Tron - Romsets `dotron` and `dotrone`
 * DJ Boy - Romset `djboy`
+* Driving Force (galaxian hardware) - Romset `drivfrcg` - colors fixed
 * Domino Man - Romset `domino`
 * Dragon World - Romset `drgnwrld`
 * Driftout 94 - Romset `drifto94`
@@ -303,6 +305,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Rohga Armor Force - Romsets `rohga`, `rohgah`, `rohgau`
 * Run And Gun - Romset `rungun`
 * Rush'N Attack - Romset `rushatck`
+* Safari Rally - Romset `safarir` - colors fixed
 * Sarge - Romset `sarge`
 * Satan's Hollow - Romset `shollow`
 * Sega Megaplay : Golden Axe II - Romset `mp_gaxe2`
@@ -310,6 +313,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Shisensho II * Mature * - Romset `shisen2`
 * Shogun Warriors - Romset `shogwarr`
 * Shrike Avenger - Romset `shrike`
+* Sky Army - Romset `skyarmy`
 * Slap Fight (Official Version) - Romset `slapfigh`
 * Snowboard Championship - Romset `snowboar`
 * Solar Fox - Romset `solarfox`
@@ -444,6 +448,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Journey
 * Lunar Rescue - lrescue
 * NATO Defense
+* Safari Rally - safarir
 * Sasuke Vs Commander 
 * Shark Attack
 * Space Firebird
@@ -610,3 +615,7 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Ported NeoGeo M1 decrypted program from MAME128, benefiting kof2000, kof2000n, kof2001, kof2001h, kof2002, kf2k2pls, kf2kpla, kf2k2mp, kf2k2mp2, kof2003, mslug4, rotd, matrim, pnyaa, samsho5, samsh5sp, mslug5, svc [odarknighto]
 * Added missing color proms for mrtnt and 8bpm [mahoneyt944]
 * Added missing color proms for superbon and machomou [mahoneyt944]
+* Fixed colors and added sample support for safarir [mahoneyt944]
+* Fixed color proms and video code for Driving Force (galaxian hardware) - drivfrcg [mahoneyt944]
+* Replaced bad_dump rom in Sky Army to fix bitrot [mahoneyt944]
+* Re-rom Safari Rally to support World version [mahoneyt944]

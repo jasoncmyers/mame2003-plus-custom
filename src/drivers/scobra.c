@@ -1766,8 +1766,7 @@ ROM_START( superbon )
 	/* However, pages may be missing. In addition, it is mentioned that the      */
 	/* conversion kit may be used for Scramble, Amidar and Frogger as well.      */
 	/* They all have different color proms. We use the prom from Super Cobra     */
-	/* for now and mark it as bad dump until we have more information.           */
-	ROM_LOAD( "82s123.6e",    0x0000, 0x0020, BAD_DUMP CRC(9b87f90d) SHA1(d11ac5e4a6057301ea2a9cbb404c2b978eb4c1dc) )
+	ROM_LOAD( "82s123.6e",    0x0000, 0x0020, CRC(9b87f90d) SHA1(d11ac5e4a6057301ea2a9cbb404c2b978eb4c1dc) )
 ROM_END
 
 ROM_START( hustler )
@@ -1898,7 +1897,7 @@ GAME( 1982, aponow,   rescue,   rescue,   rescue,   rescue,       ROT90,  "bootl
 GAME( 1983, minefld,  0,        minefld,  minefld,  minefld,      ROT90,  "Stern", "Minefield" )
 GAME( 1982, losttomb, 0,        type1,    losttomb, losttomb,     ROT90,  "Stern", "Lost Tomb (easy)" )
 GAME( 1982, losttmbh, losttomb, type1,    losttomb, losttomb,     ROT90,  "Stern", "Lost Tomb (hard)" )
-GAMEX(1985, superbon, 0,        type1,    superbon, superbon,     ROT90,  "Signatron USA", "Agent Super Bond (Super Cobra conversion)", GAME_WRONG_COLORS )
+GAME( 1985, superbon, 0,        type1,    superbon, superbon,     ROT90,  "Signatron USA", "Agent Super Bond (Super Cobra conversion)" )
 GAME( 1981, hustler,  0,        hustler,  hustler,  hustler,      ROT90,  "Konami", "Video Hustler" )
 GAME( 1981, billiard, hustler,  hustler,  hustler,  billiard,     ROT90,  "bootleg", "The Billiards" )
 GAME( 1981, hustlerb, hustler,  hustlerb, hustler,  scramble_ppi, ROT90,  "bootleg", "Video Hustler (bootleg)" )
