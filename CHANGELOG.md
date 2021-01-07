@@ -32,6 +32,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Counter Run (Bootleg, Set 1)
 * Crossed Swords 2
 * Cute Fighter
+* Daikaiju no Gyakushu
 * Deluxe 5
 * Denjin Makai 
 * Deer Hunting
@@ -62,6 +63,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Gunbarich
 * GunMaster
 * Hang Zo
+* Head On Channel (Japan, Prototype)
 * Heavy Smash
 * Hoops '96
 * Hyper Crash
@@ -116,6 +118,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Sega Megaplay : Sonic The Hedgehog 2
 * Sega Megaplay : Streets Of Rage II
 * Sega Megaplay : Tecmo World Cup
+* Sega Sonic Bros (Japan, Prototype)
 * Sengoku 3
 * Skull Fang
 * Slap Shooter
@@ -183,6 +186,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Hacha Mecha Fighter (bootleg)
 * Hook (Japan Version)
 * Ikari III - The Rescue (World, 8-Way Joystick)
+* Imago (cocktail set)
 * Kabuki-Z (Japan)
 * King of Gladiator
 * Knuckle Bash 2
@@ -196,7 +200,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Sexy Parodius (Ver AAA) * Mature *
 * Snk Vs Capcom : Svc Chaos (bootleg)
 * Super Bishi Bashi Championship (ver KAA, 3 Players)
-* Target Ball (Romset `tgtballa` - family friendly version)
+* Target Ball * Mature * (Romset `tgtballa`)
 * Tetris the Absolute The Grand Master 2 Plus
 * The Great Ragtime Show
 * The King of Fighters '97 Plus
@@ -272,6 +276,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * F-1 Grand Prix Star II - Romset `f1gpstr2`
 * F1 Super Lap (Japan) - Romset `f1lapj`
 * Fighters History - Romsets `fghthist`, `fghthsta`, and `fghthstw` - Playable with minor remaining unemulated protection
+* Find Out - Romset `findout` - colors fixed
 * Fire Barrel - Romset `firebarr`
 * Funky Jet - Romset `funkyjet`
 * Gardia - Romset `gardia`
@@ -282,6 +287,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Hard Head 2 - Romset `hardhea2`
 * Hyper Duel - Romsets `hyprduel`, and `hyprdelj`
 * IGMO - Romset `igmo` color fixed
+* Imago - Romsets `imago` and `imagoa`
 * Iron Horse - Romset `ironhors`
 * Joshi Volleyball - Romset `josvolly`
 * Journey - Romset `journey`
@@ -294,6 +300,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Metroid (Playchoice 10) - Romset `pc_mtoid`
 * Monster Slider - Romset `mslider`
 * Mr. TNT - Romset `mrtnt` - colors fixed
+* New Sinbad 7 - Romset `newsin7` - colors fixed
 * Night Slashers - Romset `nslasher`
 * Off Road Challenge - Romset `offroadc` - Requires a fast system
 * Phantasm - Romset `phantasm`
@@ -317,14 +324,18 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Slap Fight (Official Version) - Romset `slapfigh`
 * Snowboard Championship - Romset `snowboar`
 * Solar Fox - Romset `solarfox`
+* Speed Spin - Romset `speedspn` - gfx glitches
 * Spy Hunter - Romset `spyhunt`
 * Spy Hunter 2 - Romset `spyhunt2`
 * Star Guards - Romset `stargrds`
 * Street Fighter (With Added Speedups) - Romsets `sf1`, `sf1jp`, `sf1p`, `sf1us`
+* Strike Bowling - Romset `sbowling` - colors fixed
+* Super Stingray - Romset `sstingry` - colors fixed
 * Tapper - Romset `tapper`
 * Target Ball (Nude) - Romset `tgtball`
 * Task Force Harrier - Romsets `tharrier` and `tharierj`
 * Timber - Romset `timber`
+* Time Limit - Romset `timelimt` - colors fixed
 * Thunder Dragon - Romset `tdragon` - Minor sound issues remaining
 * Thunder Strike - Romset `tstrike` 
 * Tri-Sports - Romset `trisport`
@@ -395,6 +406,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Dig Dug
 * Dig Dug II
 * Final Fight - Added OST soundtrack (via KMFDManic)
+* Funny Bubble - `funybubl` * Mature *
 * Galaga
 * Galaga 3
 * Galaxy Rescue - (Added lrescue.zip sample support)
@@ -411,6 +423,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * NBA Hangtime
 * NBA Jam - Added OST Soundtrack (via KMFDManic)
 * NBA Maximum Hangtime
+* New Sinbad 7
 * Nibbler
 * Open Ice
 * Out Run - Added ost soundtrack (via KMFDManic)
@@ -619,3 +632,12 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Fixed color proms and video code for Driving Force (galaxian hardware) - drivfrcg [mahoneyt944]
 * Replaced bad_dump rom in Sky Army to fix bitrot [mahoneyt944]
 * Re-rom Safari Rally to support World version [mahoneyt944]
+* Added missing rom files and video code to sstingry [mahoneyt944]
+* Speedspn - fixed selection screen graphic glitches [mahoneyt944]
+* Funybubl - fixed audio and graphic glitches [mahoneyt944]
+* Updated res_net code to fix colors in strike bowling [mahoneyt944]
+* Fixed color palette in Find Out [mahoneyt944]
+* Fixed colors, gfx, and missing proms in Time Limit [mahoneyt944]
+* Corrected gfx decode for newsin7 fixing colors [mahoneyt944]
+* Updated RC filter in streams.c to fix sound issues newsin7 [mahoneyt944]
+* Fixed graphics / colors in Imago and added new cocktail clone [mahoneyt944]

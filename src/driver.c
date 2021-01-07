@@ -300,7 +300,8 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( jumpcoas )	/* (c) 1983 Kaneko */
 	DRIVER( boggy84 )	/* bootleg, original is (c)1983 Taito/Kaneko */
 	DRIVER( redrobin )	/* (c) 1986 Elettronolo */
-	DRIVER( imago )
+	DRIVER( imago ) 	/* cocktail set */
+	DRIVER( imagoa )	/* no cocktail set */
 
 	/* "Crazy Climber hardware" games */
 	DRIVER( cclimber )	/* (c) 1980 Nichibutsu */
@@ -1413,6 +1414,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( halleycj )	/* A62 (c) 1986 Taito Corporation (Japan) */
 	DRIVER( lsasquad )	/* A64 (c) 1986 Taito Corporation / Taito America (dip switch) */
 	DRIVER( storming )	/* A64 (c) 1986 Taito Corporation */
+  DRIVER( daikaiju )  /* A64 (c) 1986 Taito Corporation */
 	DRIVER( tokio )		/* A71 1986 */
 	DRIVER( tokiob )	/* bootleg */
 	DRIVER( bublbobl )	/* A78 (c) 1986 Taito Corporation */
@@ -3012,6 +3014,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( puyopuy2 )	/* (c) 1994 Compile + Sega license */
 	DRIVER( potopoto )	/* (c) 1994 Sega */
 	DRIVER( zunkyou )	/* (c) 1994 Sega */
+  DRIVER( headonch ) /* Sega Unreleased */  
 
 	/* Atlus Print Club 'Games' C-2 board */
 	DRIVER( pclubj )
