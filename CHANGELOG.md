@@ -264,6 +264,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Blasted - Romset `blasted`
 * Blood Warrior - Romset `bloodwar` - Playable with minor remaining graphical issues
 * Bonk's Adventure - Romset `bonkadv` - Playable with minor remaining graphical issues
+* Cheeky Mouse - Romset `cheekyms` - colors fixed
 * Crater Raider - Romset `crater`
 * Demolition Derby - Romset `demoderb`
 * Die Hard Arcade - Romset `diehard` - Requires a fast system; video and sound issues remain
@@ -385,6 +386,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * SD Gundam Psycho Salamander no Kyoui
 * Sky Alert
 * Sky Diver
+* Super Slam
 * Super Spacefortress Macross
 * Teki Paki (via Toaplan samples)
 * The Karate Tournament
@@ -644,3 +646,7 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Updated RC filter in streams.c to fix sound issues newsin7 [mahoneyt944]
 * Fixed graphics / colors in Imago and added new cocktail clone [mahoneyt944]
 * Added three hoarded Sega C2 games Head On Channel, Oo Parts and Sega Sonic Bros to the segac2 driver [arcadez, grant2258]
+* Added sound support for Super Slam Tennis fixed some graphical niggles and prevent the game from crashing after winning a set [arcadez]
+* Updated input system removing the analog / digital core option, Now initiates both by default [mahoneyt944]
+* Official support for the middle (3rd) mouse click [mahoneyt944]
+* Fixed colors in cheekyms and added sound triggers [mahoneyt944]
