@@ -1039,6 +1039,13 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( spceking )
 	DRIVER( spcewars )
 	DRIVER( cosmo )		/* TDS+Mints */
+	DRIVER( astropal )
+	DRIVER( invasion )
+	DRIVER( invasioa )
+	DRIVER( invasiob )
+	DRIVER( galactic )
+	DRIVER( spacmiss )
+
 
 	DRIVER( sspeedr )	/* 1979 Midway */
 
@@ -5404,6 +5411,7 @@ Other Sun games
 	DRIVER( drmicro )	/* (c) 1983 Sanritsu */
 	DRIVER( appoooh )	/* (c) 1984 Sega */	/* made by Sanritsu */
 	DRIVER( bankp )		/* (c) 1984 Sega */	/* made by Sanritsu */
+  DRIVER( combh )		/* (c) 1987 Sega */	/* made by Sanritsu */
 	DRIVER( mjkjidai )	/* (c) 1986 Sanritsu */
 	DRIVER( mayumi )	/* (c) 1988 Victory L.L.C. */	/* made by Sanritsu */
 

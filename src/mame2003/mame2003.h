@@ -49,8 +49,57 @@ extern "C" {
 #define FPTR unsigned int
 #endif
 
+/***************************************************************************
 
-extern void mame2003_video_get_geometry(struct retro_game_geometry *geom);
+	Parameters
+
+***************************************************************************/
+
+#define APPNAME         "mame2003-plus"
+
+#define FRAMES_PER_FPS_UPDATE		12
+#define MAX_GFX_ELEMENTS        32
+#define MAX_MEMORY_REGIONS      32
+
+#define PRESSURE_CHECK     25  /* (int)(1.28 * 20) */
+
+#define X_AXIS           0
+#define Y_AXIS           1
+#define Z_AXIS           2
+#define PEDAL_AXIS       3
+#define MAX_ANALOG_AXES  4
+
+#define DIRECTIONAL_COUNT         12  /* map Left, Right Up, Down as well as B, Y, A, X */
+#define DIRECTIONAL_COUNT_NO_DBL   4
+#define BUTTON_COUNT_PER          12  /* 10 buttons plus Start and Select          */
+#define MOUSE_BUTTON_PER           3
+
+#define PER_PLAYER_CTRL_COUNT                   (DIRECTIONAL_COUNT + BUTTON_COUNT_PER + MOUSE_BUTTON_PER)
+#define PER_PLAYER_CTRL_COUNT_NO_DBL_NO_MOUSE   (DIRECTIONAL_COUNT_NO_DBL + BUTTON_COUNT_PER)
+
+#define NUMBER_OF_CONTROLS    27   /* used to allocate and iterate through an array that contains the current state of every possible control */
+
+#define MAX_PLAYER_COUNT       6   /* We support a maximum of six simultaneous players */       
+#define NUMBER_OF_INPUT_TYPES  4   /* has to be updated manually! */
+
+enum
+{
+  IDX_CLASSIC = 0,
+  IDX_MODERN,
+  IDX_8BUTTON,
+  IDX_6BUTTON,
+  IDX_PAD_end,
+};
+
+enum /* the "display numbers" for each player, as opposed to their array index */
+{
+  DISP_PLAYER1 = 1,
+  DISP_PLAYER2,
+  DISP_PLAYER3,
+  DISP_PLAYER4,
+  DISP_PLAYER5,
+  DISP_PLAYER6
+};
 
 
 /******************************************************************************
@@ -71,31 +120,21 @@ extern retro_log_printf_t log_cb;
 extern void frontend_message_cb(const char *message_string, unsigned frames_to_display);
 
 
+/******************************************************************************
+
+Core options
+
+******************************************************************************/
+
+
+/******************************************************************************
+ * retro_variable_default contains the default value for a libretro core option
+ * 
+ *****************************************************************************/
 struct retro_variable_default
 {
    const char *key;
    const char *defaults_string;
-};
-
-enum
-{
-  IDX_CLASSIC = 0,
-  IDX_MODERN,
-  IDX_8BUTTON,
-  IDX_6BUTTON,
-  IDX_PAD_end,
-};
-
-#define PLAYER_COUNT 6
-
-enum /*the "display numbers" for each player, as opposed to their array index */
-{
-  DISP_PLAYER1 = 1,
-  DISP_PLAYER2,
-  DISP_PLAYER3,
-  DISP_PLAYER4,
-  DISP_PLAYER5,
-  DISP_PLAYER6
 };
 
 
@@ -153,6 +192,10 @@ struct osd_create_params
   Returns 0 on success.
 */
 int osd_create_display(const struct osd_create_params *params, UINT32 *rgb_components);
+
+
+
+/* osd_close_display is implemented in video.c */
 void osd_close_display(void);
 
 
@@ -215,7 +258,6 @@ int osd_start_audio_stream(int stereo);
 int osd_update_audio_stream(INT16 *buffer);
 void osd_stop_audio_stream(void);
 
-
 /******************************************************************************
 
 	Keyboard
@@ -246,7 +288,7 @@ int osd_readkey_unicode(int flush);
 
 /******************************************************************************
 
-	Joystick & Mouse/Trackball
+	Joystick
 
 ******************************************************************************/
 
@@ -262,53 +304,98 @@ const struct JoystickInfo *osd_get_joy_list(void);
 */
 int osd_is_joy_pressed(int joycode);
 
-
-/* We support 6 players for each analog control / trackball */
-#define OSD_MAX_JOY_ANALOG	6
-#define X_AXIS			0
-#define Y_AXIS			1
-#define Z_AXIS			2
-#define PEDAL_AXIS		3
-#define MAX_ANALOG_AXES	4
-
 /* added for building joystick seq for analog inputs */
 int osd_is_joystick_axis_code(int joycode);
 
+/* osd_analogjoy_read returns in the range -128 .. 128 (yes, 128, not 127) */
+void osd_analogjoy_read(  int player, 
+                          int analog_axis[MAX_ANALOG_AXES],
+                          InputCode analogjoy_input[MAX_ANALOG_AXES]  );
+
+/******************************************************************************
+ * 
+ * Legacy joystick calibration functions
+ * 
+ * As of March 2021: these MAME functions should not actually be used and will not be invoked
+ * as long as needs_calibration always returns 0. The libretro frontend is reponsible for
+ * providing calibrated position data.
+ ******************************************************************************/
+
 /* Joystick calibration routines BW 19981216 */
-/* Do we need to calibrate the joystick at all? */
 int osd_joystick_needs_calibration(void);
+
 /* Preprocessing for joystick calibration. Returns 0 on success */
 void osd_joystick_start_calibration(void);
+
 /* Prepare the next calibration step. Return a description of this step. */
 /* (e.g. "move to upper left") */
 const char *osd_joystick_calibrate_next(void);
+
 /* Get the actual joystick calibration data for the current position */
 void osd_joystick_calibrate(void);
+
 /* Postprocessing (e.g. saving joystick data to config) */
 void osd_joystick_end_calibration(void);
 
-void osd_lightgun_read(int player, int *deltax, int *deltay);
+
+/******************************************************************************
+
+	Trackball, Spinner, Mouse
+
+******************************************************************************/
+
+/* osd_track_read expects the OSD to return the relative change in mouse or trackball
+ * coordinates since the last reading. If the user has set their mouse type to
+ * `pointer` in the core options, its coordinates are translated from absolute to
+ * relative coordinates before being stored in `mouse_x[]`.
+ */
 void osd_trak_read(int player, int *deltax, int *deltay);
 
-/* return values in the range -128 .. 128 (yes, 128, not 127) */
-void osd_analogjoy_read(int player,int analog_axis[MAX_ANALOG_AXES], InputCode analogjoy_input[MAX_ANALOG_AXES]);
+
+/******************************************************************************
+
+	Lightgun
+
+******************************************************************************/
+
+/******************************************************************************
+    The osd_lightgun_read call should return the delta from the middle of the screen
+		when the gun is fired (not the absolute pixel value), and 0 when the gun is
+		inactive.  
+    
+    When osd_lightgun_read returns 0, control passes through to the analog joystick,
+    and mouse, in that order. In other words, when osd_lightgun_read returns a 
+    value it overrides both mouse & analog joystick.
+
+		The value returned by the OSD layer should be -128 to 128, same as analog
+		joysticks. (yes, 128, not 127).
+*******************************************************************************/
+void osd_lightgun_read(int player, int *deltax, int *deltay);
 
 
-/*
-  inptport.c defines some general purpose defaults for key and joystick bindings.
-  They may be further adjusted by the OS dependent code to better match the
-  available keyboard, e.g. one could map pause to the Pause key instead of P, or
-  snapshot to PrtScr instead of F12. Of course the user can further change the
-  settings to anything he/she likes.
-  This function is called on startup, before reading the configuration from disk.
-  Scan the list, and change the keys/joysticks you want.
-*/
+/******************************************************************************
+
+	Utility functions
+
+******************************************************************************/
+
+/* inptport.c defines general purpose defaults for key and joystick bindings which
+ * may be further adjusted by the OS dependent code to better match the available
+ * keyboard, e.g. one could map pause to the Pause key instead of P, or snapshot
+ * to PrtScr instead of F12. Of course the user can further change the settings
+ * to anything they like.
+ * 
+ * osd_customize_inputport_defaults is called on startup, before reading the
+ * configuration from disk. Scan the list, and change the keys/joysticks you want.
+ */
 void osd_customize_inputport_defaults(struct ipd *defaults);
 
 
 /******************************************************************************
 
 	Timing
+
+  As of March 2021, these functions are not implemented in the libretro port.
 
 ******************************************************************************/
 
@@ -324,7 +411,6 @@ cycles_t osd_cycles_per_second(void);
    This call must be the fastest possible because it is called by the profiler;
    it isn't necessary to know the number of ticks per seconds. */
 cycles_t osd_profiling_ticks(void);
-
 
 #ifdef __cplusplus
 }

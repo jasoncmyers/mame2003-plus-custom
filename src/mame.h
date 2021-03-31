@@ -26,18 +26,6 @@
 extern int gbPriorityBitmapIsDirty;
 extern retro_environment_t environ_cb;
 
-/***************************************************************************
-
-	Parameters
-
-***************************************************************************/
-
-#define FRAMES_PER_FPS_UPDATE		12
-
-#define MAX_GFX_ELEMENTS 32
-#define MAX_MEMORY_REGIONS 32
-
-#define APPNAME					"mame2003-plus"
 
 /***************************************************************************
 
@@ -212,10 +200,10 @@ struct GameOptions
 
   unsigned dial_share_xy;
   unsigned mouse_device;
-  unsigned input_interface;                /* can be set to RETRO_DEVICE_JOYPAD, RETRO_DEVICE_KEYBOARD, or 0 (both simultaneously) */
-  unsigned retropad_layout[DISP_PLAYER6];  /* flags to indicate the default layout for each player */
-  bool 	   restrict_4_way;                 /* simulate 4-way joystick restrictor */
-  unsigned deadzone;                       /* analog deadzone in percent. 20 corresponds to 20% */
+  unsigned input_interface;                    /* can be set to RETRO_DEVICE_JOYPAD, RETRO_DEVICE_KEYBOARD, or 0 (both simultaneously) */
+  unsigned retropad_layout[DISP_PLAYER6];      /* flags to indicate the default layout for each player */
+  bool 	   restrict_4_way;                     /* simulate 4-way joystick restrictor */
+  unsigned deadzone;                           /* analog deadzone in percent. 20 corresponds to 20% */
   unsigned tate_mode;
 
   int      crosshair_enable;
