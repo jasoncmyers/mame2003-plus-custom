@@ -61,26 +61,20 @@ extern "C" {
 #define MAX_GFX_ELEMENTS        32
 #define MAX_MEMORY_REGIONS      32
 
-#define PRESSURE_CHECK     25  /* (int)(1.28 * 20) */
+#define NORMALIZED_ANALOG_THRESHOLD   64
+#define LIBRETRO_ANALOG_MIN -32768
+#define LIBRETRO_ANALOG_MAX 32767
+#define ANALOG_MIN -128
+#define ANALOG_MAX 128
 
-#define X_AXIS           0
-#define Y_AXIS           1
-#define Z_AXIS           2
-#define PEDAL_AXIS       3
-#define MAX_ANALOG_AXES  4
-
-#define DIRECTIONAL_COUNT         12  /* map Left, Right Up, Down as well as B, Y, A, X */
-#define DIRECTIONAL_COUNT_NO_DBL   4
-#define BUTTON_COUNT_PER          12  /* 10 buttons plus Start and Select          */
-#define MOUSE_BUTTON_PER           3
-
-#define PER_PLAYER_CTRL_COUNT                   (DIRECTIONAL_COUNT + BUTTON_COUNT_PER + MOUSE_BUTTON_PER)
-#define PER_PLAYER_CTRL_COUNT_NO_DBL_NO_MOUSE   (DIRECTIONAL_COUNT_NO_DBL + BUTTON_COUNT_PER)
-
-#define NUMBER_OF_CONTROLS    27   /* used to allocate and iterate through an array that contains the current state of every possible control */
-
-#define MAX_PLAYER_COUNT       6   /* We support a maximum of six simultaneous players */       
-#define NUMBER_OF_INPUT_TYPES  4   /* has to be updated manually! */
+enum
+{
+  X_AXIS = 0,
+  Y_AXIS,
+  Z_AXIS,
+  PEDAL_AXIS,
+  MAX_ANALOG_AXES
+};
 
 enum
 {
@@ -88,7 +82,7 @@ enum
   IDX_MODERN,
   IDX_8BUTTON,
   IDX_6BUTTON,
-  IDX_PAD_end,
+  IDX_NUMBER_OF_INPUT_TYPES
 };
 
 enum /* the "display numbers" for each player, as opposed to their array index */
@@ -101,11 +95,59 @@ enum /* the "display numbers" for each player, as opposed to their array index *
   DISP_PLAYER6
 };
 
+#define MAX_PLAYER_COUNT  DISP_PLAYER6   /* We currently support a maximum of six simultaneous players */
+
+/******************************************************************************
+
+    The following is a set of OS joystick codes (also including buttons and controls
+    on mice, lightguns, etc). In MAME 2003+, the libretro API takes the role of the
+    MAME OSD and these codes are used to represent the full range of input states
+    that can exist among any of the libretro API abstractions that can be used.
+
+    The names for elements of the enum reflect the fact that these codes parallel
+    input codes in libretro.h; because each of the libretro input abstractions uses
+    independent, overlapping code ranges, we cannot simply reuse the libretro codes.
+
+******************************************************************************/
+
+enum
+{
+  OSD_JOYPAD_B = 0,
+  OSD_JOYPAD_Y,
+  OSD_JOYPAD_SELECT,
+  OSD_JOYPAD_START,
+  OSD_JOYPAD_UP,
+  OSD_JOYPAD_DOWN,
+  OSD_JOYPAD_LEFT,
+  OSD_JOYPAD_RIGHT,
+  OSD_JOYPAD_A,
+  OSD_JOYPAD_X,
+  OSD_JOYPAD_L,
+  OSD_JOYPAD_R,
+  OSD_JOYPAD_L2,
+  OSD_JOYPAD_R2,
+  OSD_JOYPAD_L3,
+  OSD_JOYPAD_R3,
+  OSD_MOUSE_BUTTON_1,
+  OSD_MOUSE_BUTTON_2,
+  OSD_MOUSE_BUTTON_3,
+  OSD_MOUSE_BUTTON_4,
+  OSD_MOUSE_BUTTON_5,
+  OSD_ANALOG_LEFT_NEGATIVE_X,
+  OSD_ANALOG_LEFT_POSITIVE_X,
+  OSD_ANALOG_LEFT_NEGATIVE_Y,
+  OSD_ANALOG_LEFT_POSITIVE_Y,
+  OSD_ANALOG_RIGHT_NEGATIVE_X,
+  OSD_ANALOG_RIGHT_POSITIVE_X,
+  OSD_ANALOG_RIGHT_NEGATIVE_Y,
+  OSD_ANALOG_RIGHT_POSITIVE_Y,
+  OSD_INPUT_CODES_PER_PLAYER
+};
 
 /******************************************************************************
 
 	Shared libretro log interface
-    set in mame2003.c 
+    set in mame2003.c
 
 ******************************************************************************/
 extern retro_log_printf_t log_cb;
@@ -114,7 +156,7 @@ extern retro_log_printf_t log_cb;
 /******************************************************************************
 
 	frontend message interface
-    implemented in mame2003.c 
+    implemented in mame2003.c
 
 ******************************************************************************/
 extern void frontend_message_cb(const char *message_string, unsigned frames_to_display);
@@ -129,7 +171,7 @@ Core options
 
 /******************************************************************************
  * retro_variable_default contains the default value for a libretro core option
- * 
+ *
  *****************************************************************************/
 struct retro_variable_default
 {
@@ -305,17 +347,17 @@ const struct JoystickInfo *osd_get_joy_list(void);
 int osd_is_joy_pressed(int joycode);
 
 /* added for building joystick seq for analog inputs */
-int osd_is_joystick_axis_code(int joycode);
+int osd_is_joystick_axis_code(unsigned joycode);
 
 /* osd_analogjoy_read returns in the range -128 .. 128 (yes, 128, not 127) */
-void osd_analogjoy_read(  int player, 
+void osd_analogjoy_read(  int player,
                           int analog_axis[MAX_ANALOG_AXES],
                           InputCode analogjoy_input[MAX_ANALOG_AXES]  );
 
 /******************************************************************************
- * 
+ *
  * Legacy joystick calibration functions
- * 
+ *
  * As of March 2021: these MAME functions should not actually be used and will not be invoked
  * as long as needs_calibration always returns 0. The libretro frontend is reponsible for
  * providing calibrated position data.
@@ -361,10 +403,10 @@ void osd_trak_read(int player, int *deltax, int *deltay);
 /******************************************************************************
     The osd_lightgun_read call should return the delta from the middle of the screen
 		when the gun is fired (not the absolute pixel value), and 0 when the gun is
-		inactive.  
-    
+		inactive.
+
     When osd_lightgun_read returns 0, control passes through to the analog joystick,
-    and mouse, in that order. In other words, when osd_lightgun_read returns a 
+    and mouse, in that order. In other words, when osd_lightgun_read returns a
     value it overrides both mouse & analog joystick.
 
 		The value returned by the OSD layer should be -128 to 128, same as analog
@@ -384,7 +426,7 @@ void osd_lightgun_read(int player, int *deltax, int *deltay);
  * keyboard, e.g. one could map pause to the Pause key instead of P, or snapshot
  * to PrtScr instead of F12. Of course the user can further change the settings
  * to anything they like.
- * 
+ *
  * osd_customize_inputport_defaults is called on startup, before reading the
  * configuration from disk. Scan the list, and change the keys/joysticks you want.
  */

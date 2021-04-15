@@ -1,7 +1,7 @@
 # MAME 2003-Plus CHANGELOG
 
-* Current repository maintainers: arcadez, arnoldsecret, mahoneyt944, markwkidd, twinaphex
-* Past repository maintiners: grant2258
+* Current repository maintainers: arcadez, mahoneyt944, markwkidd, twinaphex
+* Past repository maintiners: arnoldsecret, grant2258
 * Significant code contributors to this project: AMadvanceMAME, BritneysPAIRS, dink, FBN Dev, grant2258, iq_132, MAME Dev, ShmupMAME
 
 The list of direct contributors to the MAME 2003-Plus github repository can be found at https://github.com/libretro/mame2003-plus-libretro/graphs/contributors. Additional contributor credits can be found in LICENSE.md, CHANGELOG.old, and in the individual driver source files.
@@ -22,6 +22,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Baryon: Future Assault
 * Bomb Kick
 * Boogie Wings
+* Born To Fight
 * Botanic (English / Spanish set 1)
 * Bubble Bobble 2 - The Return Of Super Drunk (prototype)
 * Cabal (World, Joystick version)
@@ -168,6 +169,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Vasara 2
 * Virtua Bowling
 * Virtua Fighter
+* Wheels Runner
 * Wing Force
 * Wing Shooting Championship
 * Wiz Warz
@@ -341,6 +343,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Slap Fight (Official Version) - Romset `slapfigh`
 * Snowboard Championship - Romset `snowboar`
 * Solar Fox - Romset `solarfox`
+* Space Position - Romset `spcpostn`
 * Speed Spin - Romset `speedspn` - gfx glitches
 * Spy Hunter - Romset `spyhunt`
 * Spy Hunter 2 - Romset `spyhunt2`
@@ -407,7 +410,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Space Chaser (CV version)
 * Super Slam
 * Super Spacefortress Macross
-* Teki Paki (via Toaplan samples)
+* Teki Paki
 * The Karate Tournament
 * Thunder Dragon
 * Toride II Adauchi Gaiden
@@ -491,7 +494,6 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Sea Wolf II
 * Shark Attack
 * Space Firebird
-* Teki Paki (Toaplan Samples)
 * Thief
 * Two Tigers - `twotigra` romset
 
@@ -690,3 +692,6 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added clones Yosaku To Donbei (yosakdoa), Invasion (invasioa, invasiob), Space Missile - Space Fighting Game (spacmiss) [jamiecurmi]
 * Fixed the background colour of Straight Flush to match flyer colours [jamiecurmi]
 * Added sound for Invader's Revenge, Space Chaser (CV Version), Lupin III, Balloon Bomber, Rolling Crash / Moon Base. [jamiecurmi]
+* Added HD647180 MCU sound support for Teki Paki and Whoopee / Pibi & Bibi removing the need for Teki Paki to require hacked sound samples [dink, arcadez]
+* Added support for Born To Fight and Wheels Runner to the fantland driver [arcadez, mahoneyt944]
+* Hooked up Lightgun support for Born To Fight and fixed the steering wheel inputs in Wheels Runner [mahoneyt944]
