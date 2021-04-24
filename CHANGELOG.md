@@ -24,6 +24,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Boogie Wings
 * Born To Fight
 * Botanic (English / Spanish set 1)
+* Bronx (Cycle Shooting bootleg)
 * Bubble Bobble 2 - The Return Of Super Drunk (prototype)
 * Cabal (World, Joystick version)
 * Chain Reaction
@@ -363,6 +364,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Turbo Tag - Romset `turbotag`
 * Twin Eagle 2 - Romsets `twineagl` and `twineag2`
 * Two Tigers - Romset `twotiger`
+* U.S. Classic - Romset `usclssic` - colors fixed
 * Wonder Boy in Monster Land (Japan New Ver.) - Romset `wbml`
 * Wonder Boy in Monster Land (Japan Old Ver.) - Romset `wbmljo`
 * Xenophobe - Romset `xenophob`
@@ -695,3 +697,6 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added HD647180 MCU sound support for Teki Paki and Whoopee / Pibi & Bibi removing the need for Teki Paki to require hacked sound samples [dink, arcadez]
 * Added support for Born To Fight and Wheels Runner to the fantland driver [arcadez, mahoneyt944]
 * Hooked up Lightgun support for Born To Fight and fixed the steering wheel inputs in Wheels Runner [mahoneyt944]
+* Added support for Bronx a working bootleg of Cycle Shooter to the nycaptor.c driver [arcadez]
+* Backported some K051649 and K053260 sound improvements for many Konami games from later MAME [arcadez]
+* Added missing color proms and decoding for U.S. Classic [mahoneyt944]
