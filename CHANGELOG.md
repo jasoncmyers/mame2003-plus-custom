@@ -99,6 +99,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Monster Maulers
 * Mouse Shooter GoGo
 * Ms. Pacman Twin
+* Mrs. Dynamite
 * Multi Champ Deluxe * Mature *
 * Oo Parts (Japan, Prototype)
 * Opa Opa (Rev A Unprotected)
@@ -140,6 +141,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Sonic Boom
 * Space Fever High Splitter
 * Space Launcher
+* Space Raider
 * Squash
 * Star Fire 2
 * Steel Worker
@@ -195,6 +197,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Escape Kids (Asia 4 Players)
 * Fujiyama Buster
 * Gals Panic DX * Mature *
+* Ghox (Joystick)
 * Ganbare! Gonta!! 2 / Party Time: Gonta the Diver II * Mature *
 * GunNail (Location Test)
 * Guwange Special Version
@@ -386,7 +389,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Daitoride
 * Dharma Doujou
 * Fire Shark
-* Ghox (via Toaplan samples)
+* Ghox
 * GunNail
 * Hacha Mecha Fighter
 * Invader's Revenge
@@ -707,3 +710,5 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added Konami 007452 multiplier/divider fixes which sorts rolling mines and bullet trajectories in contra during the 3D Sections of the game [arcadez]
 * Updated outrun.c to MAME89 and then fixed the sound and graphical road drawing plus hooked up the inputs so that Turbo Out Run can now be played in this core [arcadez]
 * Added support for rare, Ms. Pacman Twin (mspactwin) simultaneous 2 player play [arcadez, grant2258, mahoneyt944]
+* Hooked up HD647180 MCU sound support for Ghox removing the need for hacked samples plus added a dedicated joystick version of the game [grant2258, arcadez]
+* Added support for Mrs. Dynamite and Space Raider to ladybug.c also updated the SN76496 sound core to allow for 5 chips to be used for both of these games [arcadez]

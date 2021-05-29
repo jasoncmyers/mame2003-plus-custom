@@ -769,6 +769,8 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( cavenger )	/* (c) 1981 */
 	DRIVER( dorodon )	/* Falcon */
 	DRIVER( dorodon2 )	/* Falcon */
+  DRIVER( sraider )	/* (c) 1982 */
+	DRIVER( mrsdyna )	/* (c) 1982 */
 	DRIVER( mrdo )		/* (c) 1982 */
 	DRIVER( mrdoy )		/* (c) 1982 */
 	DRIVER( mrdot )		/* (c) 1982 + Taito license */
@@ -1832,6 +1834,7 @@ const struct GameDriver *test_drivers[] =
 	/* More Toaplan Games */
 	DRIVER( tekipaki )	/* TP-020 (c) 1991 Toaplan */
 	DRIVER( ghox )		/* TP-021 (c) 1991 Toaplan */
+  DRIVER( ghoxj )		/* TP-021 (c) 1991 Toaplan */
 	DRIVER( dogyuun )	/* TP-022 (c) 1992 Toaplan */
 	DRIVER( kbash )		/* TP-023 (c) 1993 Toaplan */
 	DRIVER( kbash2 )	/* TP-023 */
