@@ -27,6 +27,7 @@ COREDEFINES += -D__LIBRETRO__ -DPI=3.1415927 -DM_PI=3.1415927
 
 SOURCES_C := \
 	$(CORE_DIR)/mame2003/mame2003.c \
+	$(CORE_DIR)/mame2003/core_options.c \
 	$(CORE_DIR)/mame2003/video.c
 
 SOURCES_C += \
@@ -407,6 +408,7 @@ SOURCES_C += \
 	$(CORE_DIR)/vidhrdw/gladiatr_vidhrdw.c $(CORE_DIR)/drivers/gladiatr.c \
 	$(CORE_DIR)/machine/nycaptor_machine.c $(CORE_DIR)/vidhrdw/nycaptor_vidhrdw.c $(CORE_DIR)/drivers/nycaptor.c \
 	$(CORE_DIR)/drivers/halleys.c \
+	$(CORE_DIR)/drivers/jollyjgr.c \
 	$(CORE_DIR)/machine/lsasquad_machine.c $(CORE_DIR)/vidhrdw/lsasquad_vidhrdw.c $(CORE_DIR)/drivers/lsasquad.c \
 	$(CORE_DIR)/machine/bublbobl_machine.c $(CORE_DIR)/vidhrdw/bublbobl_vidhrdw.c $(CORE_DIR)/drivers/bublbobl.c \
 	$(CORE_DIR)/drivers/missb2.c \
@@ -519,8 +521,8 @@ SOURCES_C += \
 	$(CORE_DIR)/vidhrdw/firetrap_vidhrdw.c $(CORE_DIR)/drivers/firetrap.c \
 	$(CORE_DIR)/vidhrdw/brkthru_vidhrdw.c $(CORE_DIR)/drivers/brkthru.c \
 	$(CORE_DIR)/vidhrdw/metlclsh_vidhrdw.c $(CORE_DIR)/drivers/metlclsh.c \
-	$(CORE_DIR)/drivers/compgolf.c \
-	$(CORE_DIR)/drivers/tryout.c \
+	$(CORE_DIR)/vidhrdw/compgolf_vidhrdw.c $(CORE_DIR)/drivers/compgolf.c \
+	$(CORE_DIR)/vidhrdw/tryout_vidhrdw.c $(CORE_DIR)/drivers/tryout.c \
 	$(CORE_DIR)/vidhrdw/shootout_vidhrdw.c $(CORE_DIR)/drivers/shootout.c \
 	$(CORE_DIR)/vidhrdw/sidepckt_vidhrdw.c $(CORE_DIR)/drivers/sidepckt.c \
 	$(CORE_DIR)/vidhrdw/exprraid_vidhrdw.c $(CORE_DIR)/drivers/exprraid.c \
@@ -1038,6 +1040,7 @@ SOURCES_C += \
 	$(CORE_DIR)/drivers/mirax.c \
 	$(CORE_DIR)/machine/model1_machine.c $(CORE_DIR)/vidhrdw/model1_vidhrdw.c $(CORE_DIR)/drivers/model1.c \
 	$(CORE_DIR)/drivers/calorie.c \
+	$(CORE_DIR)/machine/mc8123.c \
 	$(CORE_DIR)/machine/namcoio_machine.c
 
 

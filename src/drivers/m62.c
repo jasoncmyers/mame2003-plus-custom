@@ -2,9 +2,6 @@
 
 Irem "M62" system
 
-TODO:
-- Kid Niki and Horizon are missing the drums. There is an analog section in
-  the sound board.
 
 Notes:
 - I believe that both kungfum bootlegs are derived from an Irem original which we
@@ -1362,9 +1359,6 @@ static struct GfxDecodeInfo youjyudn_gfxdecodeinfo[] =
 	{ -1 } /* end of array */
 };
 
-
-
-
 static MACHINE_DRIVER_START( ldrun )
 
 	/* basic machine hardware */
@@ -1494,6 +1488,9 @@ static MACHINE_DRIVER_START( kidniki )
 
 	MDRV_VIDEO_START(kidniki)
 	MDRV_VIDEO_UPDATE(kidniki)
+	
+	/* sound hardware */
+	MDRV_SOUND_ADD(SAMPLES, tr606_samples_interface )
 MACHINE_DRIVER_END
 
 
@@ -1509,6 +1506,9 @@ static MACHINE_DRIVER_START( spelunkr )
 
 	MDRV_VIDEO_START(spelunkr)
 	MDRV_VIDEO_UPDATE(spelunkr)
+	
+	/* sound hardware */
+	MDRV_SOUND_ADD(SAMPLES, tr606_samples_interface )
 MACHINE_DRIVER_END
 
 
@@ -1526,6 +1526,9 @@ static MACHINE_DRIVER_START( spelunk2 )
 	MDRV_PALETTE_INIT(spelunk2)
 	MDRV_VIDEO_START(spelunk2)
 	MDRV_VIDEO_UPDATE(spelunk2)
+	
+	/* sound hardware */
+	MDRV_SOUND_ADD(SAMPLES, tr606_samples_interface )
 MACHINE_DRIVER_END
 
 
@@ -1558,6 +1561,9 @@ static MACHINE_DRIVER_START( horizon )
 
 	MDRV_VIDEO_START(horizon)
 	MDRV_VIDEO_UPDATE(horizon)
+	
+	/* sound hardware */
+	MDRV_SOUND_ADD(SAMPLES, tr606_samples_interface )
 MACHINE_DRIVER_END
 
 
@@ -2482,10 +2488,10 @@ GAME( 1985, ldrun3,   0,        ldrun3,   ldrun3,   m62,      ROT0,   "Irem (lic
 GAME( 1985, ldrun3jp, ldrun3,   ldrun3,   ldrun3,   m62,      ROT0,   "Irem (licensed from Broderbund)", "Lode Runner III - Majin No Fukkatsu" )
 GAME( 1986, ldrun4,   0,        ldrun4,   ldrun4,   m62,      ROT0,   "Irem (licensed from Broderbund)", "Lode Runner IV - Teikoku Karano Dasshutsu" )
 GAME( 1985, lotlot,   0,        lotlot,   lotlot,   m62,      ROT0,   "Irem (licensed from Tokuma Shoten)", "Lot Lot" )
-GAMEX(1986, kidniki,  0,        kidniki,  kidniki,  kidniki,  ROT0,   "Irem (Data East USA license)", "Kid Niki - Radical Ninja (US)", GAME_IMPERFECT_SOUND )
-GAMEX(1986, yanchamr, kidniki,  kidniki,  kidniki,  m62,      ROT0,   "Irem", "Kaiketsu Yanchamaru (Japan)", GAME_IMPERFECT_SOUND )
+GAME( 1986, kidniki,  0,        kidniki,  kidniki,  kidniki,  ROT0,   "Irem (Data East USA license)", "Kid Niki - Radical Ninja (US)" )
+GAME( 1986, yanchamr, kidniki,  kidniki,  kidniki,  m62,      ROT0,   "Irem", "Kaiketsu Yanchamaru (Japan)" )
 GAME( 1985, spelunkr, 0,        spelunkr, spelunkr, m62,      ROT0,   "Irem (licensed from Broderbund)", "Spelunker" )
 GAME( 1985, spelnkrj, spelunkr, spelunkr, spelunkr, m62,      ROT0,   "Irem (licensed from Broderbund)", "Spelunker (Japan)" )
 GAME( 1986, spelunk2, 0,        spelunk2, spelunk2, spelunk2, ROT0,   "Irem (licensed from Broderbund)", "Spelunker II" )
 GAME( 1986, youjyudn, 0,        youjyudn, youjyudn, m62,      ROT270, "Irem", "Youjyuden (Japan)" )
-GAMEX(1985, horizon,  0,        horizon,  horizon,  m62,      ROT0,   "Irem", "Horizon", GAME_IMPERFECT_SOUND )
+GAME( 1985, horizon,  0,        horizon,  horizon,  m62,      ROT0,   "Irem", "Horizon" )
