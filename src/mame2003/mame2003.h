@@ -201,9 +201,12 @@ enum CORE_OPTIONS  /* controls the order in which core options appear. common, i
   OPT_DEADZONE,
   OPT_4WAY,
   OPT_CROSSHAIR_ENABLED,
+  OPT_CROSSHAIR_APPEARANCE,
   OPT_SHARE_DIAL,
+  OPT_DIAL_SWAP_XY,
   OPT_CHEAT_INPUT_PORTS,
   OPT_DIGITAL_JOY_CENTERING,
+  OPT_USE_SAMPLES,
   OPT_USE_ALT_SOUND,
   OPT_SAMPLE_RATE,
   OPT_MACHINE_TIMING,
@@ -440,8 +443,8 @@ void osd_joystick_end_calibration(void);
 
 ******************************************************************************/
 
-/*** TO DO: notes ***/
-void osd_xy_device_read(int player, int *deltax, int *deltay);
+/* Returns relative or absolute positions for various X-Y coordinate devices */
+void osd_xy_device_read(int player, int *deltax, int *deltay, const char* type);
 
 
 /******************************************************************************

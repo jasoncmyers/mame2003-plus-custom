@@ -14,8 +14,8 @@
 static struct retro_core_option_v2_definition  default_options[OPT_end + 1];    /* need the plus one for the NULL entries at the end */
 static struct retro_core_option_v2_definition  effective_defaults[OPT_end + 1];
 
-/* used in inptport.c when saving input port settings */
-int legacy_flag = -1;
+/* prevent saving corrupt cfgs when the save type does not match the type initialized */
+bool save_protection;
 
 /******************************************************************************
 
@@ -97,6 +97,21 @@ static struct retro_core_option_v2_definition option_def_crosshair_enabled = {
       { NULL, NULL },
    },
    "enabled"
+};
+
+static struct retro_core_option_v2_definition option_def_crosshair_appearance = {
+   APPNAME"_crosshair_appearance",
+   "Lightgun Crosshair Appearance",
+   NULL,
+   "Changes the appearance of the crosshairs for each player.",
+   NULL,
+   "cat_key_input",
+   {
+      { "simple",    NULL },
+      { "enhanced",  NULL },
+      { NULL, NULL },
+   },
+   "simple"
 };
 
 static struct retro_core_option_v2_definition option_def_skip_disclaimer = {
@@ -332,11 +347,26 @@ static struct retro_core_option_v2_definition option_def_stv_bios = {
    "default"
 };
 
+static struct retro_core_option_v2_definition option_def_use_samples = {
+   APPNAME"_use_samples",
+   "Use Samples",
+   NULL,
+   "Restart core required. Allow audio sample files to be loaded when provided in the samples directory.",
+   NULL,
+   "cat_key_audio",
+   {
+      { "enabled",  NULL },
+      { "disabled", NULL },
+      { NULL, NULL },
+   },
+   "enabled"
+};
+
 static struct retro_core_option_v2_definition option_def_use_alt_sound = {
    APPNAME"_use_alt_sound",
    "Use CD Soundtrack",
    NULL,
-   "Restart core required. Replaces original hardware sounds with external audio files when available.",
+   "Restart core required. Replace original hardware sounds with optional audio sample files when provided in the samples directory.",
    NULL,
    "cat_key_audio",
    {
@@ -352,6 +382,21 @@ static struct retro_core_option_v2_definition option_def_dialsharexy = {
    "Share 2 Player Dial Controls Across One X/Y Device",
    NULL,
    NULL,
+   NULL,
+   "cat_key_input",
+   {
+      { "disabled", NULL },
+      { "enabled",  NULL },
+      { NULL, NULL },
+   },
+   "disabled"
+};
+
+static struct retro_core_option_v2_definition option_def_dial_swap_xy = {
+   APPNAME"_dial_swap_xy",
+   "Swap X and Y Dial Axis",
+   NULL,
+   "When enabled, the X axis will be returned for the Y axis and vice versa. This is useful when the device is improperly wired or the device does not support this feature in software.",
    NULL,
    "cat_key_input",
    {
@@ -552,16 +597,16 @@ static struct retro_core_option_v2_definition option_def_sample_rate = {
    APPNAME"_sample_rate",
    "Sample Rate",
    NULL,
-   "Number of samples taken per second. Higher rates provide better quality audio.",
+   "Number of audio samples taken per second. Higher rates provide better quality audio.",
    NULL,
    "cat_key_audio",
    {
-      { "8000",   "8000 KHz" },
-      { "11025", "11025 KHz" },
-      { "22050", "22050 KHz" },
-      { "30000", "30000 KHz" },
-      { "44100", "44100 KHz" },
-      { "48000", "48000 KHz" },
+      { "8000",   "8000 Hz" },
+      { "11025", "11025 Hz" },
+      { "22050", "22050 Hz" },
+      { "30000", "30000 Hz" },
+      { "44100", "44100 Hz" },
+      { "48000", "48000 Hz" },
       { NULL, NULL },
    },
    "48000"
@@ -659,12 +704,13 @@ static struct retro_core_option_v2_definition option_def_autosave_hiscore = {
    APPNAME"_autosave_hiscore",
    "Autosave Hiscore",
    NULL,
-   "Recommended to use default which will save the hiscore when closing content. Recursively will save repeatedly the entire time during gameplay.",
+   "Recommended to use default which will save the hiscore when closing content. Recursively will save repeatedly the entire time during gameplay. Disabled will bypass the use of the hiscore.dat file entirely.",
    NULL,
    "cat_key_system",
    {
       { "default",     NULL },
       { "recursively", NULL },
+      { "disabled",    NULL },
       { NULL, NULL },
    },
    "default"
@@ -674,7 +720,7 @@ static struct retro_core_option_v2_definition option_def_cheat_input_ports = {
    APPNAME"_cheat_input_ports",
    "Dip Switch/Cheat Input Ports",
    NULL,
-   NULL,
+   "Used to display fake dip switches and input control options within the MAME menu when available.",
    NULL,
    "cat_key_input",
    {
@@ -693,11 +739,11 @@ static struct retro_core_option_v2_definition option_def_machine_timing = {
    NULL,
    "cat_key_audio",
    {
-      { "enabled",  NULL },
       { "disabled", NULL },
+      { "enabled",  NULL },
       { NULL, NULL },
    },
-   "enabled"
+   "disabled"
 };
 
 static struct retro_core_option_v2_definition option_def_digital_joy_centering = {
@@ -820,6 +866,7 @@ void init_core_options(void)
   default_options[OPT_4WAY]                      = option_def_four_way_emulation;
   default_options[OPT_XY_DEVICE]                 = option_def_xy_device;
   default_options[OPT_CROSSHAIR_ENABLED]         = option_def_crosshair_enabled;
+  default_options[OPT_CROSSHAIR_APPEARANCE]      = option_def_crosshair_appearance;
   default_options[OPT_SKIP_DISCLAIMER]           = option_def_skip_disclaimer;
   default_options[OPT_SKIP_WARNINGS]             = option_def_skip_warnings;
   default_options[OPT_DISPLAY_SETUP]             = option_def_display_setup;
@@ -830,8 +877,10 @@ void init_core_options(void)
   default_options[OPT_ART_OVERLAY_OPACITY]       = option_def_art_overlay_opacity;
   default_options[OPT_NEOGEO_BIOS]               = option_def_neogeo_bios;
   default_options[OPT_STV_BIOS]                  = option_def_stv_bios;
+  default_options[OPT_USE_SAMPLES]               = option_def_use_samples;
   default_options[OPT_USE_ALT_SOUND]             = option_def_use_alt_sound;
   default_options[OPT_SHARE_DIAL]                = option_def_dialsharexy;
+  default_options[OPT_DIAL_SWAP_XY]              = option_def_dial_swap_xy;
   default_options[OPT_DEADZONE]                  = option_def_deadzone;
   default_options[OPT_TATE_MODE]                 = option_def_tate_mode;
   default_options[OPT_VECTOR_RESOLUTION]         = option_def_vector_resolution;
@@ -874,6 +923,7 @@ static void set_variables(void)
            continue;
          break;
       case OPT_CROSSHAIR_ENABLED:
+      case OPT_CROSSHAIR_APPEARANCE:
          if(!options.content_flags[CONTENT_LIGHTGUN])
            continue;
          break;
@@ -890,6 +940,7 @@ static void set_variables(void)
            continue;
          break;
       case OPT_SHARE_DIAL:
+      case OPT_DIAL_SWAP_XY:
          if(!options.content_flags[CONTENT_DIAL])
            continue;
          break;
@@ -904,6 +955,10 @@ static void set_variables(void)
          break;
       case OPT_NVRAM_BOOTSTRAP:
          if(!options.content_flags[CONTENT_NVRAM_BOOTSTRAP])
+           continue;
+         break;
+      case OPT_CHEAT_INPUT_PORTS:
+         if(!options.content_flags[CONTENT_CHEAT_INPUT_PORT])
            continue;
          break;
     }
@@ -977,6 +1032,13 @@ void update_variables(bool first_time)
             options.crosshair_enable = 0;
           break;
 
+        case OPT_CROSSHAIR_APPEARANCE:
+          if(strcmp(var.value, "enhanced") == 0)
+            options.crosshair_appearance = 1;
+          else
+            options.crosshair_appearance = 0;
+          break;
+
         case OPT_SKIP_DISCLAIMER:
           if(strcmp(var.value, "enabled") == 0)
             options.skip_disclaimer = true;
@@ -1048,30 +1110,33 @@ void update_variables(bool first_time)
           options.bios = (strcmp(var.value, "default") == 0) ? NULL : var.value;
           break;
 
+        case OPT_USE_SAMPLES:
+          if(strcmp(var.value, "enabled") == 0)
+            options.use_samples = true;
+          else
+            options.use_samples = false;
+          break;
+
         case OPT_USE_ALT_SOUND:
-          if(options.content_flags[CONTENT_ALT_SOUND])
-          {
-            if(strcmp(var.value, "enabled") == 0)
-              options.use_samples = true;
-            else
-              options.use_samples = false;
-          }
+          if(strcmp(var.value, "enabled") == 0)
+            options.use_alt_sound = true;
+          else
+            options.use_alt_sound = false;
           break;
 
         case OPT_SHARE_DIAL:
-          if(options.content_flags[CONTENT_DIAL])
-          {
-            if(strcmp(var.value, "enabled") == 0)
-              options.dial_share_xy = 1;
-            else
-              options.dial_share_xy = 0;
-            break;
-          }
+          if(strcmp(var.value, "enabled") == 0)
+            options.dial_share_xy = 1;
           else
-          {
             options.dial_share_xy = 0;
-            break;
-          }
+          break;
+
+        case OPT_DIAL_SWAP_XY:
+          if(strcmp(var.value, "enabled") == 0)
+            options.dial_swap_xy = true;
+          else
+            options.dial_swap_xy = false;
+          break;
 
         case OPT_DEADZONE:
             options.deadzone = atoi(var.value);
@@ -1141,18 +1206,14 @@ void update_variables(bool first_time)
 
         case OPT_MAME_REMAPPING:
           if(strcmp(var.value, "enabled") == 0)
-          {
-            if( !options.mame_remapping && legacy_flag != -1) legacy_flag =0;
             options.mame_remapping = true;
-          }
           else
-          {
-            if( options.mame_remapping && legacy_flag != -1) legacy_flag =0;
             options.mame_remapping = false;
-          }
-          if(!first_time)
+
+          if(first_time)
+            save_protection = options.mame_remapping;
+          else
             setup_menu_init();
-          if(legacy_flag ==-1) legacy_flag = 1;
           break;
 
         case OPT_FRAMESKIP:
@@ -1190,10 +1251,12 @@ void update_variables(bool first_time)
           break;
 
         case OPT_AUTOSAVE_HISCORE:
-          if(strcmp(var.value, "recursively") == 0)
-            options.autosave_hiscore = true;
+          if(strcmp(var.value, "default") == 0)
+            options.autosave_hiscore = 1;
+          else if(strcmp(var.value, "recursively") == 0)
+            options.autosave_hiscore = 2;
           else
-            options.autosave_hiscore = false;
+            options.autosave_hiscore = 0;
           break;
 
         case OPT_CHEAT_INPUT_PORTS:
@@ -1232,8 +1295,7 @@ void update_variables(bool first_time)
     }
   }
 
-  if(!options.content_flags[CONTENT_ALT_SOUND])
-    options.use_samples = true;
+  options.activate_dcs_speedhack = true; /* formerly a core option, now always on. */
 
   ledintf.set_led_state = NULL;
   environ_cb(RETRO_ENVIRONMENT_GET_LED_INTERFACE, &ledintf);
@@ -1325,6 +1387,9 @@ void set_content_flags(void)
 			if (input->type & IPF_4WAY) /* the controls use a 4-way joystick */
 				options.content_flags[CONTENT_JOYSTICK_DIRECTIONS] = 4;
 
+			if (input->type & IPF_CHEAT) /* uses a cheat input port */
+				options.content_flags[CONTENT_CHEAT_INPUT_PORT] = true;
+
 			switch (input->type & ~IPF_MASK)
 			{
 				case IPT_JOYSTICKRIGHT_UP:
@@ -1382,6 +1447,7 @@ void set_content_flags(void)
 					options.content_flags[CONTENT_AD_STICK] = true;
 					break;
 				case IPT_LIGHTGUN_X:
+					options.content_flags[CONTENT_LIGHTGUN_COUNT]++; /* only count x to prevent double counting lightguns */
 				case IPT_LIGHTGUN_Y:
 					options.content_flags[CONTENT_LIGHTGUN] = true;
 					break;
@@ -1442,7 +1508,7 @@ void set_content_flags(void)
 
   if(options.content_flags[CONTENT_DIAL])               log_cb(RETRO_LOG_INFO, LOGPRE "* Uses a dial.\n");
   if(options.content_flags[CONTENT_TRACKBALL])          log_cb(RETRO_LOG_INFO, LOGPRE "* Uses a trackball.\n");
-  if(options.content_flags[CONTENT_LIGHTGUN])           log_cb(RETRO_LOG_INFO, LOGPRE "* Uses a lightgun.\n");
+  if(options.content_flags[CONTENT_LIGHTGUN])           log_cb(RETRO_LOG_INFO, LOGPRE "* Uses %i lightgun(s).\n", options.content_flags[CONTENT_LIGHTGUN_COUNT]);
   if(options.content_flags[CONTENT_PADDLE])             log_cb(RETRO_LOG_INFO, LOGPRE "* Uses an paddle.\n");
   if(options.content_flags[CONTENT_AD_STICK])           log_cb(RETRO_LOG_INFO, LOGPRE "* Uses an analog joystick.\n");
   if(options.content_flags[CONTENT_HAS_SERVICE])        log_cb(RETRO_LOG_INFO, LOGPRE "* Uses a service button.\n");
@@ -1458,6 +1524,7 @@ void set_content_flags(void)
       log_cb(RETRO_LOG_INFO, LOGPRE "* Uses 8-way joystick controls.\n");
 
   if(options.content_flags[CONTENT_NVRAM_BOOTSTRAP])    log_cb(RETRO_LOG_INFO, LOGPRE "* Uses an NVRAM bootstrap controlled via core option.\n");
+  if(options.content_flags[CONTENT_CHEAT_INPUT_PORT])   log_cb(RETRO_LOG_INFO, LOGPRE "* Uses a cheat input port / dip switch.\n");
 
   log_cb(RETRO_LOG_INFO, LOGPRE "==== END DRIVER CONTENT ATTRIBUTES ====\n");
 }

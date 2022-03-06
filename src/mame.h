@@ -171,8 +171,10 @@ enum /* used to index content-specific flags */
   CONTENT_CTRL_COUNT,
   CONTENT_DUAL_JOYSTICK,
   CONTENT_BUTTON_COUNT,
+  CONTENT_LIGHTGUN_COUNT,
   CONTENT_JOYSTICK_DIRECTIONS,
   CONTENT_NVRAM_BOOTSTRAP,
+  CONTENT_CHEAT_INPUT_PORT,
   CONTENT_end,
 };
 
@@ -199,6 +201,7 @@ struct GameOptions
   bool     all_ctrls;            /* show unused controls in the frontend remapper */
 
   unsigned dial_share_xy;
+  bool     dial_swap_xy;
   unsigned xy_device;
   bool     use_lightgun_with_pad;
   unsigned input_interface;                         /* can be set to RETRO_DEVICE_JOYPAD, RETRO_DEVICE_KEYBOARD, or 0 (both simultaneously) */
@@ -208,12 +211,14 @@ struct GameOptions
   unsigned tate_mode;
 
   int      crosshair_enable;
+  int      crosshair_appearance;
   bool     activate_dcs_speedhack;
 
   bool     mame_remapping;       /* display MAME input remapping menu */
 
   int      samplerate;		       /* sound sample playback rate, in KHz */
   bool     use_samples;	         /* 1 to enable external .wav samples */
+  bool     use_alt_sound;	       /* 1 to enable alternate ost samples */
 
   float	   brightness;		       /* brightness of the display */
   float	   pause_bright;		     /* additional brightness when in pause */
@@ -252,7 +257,7 @@ struct GameOptions
   bool     machine_timing;
   bool     digital_joy_centering; /* center digital joysticks enable/disable */
   double   cpu_clock_scale;
-  bool     autosave_hiscore;      /* default saves on exit / recursively saves every number of frames defined in hiscore.c */
+  int      autosave_hiscore;      /* default saves on exit / recursively saves every number of frames defined in hiscore.c / disabled bypasses hiscore implementation entirely */
 #if (HAS_CYCLONE || HAS_DRZ80)
   int      cyclone_mode;
 #endif

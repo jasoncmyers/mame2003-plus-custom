@@ -1961,6 +1961,8 @@ static int settraksettings(struct mame_bitmap *bitmap,int selected)
 	struct InputPort *in;
 	int total,total2;
 	int arrowize;
+	char label[30][40];
+	char setting[30][40];
 
 
 	sel = selected - 1;
@@ -2001,8 +2003,6 @@ static int settraksettings(struct mame_bitmap *bitmap,int selected)
 	{
 		if (i < total2 - 1)
 		{
-			char label[30][40];
-			char setting[30][40];
 			int sensitivity,delta;
 			int reverse;
 
@@ -2635,12 +2635,12 @@ void ui_copyright_and_warnings(void)
       }
     }
 
-    log_cb(RETRO_LOG_WARN, LOGPRE "\n\n%s", warning_buffer); /* log warning list to the console */
+    log_cb(RETRO_LOG_WARN, LOGPRE "\n\n%s\n", warning_buffer); /* log warning list to the console */
 
   }
 
   generate_gameinfo();
-  log_cb(RETRO_LOG_INFO, LOGPRE "\n\n%s", message_buffer);
+  log_cb(RETRO_LOG_INFO, LOGPRE "\n\n%s\n", message_buffer);
 
   if(strlen(buffer))
     usrintf_showmessage_secs(8, "%s", buffer);

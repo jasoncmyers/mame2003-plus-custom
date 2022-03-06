@@ -1220,7 +1220,6 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( spelunk2 )	/* (c) 1986 licensed from Broderbund */
 	DRIVER( horizon )	/* (c) 1985 */
 	DRIVER( youjyudn )	/* (c) 1986 (Japan) */
-
 	DRIVER( vigilant )	/* (c) 1988 (World) */
 	DRIVER( vigilntu )	/* (c) 1988 (US) */
 	DRIVER( vigilntj )	/* (c) 1988 (Japan) */
@@ -1259,6 +1258,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( hasamu )	/* (c) 1991 Irem (Japan) */
 	DRIVER( dynablst )	/* (c) 1991 Irem (World) */
 	DRIVER( dynablsb )	/* bootleg */
+  DRIVER( dicegame )  /* bootleg */  
 	DRIVER( bombrman )	/* (c) 1991 Irem (Japan) */
 	/* M97 */
 	DRIVER( bbmanw )	/* (c) 1992 Irem (World) */
@@ -1795,6 +1795,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( twincobr )	/* TP-011 (c) 1987 Taito Corporation (World) */
 	DRIVER( twincobu )	/* TP-011 (c) 1987 Taito America Corporation + Romstar license (US) */
 	DRIVER( ktiger )	/* TP-011 (c) 1987 Taito Corporation (Japan) */
+  DRIVER( ktiger2p )	/* (c) 2021 M2 Co Ltd */
 	DRIVER( gulfwar2 )	/* (c) 1991 Comad */
 
 	DRIVER( rallybik )	/* TP-012 (c) 1988 Taito */
@@ -1819,18 +1820,28 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( wintbob )	/* bootleg */
 
 	/* SemiCom games */
-	DRIVER( 3in1semi )
-	DRIVER( 4in1boot )	/* bootleg? */
-	DRIVER( bcstry )    /* (c) 1997 SemiCom */
-	DRIVER( bcstrya )   /* (c) 1997 SemiCom */
-	DRIVER( chokchok )  /* (c) 1995 SemiCom */
-	DRIVER( cookbib )   /* (c) 1995 SemiCom */
-	DRIVER( cookbib2 )  /* (c) 1996 SemiCom */
 	DRIVER( htchctch )	/* (c) 1995 SemiCom */
 	DRIVER( hyperpac )	/* (c) 1995 SemiCom */
 	DRIVER( hyperpcb )	/* bootleg */
-	DRIVER( moremorp )  /* (c) 1999 SemiCom / Exit */
+	DRIVER( chokchok )  /* (c) 1995 SemiCom */
+	DRIVER( cookbib )   /* (c) 1995 SemiCom */
+	DRIVER( cookbib2 )  /* (c) 1996 SemiCom */
 	DRIVER( sdfight )   /* (c) 1996 SemiCom */
+	DRIVER( toppyrap )	/* (c) 1996 SemiCom */
+	DRIVER( bcstry )    /* (c) 1997 SemiCom */
+	DRIVER( bcstrya )   /* (c) 1997 SemiCom */
+	DRIVER( cookbib3 )  /* (c) 1997 SemiCom */
+	DRIVER( pzlbreak )	/* (c) 1997 SemiCom */
+	DRIVER( twinkle )	/* (c) 1997 SemiCom */
+	DRIVER( 3in1semi )  /* (c) 1998 SemiCom */
+	DRIVER( moremore )  /* (c) 1999 SemiCom / Exit */
+	DRIVER( moremorp )  /* (c) 1999 SemiCom / Exit */
+	
+	/* Cloned snow bros hardware */
+	DRIVER( finalttr )  /* (c) 1993 Jeil */
+	DRIVER( toto )	    /* (c) 1996 SoftClub */
+	DRIVER( 4in1boot )	/* (c) 1999 K1 Soft */
+	DRIVER( snowbro3 )  /* (c) 2002 Syrmex */
 
 
 	/* More Toaplan Games */
@@ -3468,6 +3479,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( riot )	        /* (c) 1992 NMK */
 	DRIVER( deroon )
 	DRIVER( tkdensho )
+  DRIVER( drgnbowl )  /* (c) 1992 Nics */
 
 	/* Konami bitmap games */
 	DRIVER( tutankhm )	/* GX350 (c) 1982 Konami */
@@ -4556,7 +4568,8 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( wwfmania )	/* (c) 1995 Midway */
 	DRIVER( openice )	/* (c) 1995 Midway */
 	DRIVER( nbahangt )	/* (c) 1996 Midway */
-	DRIVER( nbamaxht )	/* (c) 1996 Midway */
+  DRIVER( nbamht )	/* (c) 1997 Midway */
+	DRIVER( nbamht1 )	/* (c) 1996 Midway */
 	DRIVER( rmpgwt )	/* (c) 1997 Midway */
 	DRIVER( rmpgwta )	/* Copy for player selection */
 	DRIVER( rmpgwtb )	/* Copy for player selection */
@@ -5301,6 +5314,7 @@ Other Sun games
 
 	/* Unico games */
 	DRIVER( drgnmst )	/* (c) 1994 */
+  DRIVER( mastfury )	/* (c) 1996 */
 	DRIVER( burglarx )	/* (c) 1997 */
 	DRIVER( zeropnt )	/* (c) 1998 */
 	DRIVER( zeropnta )	/* (c) 1998 */
@@ -5308,8 +5322,10 @@ Other Sun games
 	DRIVER( silkroad )	/* (c) 1999 */
 
 	/* Afega games */
+  DRIVER( dolmen )    /* (c) 1995 */
+	DRIVER( twinactn )  /* (c) 1995 */
 	DRIVER( stagger1 )	/* (c) 1998 */
-	DRIVER( redhawk )	/* (c) 1997 */
+	DRIVER( redhawk )	  /* (c) 1997 */
 	DRIVER( grdnstrm )	/* (c) 1998 */
 	DRIVER( bubl2000 )	/* (c) 1998 Tuning */
 
@@ -5556,6 +5572,7 @@ Other Sun games
 	DRIVER( histryma )	/* bootleg of Fighter's History */
 	DRIVER( bbprot )
 	DRIVER( flower )	/* (c) 1986 Komax */
+  DRIVER( flowerbl )	/* (c) 1986 bootleg */
 	DRIVER( diverboy )	/* (c) 1992 Electronic Devices */
 	DRIVER( beaminv )	/* Tekunon Kougyou */
 	DRIVER( mcatadv )	/* (c) 1993 Wintechno */
@@ -5839,6 +5856,7 @@ Other Sun games
 	DRIVER( kf10thep)       /* bootleg of kof2002 */
 	DRIVER( kf2k5uni)       /* bootleg of kof2002 */
 	DRIVER( lasthope )      /* (c) 2005 NG:DEV.TEAM */
+  DRIVER( xeno )      /* (c) 2019 Bitmap Bureau */
 
 	/* SemiCom 68020 based hardware */
 	DRIVER( baryon )    /* (c) 1997 SemiCom / Tirano */

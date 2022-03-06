@@ -1091,13 +1091,13 @@ INPUT_PORTS_START( gollygho )
 	NAMCOS2_MCU_PORT_C_DEFAULT
 
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPF_REVERSE|IPT_LIGHTGUN_X, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPF_REVERSE|IPT_LIGHTGUN_X, 50, 8, 0, 0xff )
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPF_REVERSE|IPT_LIGHTGUN_Y, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPF_REVERSE|IPT_LIGHTGUN_Y, 50, 8, 0, 0xff )
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPF_REVERSE|IPT_LIGHTGUN_X|IPF_PLAYER2, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPF_REVERSE|IPT_LIGHTGUN_X|IPF_PLAYER2, 50, 8, 0, 0xff )
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPF_REVERSE|IPT_LIGHTGUN_Y|IPF_PLAYER2, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPF_REVERSE|IPT_LIGHTGUN_Y|IPF_PLAYER2, 50, 8, 0, 0xff )
 	PORT_START
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_START
@@ -1486,13 +1486,13 @@ INPUT_PORTS_START( sgunner  )
 	PORT_START
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_X, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_X, 50, 8, 0, 0xff )
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_X|IPF_PLAYER2, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_X|IPF_PLAYER2, 50, 8, 0, 0xff )
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_Y, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_Y, 50, 8, 0, 0xff )
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_Y|IPF_PLAYER2, 50, 8, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_Y|IPF_PLAYER2, 50, 8, 0, 0xff )
 
 	PORT_START		/* 63B05Z0 - PORT H */
 	PORT_BIT( 0x03, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -4388,16 +4388,7 @@ DRIVER_INIT( luckywld ){
 	for( i=0; i<32*0x4000; i++ )
 	{ /* unscramble gfx mask */
 		int code = pData[i];
-		int out = 0;
-		if( code&0x01 ) out |= 0x80;
-		if( code&0x02 ) out |= 0x40;
-		if( code&0x04 ) out |= 0x20;
-		if( code&0x08 ) out |= 0x10;
-		if( code&0x10 ) out |= 0x08;
-		if( code&0x20 ) out |= 0x04;
-		if( code&0x40 ) out |= 0x02;
-		if( code&0x80 ) out |= 0x01;
-		pData[i] = out;
+		pData[i] = BITSWAP8(code,0,1,2,3,4,5,6,7);
 	}
 	namcos2_gametype=NAMCOS2_LUCKY_AND_WILD;
 }
@@ -4432,13 +4423,13 @@ GAME( 1990, dsaber,   0,        default,  default,  dsaber,   ROT90,  "Namco", "
 GAME( 1990, dsaberj,  dsaber,   default,  default,  dsaberj,  ROT90,  "Namco", "Dragon Saber (Japan)" )
 GAMEX(1990, finalap2, 0,        finallap, finallap, finalap2, ROT0,   "Namco", "Final Lap 2", GAME_NOT_WORKING|GAME_IMPERFECT_GRAPHICS  )
 GAMEX(1990, finalp2j, finalap2, finallap, finallap, finalap2, ROT0,   "Namco", "Final Lap 2 (Japan)", GAME_NOT_WORKING|GAME_IMPERFECT_GRAPHICS  )
-GAME( 1990, gollygho, 0,        gollygho, gollygho, gollygho, ROT180, "Namco", "Golly! Ghost!" )
+GAMEC(1990, gollygho, 0,        gollygho, gollygho, gollygho, ROT180, "Namco", "Golly! Ghost!", &gollygho_ctrl, &gollygho_bootstrap )
 /* Not dumped: Bubble Trouble (Golly Ghost II) */
 GAME( 1990, rthun2,   0,        default,  default,  rthun2,   ROT0,   "Namco", "Rolling Thunder 2" )
 GAME( 1990, rthun2j,  rthun2,   default,  default,  rthun2j,  ROT0,   "Namco", "Rolling Thunder 2 (Japan)" )
-GAME( 1990, sgunner,  0,        sgunner,  sgunner,  sgunner2, ROT0,   "Namco", "Steel Gunner" )
-GAME( 1991, sgunner2, 0,        sgunner,  sgunner,  sgunner2, ROT0,   "Namco", "Steel Gunner 2 (US)" )
-GAME( 1991, sgunnr2j, sgunner2, sgunner,  sgunner,  sgunner2, ROT0,   "Namco", "Steel Gunner 2 (Japan)" )
+GAMEC(1990, sgunner,  0,        sgunner,  sgunner,  sgunner2, ROT0,   "Namco", "Steel Gunner", &sgunner_ctrl, &sgunner_bootstrap )
+GAMEC(1991, sgunner2, 0,        sgunner,  sgunner,  sgunner2, ROT0,   "Namco", "Steel Gunner 2 (US)", &sgunner2_ctrl, &sgunner2_bootstrap )
+GAMEC(1991, sgunnr2j, sgunner2, sgunner,  sgunner,  sgunner2, ROT0,   "Namco", "Steel Gunner 2 (Japan)", &sgunner2_ctrl, &sgunnr2j_bootstrap )
 GAME( 1991, cosmogng, 0,        default,  default,  cosmogng, ROT90,  "Namco", "Cosmo Gang the Video (US)" )
 GAME( 1991, cosmognj, cosmogng, default,  default,  cosmogng, ROT90,  "Namco", "Cosmo Gang the Video (Japan)" )
 GAMEX(1992, finalap3, 0,        finallap, finalap3, finalap3, ROT0,   "Namco", "Final Lap 3 (Japan set 1)", GAME_IMPERFECT_GRAPHICS  )

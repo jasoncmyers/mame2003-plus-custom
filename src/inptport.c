@@ -58,7 +58,7 @@ extern unsigned int coins[COIN_COUNTERS];
 extern unsigned int lastcoin[COIN_COUNTERS];
 extern unsigned int coinlockedout[COIN_COUNTERS];
 
-extern int legacy_flag;
+extern bool save_protection;
 
 static unsigned short input_port_value[MAX_INPUT_PORTS];
 static unsigned short input_vblank[MAX_INPUT_PORTS];
@@ -708,7 +708,7 @@ getout:
 
 void save_input_port_settings(void)
 {
-	if (legacy_flag)
+	if (save_protection == options.mame_remapping)
 	{
 		config_file *cfg;
 		struct mixer_config mixercfg;
@@ -1491,12 +1491,10 @@ profiler_mark(PROFILER_INPUT);
 		osd_analogjoy_read (i, analog_current_axis[i], analogjoy_input[i]);
 
 		/* update mouse/trackball position */
-		if(options.xy_device == RETRO_DEVICE_MOUSE || options.xy_device == RETRO_DEVICE_POINTER)
-			osd_xy_device_read (i, &(mouse_delta_axis[i])[X_AXIS], &(mouse_delta_axis[i])[Y_AXIS]);
+		osd_xy_device_read (i, &(mouse_delta_axis[i])[X_AXIS], &(mouse_delta_axis[i])[Y_AXIS], "relative");
 
 		/* update lightgun position, if any */
-		else if(options.xy_device == RETRO_DEVICE_LIGHTGUN)
- 			osd_xy_device_read (i, &(lightgun_delta_axis[i])[X_AXIS], &(lightgun_delta_axis[i])[Y_AXIS]);
+		osd_xy_device_read (i, &(lightgun_delta_axis[i])[X_AXIS], &(lightgun_delta_axis[i])[Y_AXIS], "absolute");
 	}
 
 	for (i = 0;i < MAX_INPUT_PORTS;i++)

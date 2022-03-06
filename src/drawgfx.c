@@ -3516,23 +3516,96 @@ static INLINE void plotclip(struct mame_bitmap *bitmap,int x,int y,int pen,const
 		plot_pixel(bitmap,x,y,pen);
 }
 
-void draw_crosshair(struct mame_bitmap *bitmap,int x,int y,const struct rectangle *clip)
+void draw_crosshair(int player_number, struct mame_bitmap *bitmap,int x,int y,const struct rectangle *clip)
 {
-	unsigned short black,white;
+	unsigned long color,black,white;
 	int i;
+	static int flash [2] = { 0, 0 };
+	static int inactive_xy [MAX_PLAYER_COUNT][3];
 
 	if (!options.crosshair_enable)
+	{
+		/* Update frame count */
+		inactive_xy[player_number-1][2] = cpu_getcurrentframe();
+		flash[0] = cpu_getcurrentframe();
 		return;
+	}
 
+	/* Catch if frame count was reset */
+	if (inactive_xy[player_number-1][2] > cpu_getcurrentframe())
+		inactive_xy[player_number-1][2] = cpu_getcurrentframe();
+	if (flash[0] > cpu_getcurrentframe())
+		flash[0] = cpu_getcurrentframe();
+
+	/* Hide crosshairs for inactive players */
+	if(inactive_xy[player_number-1][0] == x && inactive_xy[player_number-1][1] == y)
+	{
+		if(inactive_xy[player_number-1][2] + (Machine->drv->frames_per_second * 15) < cpu_getcurrentframe())
+			return;
+	}
+	else
+	{
+		inactive_xy[player_number-1][0] = x;
+		inactive_xy[player_number-1][1] = y;
+		inactive_xy[player_number-1][2] = cpu_getcurrentframe();
+	}
+
+	/* Color crosshairs */
 	black = Machine->uifont->colortable[0];
 	white = Machine->uifont->colortable[1];
+	color = white; /* default */
 
+	/* Flashing effect
+	if( cpu_getcurrentframe() > flash[0] + 4 )
+	{
+		flash[0] = cpu_getcurrentframe();
+		flash[1] = flash[1] ? 0:1;
+	}
+	if(flash[1]) color = black;*/
+
+	/* Draw crosshair - simple */
 	for (i = 1;i < 6;i++)
 	{
-		plotclip(bitmap,x+i,y,white,clip);
-		plotclip(bitmap,x-i,y,white,clip);
-		plotclip(bitmap,x,y+i,white,clip);
-		plotclip(bitmap,x,y-i,white,clip);
+		plotclip(bitmap,x+i,y,color,clip);
+		plotclip(bitmap,x-i,y,color,clip);
+		plotclip(bitmap,x,y+i,color,clip);
+		plotclip(bitmap,x,y-i,color,clip);
+	}
+
+	/* Draw crosshair - enhanced, adds to simple design above */
+	if(options.crosshair_appearance == 1)
+	{
+		/* Outter long lines */
+		for (i = -3;i < 4;i++)
+		{
+			plotclip(bitmap,x+7,y+i,color,clip);
+			plotclip(bitmap,x-7,y+i,color,clip);
+			plotclip(bitmap,x+i,y+7,color,clip);
+			plotclip(bitmap,x+i,y-7,color,clip);
+		}
+
+		/* Inner short lines */
+		for (i = -1;i < 2;i++)
+		{
+			plotclip(bitmap,x+6,y+i,color,clip);
+			plotclip(bitmap,x-6,y+i,color,clip);
+			plotclip(bitmap,x+i,y+6,color,clip);
+			plotclip(bitmap,x+i,y-6,color,clip);
+		}
+
+		/* 45 degrees */
+		plotclip(bitmap,x-4,y+6,color,clip);
+		plotclip(bitmap,x-5,y+5,color,clip);
+		plotclip(bitmap,x-6,y+4,color,clip);
+		plotclip(bitmap,x-4,y-6,color,clip);
+		plotclip(bitmap,x-5,y-5,color,clip);
+		plotclip(bitmap,x-6,y-4,color,clip);
+		plotclip(bitmap,x+4,y-6,color,clip);
+		plotclip(bitmap,x+5,y-5,color,clip);
+		plotclip(bitmap,x+6,y-4,color,clip);
+		plotclip(bitmap,x+4,y+6,color,clip);
+		plotclip(bitmap,x+5,y+5,color,clip);
+		plotclip(bitmap,x+6,y+4,color,clip);
 	}
 }
 

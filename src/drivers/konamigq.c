@@ -227,9 +227,9 @@ static VIDEO_UPDATE( konamigq )
 {
 	video_update_psx( bitmap, cliprect );
 
-	draw_crosshair( bitmap, GUNX( 5 ), GUNY( 6 ), cliprect );
-	draw_crosshair( bitmap, GUNX( 7 ), GUNY( 8 ), cliprect );
-	draw_crosshair( bitmap, GUNX( 9 ), GUNY( 10 ), cliprect );
+	draw_crosshair( 1, bitmap, GUNX( 5 ), GUNY( 6 ), cliprect );
+	draw_crosshair( 2, bitmap, GUNX( 7 ), GUNY( 8 ), cliprect );
+	draw_crosshair( 3, bitmap, GUNX( 9 ), GUNY( 10 ), cliprect );
 }
 
 static MEMORY_WRITE32_START( konamigq_writemem )
@@ -463,13 +463,8 @@ static MACHINE_DRIVER_START( konamigq )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES( VIDEO_TYPE_RASTER )
-#if 0 /*defined( MAME_DEBUG )*/
 	MDRV_SCREEN_SIZE( 1024, 1024 )
-	MDRV_VISIBLE_AREA( 0, 1023, 0, 1023 )
-#else
-	MDRV_SCREEN_SIZE( 640, 480 )
 	MDRV_VISIBLE_AREA( 0, 639, 0, 479 )
-#endif
 	MDRV_PALETTE_LENGTH( 65536 )
 
 	MDRV_PALETTE_INIT( psx )
@@ -552,27 +547,27 @@ INPUT_PORTS_START( konamigq )
 
 	/* IN 5 */
 	PORT_START /* mask default type                     sens delta min max */
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_X | IPF_PLAYER1, 25, 15, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_X | IPF_PLAYER1, 25, 15, 0, 0xff )
 
 	/* IN 6 */
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_Y | IPF_PLAYER1, 25, 15, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_Y | IPF_PLAYER1, 25, 15, 0, 0xff )
 
 	/* IN 7 */
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_X | IPF_PLAYER2, 25, 15, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_X | IPF_PLAYER2, 25, 15, 0, 0xff )
 
 	/* IN 8 */
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_Y | IPF_PLAYER2, 25, 15, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_Y | IPF_PLAYER2, 25, 15, 0, 0xff )
 
 	/* IN 9 */
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_X | IPF_PLAYER3, 25, 15, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_X | IPF_PLAYER3, 25, 15, 0, 0xff )
 
 	/* IN 10 */
 	PORT_START
-	PORT_ANALOG( 0xff, 0x00, IPT_LIGHTGUN_Y | IPF_PLAYER3, 25, 15, 0, 0xff )
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_Y | IPF_PLAYER3, 25, 15, 0, 0xff )
 INPUT_PORTS_END
 
 ROM_START( cryptklr )

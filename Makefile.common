@@ -54,6 +54,7 @@ SOURCES_C += \
 	$(CORE_DIR)/mame.c \
 	$(CORE_DIR)/mamedbg.c \
 	$(CORE_DIR)/mame_unzip.c \
+	$(CORE_DIR)/ost_samples.c \
 	$(CORE_DIR)/palette.c \
 	$(CORE_DIR)/png.c \
 	$(CORE_DIR)/profiler.c \
@@ -665,7 +666,7 @@ SOURCES_C += \
 	$(CORE_DIR)/vidhrdw/sprint8_vidhrdw.c $(CORE_DIR)/drivers/sprint8.c \
 	$(CORE_DIR)/vidhrdw/nitedrvr_vidhrdw.c $(CORE_DIR)/machine/nitedrvr_machine.c $(CORE_DIR)/drivers/nitedrvr.c \
 	$(CORE_DIR)/machine/dominos.c \
-	$(CORE_DIR)/vidhrdw/triplhnt_vidhrdw.c $(CORE_DIR)/drivers/triplhnt.c \
+	$(CORE_DIR)/vidhrdw/triplhnt_vidhrdw.c $(CORE_DIR)/drivers/triplhnt.c $(CORE_DIR)/sndhrdw/triplhnt.c \
 	$(CORE_DIR)/vidhrdw/dragrace_vidhrdw.c $(CORE_DIR)/drivers/dragrace.c \
 	$(CORE_DIR)/vidhrdw/poolshrk_vidhrdw.c $(CORE_DIR)/drivers/poolshrk.c \
 	$(CORE_DIR)/vidhrdw/starshp1_vidhrdw.c $(CORE_DIR)/drivers/starshp1.c \
@@ -2680,10 +2681,19 @@ SOURCES_C += \
 	$(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
 	$(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
 	$(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c \
+	$(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c \
 	$(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c \
 	$(LIBRETRO_COMM_DIR)/file/file_path.c \
 	$(LIBRETRO_COMM_DIR)/file/file_path_io.c \
 	$(LIBRETRO_COMM_DIR)/streams/file_stream.c \
+	$(LIBRETRO_COMM_DIR)/streams/file_stream_transforms.c \
+	$(LIBRETRO_COMM_DIR)/streams/interface_stream.c \
+	$(LIBRETRO_COMM_DIR)/streams/memory_stream.c \
+	$(LIBRETRO_COMM_DIR)/streams/rzip_stream.c \
+	$(LIBRETRO_COMM_DIR)/streams/stdin_stream.c \
+	$(LIBRETRO_COMM_DIR)/streams/trans_stream.c \
+	$(LIBRETRO_COMM_DIR)/streams/trans_stream_pipe.c \
+	$(LIBRETRO_COMM_DIR)/streams/trans_stream_zlib.c \
 	$(LIBRETRO_COMM_DIR)/string/stdstring.c \
 	$(LIBRETRO_COMM_DIR)/utils/md5.c \
 	$(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c \
