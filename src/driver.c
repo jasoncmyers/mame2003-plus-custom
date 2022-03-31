@@ -3168,6 +3168,8 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( cmissnx )	/* 21 (c) 1982 */
 	DRIVER( cptennis )	/* 22 (c) 1982 */
 	DRIVER( cexplore )	/* ?? (c) 1982 */
+  DRIVER( cadanglr )  /* 25 (c) 1982 */
+  DRIVER( cfishing )  /* 25 (c) 1982 */
 	DRIVER( cbtime )	/* 26 (c) 1982 */
 	DRIVER( cburnrub )	/* ?? (c) 1982 */
 	DRIVER( cburnrb2 )	/* ?? (c) 1982 */
@@ -4564,7 +4566,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( mk3r10 )	/* (c) 1994 Midway */
 	DRIVER( umk3 )		/* (c) 1994 Midway */
 	DRIVER( umk3r11 )	/* (c) 1994 Midway */
-	DRIVER( umk3p )		/* hack plus beta 1*/
+	DRIVER( umk3p )		/* hack plus beta 2*/
 	DRIVER( wwfmania )	/* (c) 1995 Midway */
 	DRIVER( openice )	/* (c) 1995 Midway */
 	DRIVER( nbahangt )	/* (c) 1996 Midway */
@@ -4971,9 +4973,10 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 
 	/* Kaneko games */
 	DRIVER( jumpkun )   /* (c) 1984 Kaneko */
+  DRIVER( djboy )		  /* (c) 1989 Kaneko */
+	DRIVER( djboyj )	  /* (c) 1989 Kaneko */
 	DRIVER( airbustr )	/* (c) 1990 Kaneko + Namco */
 	DRIVER( airbustj )	/* (c) 1990 Kaneko + Namco (Japan) */
-	DRIVER( djboy )		/* ?? */
 	DRIVER( galpanic )	/* (c) 1990 Kaneko */
 	DRIVER( galpanib )	/* (c) 1990 Kaneko */
 	DRIVER( galpani2 )	/* (c) 1993 Kaneko */

@@ -15,6 +15,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Air Attack
 * Air Rescue
 * Aladdin (bootleg of Megadrive version)
+* Angler Dangler
 * Argus (Gottlieb, prototype)
 * Astropal
 * Asura Buster
@@ -218,10 +219,12 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Crouching Tiger Hidden Dragon 2003
 * Crouching Tiger Hidden Dragon 2003 Super Plus
 * Crystal Castles (Joystick Version)
+* DJ Boy (Japan)
 * DoDonPachi Dai-Ou-Jou (Black Label)
 * Double Dragon 3 - The Rosetta Stone (Japan)
 * Dunk Dream '95
 * Escape Kids (Asia 4 Players)
+* Fishing
 * Flower (bootleg)
 * Fujiyama Buster
 * Gals Panic DX * Mature *
@@ -293,7 +296,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Mortal Kombat 2 Plus Beta 2
 * TANK III (joystick hack bootleg)
 * Tron freeplay custom rom
-* Ultimate Mortal Kombat 3 Plus Beta 1
+* Ultimate Mortal Kombat 3 Plus Beta 2
 
 
 ## Games fixed and now working
@@ -476,6 +479,8 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 
 ## Games now with improved sound
 
+* 1945kIII
+* Air Buster
 * Ashita no Joe
 * Asterix
 * Athena
@@ -680,7 +685,7 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Hooked up x-men 6 players [arcadez, mahoneyt944, KMFDManic]
 * Removed gauntlet entry from highscore dat to fix game glitches [mahoneyt944]
 * Set flag in Ost drivers to allow them to be fully bypassed [mahoneyt944]
-* Hooked up mk2p and umk3p romsets [Zoltan45, mahoneyt944]
+* Hooked up mk2p and umk3p romsets [Zoltan45, palmerj, mahoneyt944]
 * Ashita no Joe sound fixes / CPU clock frequencies [arcadez]
 * Success Joe new game support added [mahoneyt944]
 * Fixed directory and file creation for WiiU - should be working for all platforms now [mahoneyt944]
@@ -837,3 +842,6 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added new sample support in cinemat drivers for tailgunner - tailg [mahoneyt944]
 * Fixed missing adpcm sound effects in Pack 'n Bang Bang and hooked up the sound correctly for Blood Warrior [arcadez]
 * Added support for a special sprite effect to kaneko16 video used by Magical Crystals on the first boss [arcadez]
+* Added a missing graphical sprite effect which handles enemy damage flashes and improved the sound for 1945k III [arcadez]
+* Added support for Angler Dangler and the clone japanese set Fishing to the decocass.c driver [arcadez]
+* Better balanced the music and Sfx levels in Kaneko's Air Buster and added the Japan version of DJ Boy [arcadez]
