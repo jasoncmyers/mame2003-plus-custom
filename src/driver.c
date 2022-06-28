@@ -1258,7 +1258,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( hasamu )	/* (c) 1991 Irem (Japan) */
 	DRIVER( dynablst )	/* (c) 1991 Irem (World) */
 	DRIVER( dynablsb )	/* bootleg */
-  DRIVER( dicegame )  /* bootleg */  
+  DRIVER( dicegame )  /* bootleg */
 	DRIVER( bombrman )	/* (c) 1991 Irem (Japan) */
 	/* M97 */
 	DRIVER( bbmanw )	/* (c) 1992 Irem (World) */
@@ -1836,7 +1836,7 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( 3in1semi )  /* (c) 1998 SemiCom */
 	DRIVER( moremore )  /* (c) 1999 SemiCom / Exit */
 	DRIVER( moremorp )  /* (c) 1999 SemiCom / Exit */
-	
+
 	/* Cloned snow bros hardware */
 	DRIVER( finalttr )  /* (c) 1993 Jeil */
 	DRIVER( toto )	    /* (c) 1996 SoftClub */
@@ -2751,6 +2751,7 @@ DokiDoki Penguin Land *not confirmed
 	DRIVER( transfrm )	/* 834-5803 (c) 1986 */
 	DRIVER( astrofl )	/* 834-5803 (c) 1986 */
 	DRIVER( ridleofp )	/* (c) 1986 Sega / Nasco */
+  DRIVER( megrescu )	/* (c) 1987 Sega / Exa */
 	DRIVER( opaopa )    /* (c) 1987 */
 	DRIVER( opaopan )   /* (c) 1987 */
 	DRIVER( tetrisse )  /* (c) 1988 */
@@ -2832,6 +2833,8 @@ DokiDoki Penguin Land *not confirmed
 	DRIVER( atomicp )	/* (c) 1990 Philko */
 	DRIVER( aurail )	/* (c) 1990 Sega / Westone */
 	DRIVER( bayroute )	/* (c) 1989 Sunsoft / Sega */
+	DRIVER( cottond )
+	DRIVER( bulletd )
 	DRIVER( bodyslam )	/* (c) 1986 */
 	DRIVER( dduxbl )	/* (c) 1989 (Datsu bootleg) */
 	DRIVER( dumpmtmt )	/* (c) 1986 (Japan) */
@@ -2880,6 +2883,7 @@ DokiDoki Penguin Land *not confirmed
 	DRIVER( wb3 )		/* (c) 1988 Sega / Westone */
 	DRIVER( wb3bl )		/* (c) 1988 Sega / Westone (but bootleg) */
 	DRIVER( wrestwar )	/* (c) 1989 */
+	DRIVER( fantzn2x )	/* (c) 2008 */
 
 /*
 Sega System 24 game list
@@ -3060,10 +3064,10 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( puckpkmn )	/* (c) 2000 Genie */
 	DRIVER( jzth )		/* (c) 2000 <unknown> */
 	DRIVER( sbubsm )	/* (c) 1996 Sun Mixing */
-  DRIVER( barek3mb ) /* (c) 1994 bootleg / Sega */  
+  DRIVER( barek3mb ) /* (c) 1994 bootleg / Sega */
   DRIVER( aladmdb ) /*  (c) 1993 bootleg / Sega */
-  DRIVER( barek2ch ) /* (c) 1994 bootleg / Sega */ 
-    
+  DRIVER( barek2ch ) /* (c) 1994 bootleg / Sega */
+
 	/* Sega MegaTech, the number shown ia on the label of the instruction rom */
 	DRIVER( mt_beast )	/* 01 */
 	DRIVER( mt_shar2 )	/* 02 */
@@ -4216,6 +4220,7 @@ BOMULEUL CHAJARA SEGA ST-V  1997/04/11
 	DRIVER( shuuz )		/* 136083			(c) 1990 */
 	DRIVER( shuuz2 )	/* 136083			(c) 1990 */
 	DRIVER( batman )	/* 136085			(c) 1991 */
+	DRIVER( marblmd2 )
 	DRIVER( roadriot )	/* 136089			(c) 1991 */
 	DRIVER( offtwall )	/* 136090			(c) 1991 */
 	DRIVER( offtwalc )	/* 136090			(c) 1991 */
@@ -5859,7 +5864,8 @@ Other Sun games
 	DRIVER( kf10thep)       /* bootleg of kof2002 */
 	DRIVER( kf2k5uni)       /* bootleg of kof2002 */
 	DRIVER( lasthope )      /* (c) 2005 NG:DEV.TEAM */
-  DRIVER( xeno )      /* (c) 2019 Bitmap Bureau */
+	DRIVER(  xeno )      /* (c) 2019 Bitmap Bureau */
+	DRIVER( hypernoid )  /* 2021 M.Priewe */
 
 	/* SemiCom 68020 based hardware */
 	DRIVER( baryon )    /* (c) 1997 SemiCom / Tirano */

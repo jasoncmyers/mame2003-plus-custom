@@ -28,6 +28,7 @@ extern int sys16_sprite_hangon( struct sys16_sprite_attributes *sprite, const UI
 extern int sys16_sprite_sharrier( struct sys16_sprite_attributes *sprite, const UINT16 *source, int bJustGetColor );
 extern int sys16_sprite_outrun( struct sys16_sprite_attributes *sprite, const UINT16 *source, int bJustGetColor );
 extern int sys16_sprite_aburner( struct sys16_sprite_attributes *sprite, const UINT16 *source, int bJustGetColor );
+extern int sys16_sprite_fantzn2x( struct sys16_sprite_attributes *sprite, const UINT16 *source, int bJustGetColor );
 
 #define TRANSPARENT_SHADOWS
 
@@ -39,6 +40,9 @@ extern int sys16_sprite_aburner( struct sys16_sprite_attributes *sprite, const U
 #define ShadowColorsMultiplier 1
 #endif
 
+extern int sys16_sprite_draw;
+extern int sys16_wwfix;
+extern int sys16_soundbanktype;
 extern int sys16_sh_shadowpal;
 extern int sys16_MaxShadowColors;
 
@@ -75,6 +79,8 @@ extern WRITE16_HANDLER( SYS16_MWA16_WORKINGRAM2_SHARE );
 
 extern void (*sys16_custom_irq)(void);
 extern MACHINE_INIT( sys16_onetime );
+extern WRITE_HANDLER( UPD7759_bank_w );
+extern struct upd7759_interface sys16b_upd7759_interface;
 
 #define SYS16_MRA16_SPRITERAM		MRA16_RAM
 #define SYS16_MWA16_SPRITERAM		MWA16_RAM
@@ -214,6 +220,8 @@ void aurail_decode_opcode2(data16_t *dest,data16_t *source,int size);
 	PORT_DIPSETTING(    0xa0, DEF_STR( 1C_6C ) ) \
 	PORT_DIPSETTING(    0x00, "Free Play (if Coin A too) or 1/1" )
 
+#define SYS16_UNUSED PORT_START \
+	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNUSED )
 
 /* video hardware */
 extern READ16_HANDLER( sys16_tileram_r );
@@ -314,8 +322,8 @@ extern struct YM2203interface sys16_3xym2203_interface;
 extern struct DACinterface datsu_dac_interface;
 extern struct DACinterface sys16_7751_dac_interface;
 
-extern struct UPD7759_interface sys16_upd7759_interface;
-extern struct UPD7759_interface aliensyn_upd7759_interface;
+extern struct upd7759_interface sys16_upd7759_interface;
+extern struct upd7759_interface aliensyn_upd7759_interface;
 
 extern struct YM2413interface sys16_ym2413_interface;
 

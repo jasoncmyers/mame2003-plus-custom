@@ -51,18 +51,21 @@ READ16_HANDLER( SYS16_CPU2_RESET_HACK ){
 
 void (*sys16_custom_irq)(void);
 
-extern int sys16_wwfix, sys16_alienfix;
 
 MACHINE_INIT( sys16_onetime ){
-	sys16_wwfix = sys16_alienfix = 0;
+	sys16_wwfix = 0;
+	sys16_soundbanktype = 0;
+	sys16_sprite_draw=0;
 	sys16_bg1_trans=0;
 	sys16_rowscroll_scroll=0;
 	sys18_splittab_bg_x=0;
 	sys18_splittab_bg_y=0;
 	sys18_splittab_fg_x=0;
 	sys18_splittab_fg_y=0;
-
+	sys16_update_proc = 0;
 	sys16_quartet_title_kludge=0;
+	if (!sys16_sprxoffset)
+         sys16_sprxoffset = -0xb8;
 
 	sys16_custom_irq=NULL;
 
@@ -2202,13 +2205,13 @@ struct DACinterface sys16_7751_dac_interface =
 	{ 100 }
 };
 
-struct UPD7759_interface sys16_upd7759_interface =
+struct upd7759_interface sys16_upd7759_interface =
 {
-	1,			/* 1 chip */
-	{ 60 }, 	/* volumes */
-	{ REGION_CPU2 },			/* memory region 3 contains the sample data */
-    UPD7759_SLAVE_MODE,
-	{ sound_cause_nmi },
+	1,							/* number of chips */
+	{ UPD7759_STANDARD_CLOCK }, /* clock */
+	{ 60  },					/* volume */
+	{ 0 },						/* memory regions */
+	{ sound_cause_nmi }			/* drq callback (per chip, slave mode only) */
 };
 
 struct YM2413interface sys16_ym2413_interface= {

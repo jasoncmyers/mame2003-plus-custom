@@ -65,6 +65,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Eeekk!
 * ESPGaluda
 * F1 Super Lap (World)
+* Fantasy Zone II - The Tears of Opa-Opa (System 16C version)
 * Final Tetris
 * FixEight (bootleg)
 * Flying Tiger
@@ -87,6 +88,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Head On Channel (Japan, Prototype)
 * Heavy Smash
 * Hoops '96
+* Hypernoid
 * Hyper Crash
 * Hyper Street Fighter II (Asia)
 * In Your Face
@@ -106,8 +108,10 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Mad Alien
 * Mad Ball V2.0 * Mature * - Romset `madballn`
 * Magic Purple 
+* Marble Madness II (prototype)
 * Master's Fury
 * Match It II * Mature *
+* Megumi Rescue
 * Metal Slug 4
 * Metal Slug 5
 * Mighty Warriors
@@ -529,6 +533,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Rampage World Tour
 * Revolution X
 * Rohga Armor Force
+* R-Type Leo
 * Shark Attack
 * Sheriff
 * Space Fever
@@ -847,3 +852,10 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added support for Angler Dangler and the clone japanese set Fishing to the decocass.c driver [arcadez]
 * Better balanced the music and Sfx levels in Kaneko's Air Buster and added the Japan version of DJ Boy [arcadez]
 * Fixed Deco Cassette game Zeroize in the decocass.c driver game now playable [arcadez]
+* Disabled palette banking for R-Type leo - fixes invincibiliy flashing [Haze, arcadez]
+* Fixed some serious graphical problems in R-Type Leo by disabling a gfx based speedup which caused issues throughout the game [arcadez]
+* Updated the Irem GRA20 soundcore to MAME 81 which fixes missing voices and improves the sound more generally for R-Type Leo [arcadez]
+* Added support for Hypernoid to the neogeo driver [arcadez, mahoneyt944]
+* Added Megumi Rescue to the Sega System E driver [Haze, arcadez]
+* Added Marble Madness II (prototype) to the batman driver [Haze, MistyDreams, dink, iq_132, arcadez, mahoneyt944]
+* Added Fantasy Zone II - The Tears of Opa-Opa (fantzn2x) to system16 driver [MistyDreams, mahoneyt944, arcadez]
