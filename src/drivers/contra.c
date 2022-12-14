@@ -16,6 +16,7 @@ Credits:
 #include "driver.h"
 #include "vidhrdw/generic.h"
 #include "cpu/m6809/m6809.h"
+#include "ost_samples.h"
 
 extern unsigned char *contra_fg_vram,*contra_fg_cram;
 extern unsigned char *contra_bg_vram,*contra_bg_cram;
@@ -56,11 +57,19 @@ WRITE_HANDLER( contra_coin_counter_w )
 {
 	if (data & 0x01) coin_counter_w(0,data & 0x01);
 	if (data & 0x02) coin_counter_w(1,(data & 0x02) >> 1);
+
+	if( ost_support_enabled(OST_SUPPORT_CONTRA) )
+		ost_fade_volume();
 }
 
 static WRITE_HANDLER( cpu_sound_command_w )
 {
-	soundlatch_w(offset,data);
+	if( ost_support_enabled(OST_SUPPORT_CONTRA) ) {
+		if(generate_ost_sound_contra( data ))
+			soundlatch_w(offset,data);
+	}
+	else
+		soundlatch_w(offset,data);
 }
 
 UINT32 math_regs[6];
@@ -139,11 +148,11 @@ static MEMORY_WRITE_START( writemem )
 	{ 0x2400, 0x27ff, contra_fg_vram_w, &contra_fg_vram },
 	{ 0x2800, 0x2bff, contra_text_cram_w, &contra_text_cram },
 	{ 0x2c00, 0x2fff, contra_text_vram_w, &contra_text_vram },
-	{ 0x3000, 0x37ff, MWA_RAM, &spriteram },/* 2nd bank is at 0x5000 */
-	{ 0x3800, 0x3fff, MWA_RAM }, /* second sprite buffer*/
+	{ 0x3000, 0x3fff, MWA_RAM, &spriteram },
 	{ 0x4000, 0x43ff, contra_bg_cram_w, &contra_bg_cram },
 	{ 0x4400, 0x47ff, contra_bg_vram_w, &contra_bg_vram },
-	{ 0x4800, 0x5fff, MWA_RAM },
+	{ 0x4800, 0x4fff, MWA_RAM },
+	{ 0x5000, 0x5fff, MWA_RAM, &spriteram_2 },
 	{ 0x6000, 0x6fff, MWA_ROM },
  	{ 0x7000, 0x7000, contra_bankswitch_w },
 	{ 0x7001, 0xffff, MWA_ROM },
@@ -331,6 +340,8 @@ static MACHINE_DRIVER_START( contra )
 	/* sound hardware */
 	MDRV_SOUND_ATTRIBUTES(SOUND_SUPPORTS_STEREO)
 	MDRV_SOUND_ADD(YM2151, ym2151_interface)
+
+	MDRV_INSTALL_OST_SUPPORT(OST_SUPPORT_CONTRA)
 MACHINE_DRIVER_END
 
 

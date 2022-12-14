@@ -203,6 +203,13 @@ int sys16_sprite_quartet2( struct sys16_sprite_attributes *sprite, const UINT16 
 	UINT16 ypos = source[0];
 	int top = (ypos&0xff) + 1;
 	int bottom = (ypos>>8) + 1;
+
+	// Fixes sprite issues with shinobl
+	if (!strcmp(Machine->gamedrv->name,"shinobl")) {
+		top--;
+		bottom--;
+	}
+
 	if( bottom == 0xff ) return 1;
 	if(bottom !=0 && bottom > top){
 		UINT16 spr_pri=(source[4])&0xf; /* ?? */
@@ -387,8 +394,8 @@ int sys16_sprite_outrun( struct sys16_sprite_attributes *sprite, const UINT16 *s
 		sprite->zoomy = zoomy;
 		sprite->gfx = gfx;
 #ifdef TRANSPARENT_SHADOWS
-		if( (source[5]&0x7f)==0 ) sprite->flags|= SYS16_SPR_SHADOW;
-		else if( source[3]&0x4000 ){
+		//if( (source[5]&0x7f)==0 ) sprite->flags|= SYS16_SPR_SHADOW;
+		/*else*/ if( source[3]&0x4000 ){
 			sprite->flags|= SYS16_SPR_PARTIAL_SHADOW;
 			sprite->shadow_pen=10;
 		}

@@ -841,6 +841,10 @@ static void get_fg_tile_info( int offset ){
 		tile_info.priority = ((data&0xff00) >= sys16_fg_priority_value)?1:0;
 		break;
 
+	case 4:
+		tile_info.priority = ( (data/0x1000) % 2 != 0)?1:0;
+		break;
+
 	default:
 		if( sys16_fg_priority_mode>=0 ){
 			tile_info.priority = (data&0x8000)?1:0;
@@ -1359,7 +1363,11 @@ VIDEO_UPDATE( system16 ){
 }
 
 VIDEO_UPDATE( system18 ){
-	if (!sys16_refreshenable) return;
+	if (!sys16_refreshenable) 
+	{
+		fillbitmap(bitmap, get_black_pen(), cliprect);
+		return;
+	}
 	if( sys16_update_proc ) sys16_update_proc();
 	update_page();
 	sys18_vh_screenrefresh_helper(); /* set scroll registers */
@@ -1575,7 +1583,11 @@ if( keyboard_pressed( KEYCODE_S ) ){
 }
 
 VIDEO_UPDATE( hangon ){
-	if (!sys16_refreshenable) return;
+	if (!sys16_refreshenable) 
+	{
+		fillbitmap(bitmap, get_black_pen(), cliprect);
+		return;
+	}
 	if( sys16_update_proc ) sys16_update_proc();
 	update_page();
 
@@ -1761,7 +1773,7 @@ static void render_grv2(struct mame_bitmap *bitmap,const struct rectangle *clipr
 }
 
 
-VIDEO_START( outrun ){
+VIDEO_START( outrun_old ){
 	int ret;
 	sys16_bg1_trans=1;
 	ret = video_start_system16();
@@ -1778,31 +1790,35 @@ VIDEO_START( outrun ){
 	return 0;
 }
 
-VIDEO_UPDATE( outrun ){
-	if( sys16_refreshenable ){
-		if( sys16_update_proc ) sys16_update_proc();
-		update_page();
+VIDEO_UPDATE( outrun_old )
+{
+	if (!sys16_refreshenable) 
+	{
+		fillbitmap(bitmap, get_black_pen(), cliprect);
+		return;
+	}
+	if( sys16_update_proc ) sys16_update_proc();
+	update_page();
 
-		tilemap_set_scrollx( background, 0, -320-sys16_bg_scrollx+sys16_bgxoffset );
-		tilemap_set_scrollx( foreground, 0, -320-sys16_fg_scrollx+sys16_fgxoffset );
+	tilemap_set_scrollx( background, 0, -320-sys16_bg_scrollx+sys16_bgxoffset );
+	tilemap_set_scrollx( foreground, 0, -320-sys16_fg_scrollx+sys16_fgxoffset );
 
-		tilemap_set_scrolly( background, 0, -256+sys16_bg_scrolly );
-		tilemap_set_scrolly( foreground, 0, -256+sys16_fg_scrolly );
+	tilemap_set_scrolly( background, 0, -256+sys16_bg_scrolly );
+	tilemap_set_scrolly( foreground, 0, -256+sys16_fg_scrolly );
 
-		render_grv2(bitmap,cliprect,1);
-		tilemap_draw( bitmap,cliprect, background, 0, 0 );
-		tilemap_draw( bitmap,cliprect, foreground, 0, 0 );
-		render_grv2(bitmap,cliprect,0);
+	render_grv2(bitmap,cliprect,1);
+	tilemap_draw( bitmap,cliprect, background, 0, 0 );
+	tilemap_draw( bitmap,cliprect, foreground, 0, 0 );
+	render_grv2(bitmap,cliprect,0);
 
 	if (!sys16_sprite_draw)
-	{
 		draw_sprites( bitmap,cliprect,1 );
-	}
 	else
 		draw_sprites_new( bitmap,cliprect);
-		tilemap_draw( bitmap,cliprect, text_layer, 0, 0 );
-	}
+
+	tilemap_draw( bitmap,cliprect, text_layer, 0, 0 );
 }
+
 
 /***************************************************************************/
 

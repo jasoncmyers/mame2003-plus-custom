@@ -323,7 +323,7 @@ PORT_END
 static WRITE16_HANDLER( sound_command_nmi_w ){
 
 	if( ACCESSING_LSB ){
-		if(moonwalker_playing && options.use_alt_sound) {
+		if( ost_support_enabled(OST_SUPPORT_MOONWALKER) ) {
 			if(generate_ost_sound_moonwalker( data )) {
 				soundlatch_w( 0,data&0xff );
 				cpu_set_nmi_line(1, PULSE_LINE);
@@ -1315,10 +1315,8 @@ static MACHINE_DRIVER_START( moonwalk )
 	MDRV_CPU_MEMORY(moonwalk_readmem,moonwalk_writemem)
 
 	MDRV_MACHINE_INIT(moonwalk)
-	MDRV_SOUND_ADD_TAG("OST Samples", SAMPLES, ost_moonwalker)
-	moonwalker_playing = true;
-	moon_diddy = false;
-	mj_current_music = 0;
+
+	MDRV_INSTALL_OST_SUPPORT(OST_SUPPORT_MOONWALKER)
 MACHINE_DRIVER_END
 
 

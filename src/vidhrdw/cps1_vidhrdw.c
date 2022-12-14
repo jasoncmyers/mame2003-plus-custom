@@ -401,7 +401,10 @@ static struct CPS1config cps1_config_table[]=
 	{"ssf2tur1",NOBATTRY, 4,4,0, 0x0000,0xffff,0x0000,0xffff, 9 },
 	{"ssf2ta",  NOBATTRY, 4,4,0, 0x0000,0xffff,0x0000,0xffff, 9 },
 	{"ssf2xj",  NOBATTRY, 4,4,0, 0x0000,0xffff,0x0000,0xffff, 9 },
+	{"hsf2",    NOBATTRY, 4,4,0, 0x0000,0xffff,0x0000,0xffff, 9 },
 	{"hsf2a",   NOBATTRY, 4,4,0, 0x0000,0xffff,0x0000,0xffff, 9 },
+	{"hsf2j",   NOBATTRY, 4,4,0, 0x0000,0xffff,0x0000,0xffff, 9 },
+	{"hsf2j1",  NOBATTRY, 4,4,0, 0x0000,0xffff,0x0000,0xffff, 9 },
 	{"xmcota",  NOBATTRY, 4,4,4, 0x0000,0xffff,0x0000,0xffff, 8 },
 	{"xmcotau", NOBATTRY, 4,4,4, 0x0000,0xffff,0x0000,0xffff, 8 },
 	{"xmcotah", NOBATTRY, 4,4,4, 0x0000,0xffff,0x0000,0xffff, 8 },
@@ -731,7 +734,7 @@ static void unshuffle(UINT64 *buf,int len)
 	}
 }
 
-static void cps2_gfx_decode(void)
+void cps2_gfx_decode(void)
 {
 	const int banksize=0x200000;
 	int size=memory_region_length(REGION_GFX1);

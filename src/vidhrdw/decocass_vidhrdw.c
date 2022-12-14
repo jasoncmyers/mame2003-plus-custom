@@ -153,6 +153,29 @@ static void draw_object(struct mame_bitmap *bitmap, const struct rectangle *clip
 	drawgfx(bitmap, Machine->gfx[3], 1, color, 0, 1, sx, sy - 64, cliprect, TRANSPARENCY_PEN, 0);
 }
 
+static void manhattan_draw_object(struct mame_bitmap *bitmap, const struct rectangle *cliprect)
+{
+	int sx, sy, color;
+
+	if (0 == (mode_set & 0x80))  /* part_h_enable off? */
+		return;
+
+	color = (color_center_bot >> 4) & 15;
+
+	sy = 0; 
+    sy = (sy - sy) + (0x40 - part_v_shift);
+    sy += 1;
+	 
+    if (sy < 0) sy += 0x100;
+    sx = part_h_shift;
+    sx = sx - (0x100/2);
+
+	drawgfx(bitmap, Machine->gfx[3], 0, color, 0, 0, sx + 64, sy, cliprect, TRANSPARENCY_PEN, 0);
+	drawgfx(bitmap, Machine->gfx[3], 1, color, 0, 0, sx, sy, cliprect, TRANSPARENCY_PEN, 0);
+	drawgfx(bitmap, Machine->gfx[3], 0, color, 0, 1, sx + 64, sy - 64, cliprect, TRANSPARENCY_PEN, 0);
+	drawgfx(bitmap, Machine->gfx[3], 1, color, 0, 1, sx, sy - 64, cliprect, TRANSPARENCY_PEN, 0);
+}
+
 static void draw_center(struct mame_bitmap *bitmap, const struct rectangle *cliprect)
 {
 	int sx, sy, x, y, color;
@@ -523,6 +546,71 @@ static void draw_missiles(struct mame_bitmap *bitmap, const struct rectangle *cl
 	}
 }
 
+static void manhattan_draw_edge(struct mame_bitmap *bitmap, const struct rectangle *cliprect, int which, int opaque)
+{
+	struct rectangle clip;
+	const struct mame_bitmap *srcbitmap;
+
+    int scrollx,scrolly,scrolly_l,scrolly_r;
+	int y,x;
+	UINT16 pix;
+
+	scrolly_l = back_vl_shift;
+	scrolly_r = 256 - back_vr_shift;
+
+	/* bit 0x04 of the mode select effectively selects between two banks of data */
+	if (0 == (mode_set & 0x04))
+		scrolly_r += 256;
+	else
+		scrolly_l += 256;
+
+	scrollx = 256 - back_h_shift;
+
+	if (which==0)
+	{
+		clip = bg_tilemap_l_clip;
+        sect_rect(&clip,cliprect);
+		scrolly = scrolly_l;
+		srcbitmap = tilemap_get_pixmap(bg_tilemap_l);
+	}
+	else
+	{
+		clip = bg_tilemap_r_clip;
+        sect_rect(&clip,cliprect);
+		scrolly = scrolly_r;
+		srcbitmap = tilemap_get_pixmap(bg_tilemap_r);
+	}
+
+	for (y=clip.min_y; y<=clip.max_y;y++)
+	{
+		int srcline = (y + scrolly) & 0x1ff;
+		UINT16* src = (UINT16 *)srcbitmap->base + srcline * srcbitmap->rowpixels;
+		UINT16 *dst = (UINT16 *)bitmap->base + y * bitmap->rowpixels;
+
+		for (x=clip.min_x; x<=clip.max_x;x++)
+		{
+			int srccol;
+
+			/* 2 bits control the x scroll mode, allowing it to wrap either half of the tilemap, or transition one way or the other between the two halves */
+
+			switch (mode_set & 3)
+			{
+				case 0x00: srccol = ((x + scrollx) & 0xff); break; /* hwy normal case */
+				case 0x01: srccol = (x + scrollx + 0x100) & 0x1ff; break; /* manhattan building top */
+				case 0x02: srccol = ((x + scrollx) & 0xff) + 0x100; break; /* manhattan normal case */
+				case 0x03: srccol = (x + scrollx) & 0x1ff; break; /* hwy, burnrub etc. */
+			}
+
+			pix = src[srccol];
+
+			if ((pix & 0x3) || opaque)
+			{
+				dst[x] = pix;
+			}
+		}
+	}
+
+}
 
 static void decode_modified(unsigned char *sprite_ram, int interleave)
 {
@@ -717,18 +805,20 @@ VIDEO_UPDATE( decocass )
 	tilemap_set_scrollx( bg_tilemap_r, 0, scrollx );
 	tilemap_set_scrolly( bg_tilemap_r, 0, scrolly_r );
 
+
+	if (mode_set & 0x08)	/* bkg_ena on ? */
+	{
+		clip = bg_tilemap_l_clip;
+		sect_rect(&clip,cliprect);
+		tilemap_draw(bitmap,&clip, bg_tilemap_l, TILEMAP_IGNORE_TRANSPARENCY, 0);
+
+		clip = bg_tilemap_r_clip;
+		sect_rect(&clip,cliprect);
+		tilemap_draw(bitmap,&clip, bg_tilemap_r, TILEMAP_IGNORE_TRANSPARENCY, 0);
+	}
+
 	if (mode_set & 0x20)
 	{
-		if (mode_set & 0x08)	/* bkg_ena on ? */
-		{
-			clip = bg_tilemap_l_clip;
-			sect_rect(&clip,cliprect);
-			tilemap_draw(bitmap,&clip, bg_tilemap_l, 0, 0);
-
-			clip = bg_tilemap_r_clip;
-			sect_rect(&clip,cliprect);
-			tilemap_draw(bitmap,&clip, bg_tilemap_r, 0, 0);
-		}
 		draw_object(bitmap,cliprect);
 		draw_center(bitmap,cliprect);
 	}
@@ -747,6 +837,84 @@ VIDEO_UPDATE( decocass )
 			tilemap_draw(bitmap,&clip, bg_tilemap_r, 0, 0);
 		}
 	}
+	tilemap_draw(bitmap,cliprect, fg_tilemap, 0, 0);
+	draw_sprites(bitmap,cliprect, (color_center_bot >> 1) & 1, 0, 0, decocass_fgvideoram, 0x20);
+	draw_missiles(bitmap,cliprect, 1, 0, decocass_colorram, 0x20);
+}
+
+VIDEO_UPDATE( manhattan )
+{
+	if (0xc0 != (input_port_2_r(0) & 0xc0))  /* coin slots assert an NMI */
+		cpu_set_nmi_line(0, ASSERT_LINE);
+
+	if (0 == (watchdog_flip & 0x04))
+		watchdog_reset_w (0,0);
+	else if (watchdog_count-- > 0)
+		watchdog_reset_w (0,0);
+
+#if TAPE_UI_DISPLAY
+	if (tape_timer)
+	{
+		double tape_time = tape_time0 + tape_dir * timer_timeelapsed(tape_timer);
+		if (tape_time < 0.0)
+			tape_time = 0.0;
+		else if (tape_time > 999.9)
+			tape_time = 999.9;
+		usrintf_showmessage("%c%c [%05.1fs] %c%c",
+			(tape_dir < 0 && tape_speed) ? '<' : ' ',
+			(tape_dir < 0) ? '<' : ' ',
+			tape_time,
+			(tape_dir > 0) ? '>' : ' ',
+			(tape_dir > 0 && tape_speed) ? '>' : ' ');
+	}
+#endif
+#ifdef MAME_DEBUG
+	{
+		static int showmsg;
+		if (code_pressed_memory(KEYCODE_I))
+			showmsg ^= 1;
+		if (showmsg)
+			usrintf_showmessage_secs(1, "mode:$%02x cm:$%02x ccb:$%02x h:$%02x vl:$%02x vr:$%02x ph:$%02x pv:$%02x ch:$%02x cv:$%02x",
+				mode_set,
+				color_missiles,
+				color_center_bot,
+				back_h_shift,
+				back_vl_shift,
+				back_vr_shift,
+				part_h_shift,
+				part_v_shift,
+				center_h_shift_space,
+				center_v_shift);
+	}
+#endif
+
+	fillbitmap( bitmap, Machine->pens[0], cliprect );
+
+	decode_modified( decocass_fgvideoram, 0x20 );
+	
+	
+	if (mode_set & 0x08)	/* bkg_ena on ? */
+	{
+        manhattan_draw_edge(bitmap,cliprect,0,1);
+		manhattan_draw_edge(bitmap,cliprect,1,1);
+	}
+
+	if (mode_set & 0x20)
+	{
+		manhattan_draw_object(bitmap,cliprect);
+		draw_center(bitmap,cliprect);
+	}
+	else
+	{
+		manhattan_draw_object(bitmap,cliprect);
+		draw_center(bitmap,cliprect);
+		if (mode_set & 0x08)	/* bkg_ena on ? */
+		{
+            manhattan_draw_edge(bitmap,cliprect,0,0);
+			manhattan_draw_edge(bitmap,cliprect,1,0);
+		}
+	}
+
 	tilemap_draw(bitmap,cliprect, fg_tilemap, 0, 0);
 	draw_sprites(bitmap,cliprect, (color_center_bot >> 1) & 1, 0, 0, decocass_fgvideoram, 0x20);
 	draw_missiles(bitmap,cliprect, 1, 0, decocass_colorram, 0x20);

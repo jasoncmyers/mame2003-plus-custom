@@ -687,6 +687,7 @@ READ16_HANDLER( midtunit_dma_r )
  *           | ----------2----- | select top/bottom or left/right for reg 12/13
  */
 
+
 WRITE16_HANDLER( midtunit_dma_w )
 {
 	static const UINT8 register_map[2][16] =
@@ -826,21 +827,21 @@ skipdma:
 	/* used to initiate the DMA. What they do is start the DMA, *then* set */
 	/* up the memory for it, which means that there must be some non-zero  */
 	/* delay that gives them enough time to build up the DMA command list  */
-   if (options.activate_dcs_speedhack)
-   {
-      if (command != 0x8000)
-         dma_callback(1);
-      else
-      {
-        TMS_SET_IRQ_LINE(CLEAR_LINE);
-        timer_set(TIME_IN_NSEC(41 * pixels), 0, dma_callback);
-      }
-   }
-   else
-   {
-      TMS_SET_IRQ_LINE(CLEAR_LINE);
-      timer_set(TIME_IN_NSEC(41 * pixels), 0, dma_callback);
-   }
+	if (FAST_DMA)
+	{
+		if (command != 0x8000)
+			dma_callback(1);
+		else
+		{
+			TMS_SET_IRQ_LINE(CLEAR_LINE);
+			timer_set(TIME_IN_NSEC(42 * pixels), 0, dma_callback);
+		}
+	}
+	else
+	{
+		TMS_SET_IRQ_LINE(CLEAR_LINE);
+		timer_set(TIME_IN_NSEC(42 * pixels), 0, dma_callback);
+	}
 
 	profiler_mark(PROFILER_END);
 }
