@@ -146,7 +146,13 @@ const char ipdn_defaultstrings[][MAX_DEFSTR_LEN] =
 	"Flip Screen",
 	"Service Mode",
 	"Unused",
-	"Unknown"
+	"Unknown",
+	"Hardest",
+	"Hard",
+	"Normal",
+	"Easy",
+	"Allow_Continue",
+	"None"
 };
 
 
@@ -891,12 +897,12 @@ void update_analog_port(int port)
 
 	player = IP_GET_PLAYER(in);
 
-    /* if second player on a dial, and dial sharing turned on, use Y axis from player 1 */
-    if (options.dial_share_xy && type == IPT_DIAL && player == 1)
-    {
-        axis = Y_AXIS;
-        player = 0;
-    }
+	/* if second player on a dial or paddle, and dial sharing turned on, use Y axis from player 1 */
+	if (options.dial_share_xy && (type == IPT_DIAL || type == IPT_PADDLE) && player == 1)
+	{
+		axis = Y_AXIS;
+		player = 0;
+	}
 
 	delta = mouse_delta_axis[player][axis];
 
@@ -1209,7 +1215,7 @@ ScanJoysticks( struct InputPort *in )
 			  }
 
 		}
-    else if (options.restrict_4_way) //start use alternative code
+    else if (options.restrict_4_way) /*start use alternative code */
     {
       if(options.content_flags[CONTENT_ROTATE_JOY_45])
       {
@@ -1225,7 +1231,7 @@ ScanJoysticks( struct InputPort *in )
         else if (mJoy4Way[i])
           mJoy4Way[i]=0;
       }
-      else // just a regular 4-way - last press no code needed just ignore diagonals and no movement
+      else /* just a regular 4-way - last press no code needed just ignore diagonals and no movement */
       {
         if  ( (mJoyCurrent[i]) && (mJoyCurrent[i] !=5) && (mJoyCurrent[i] !=6)
           &&  (mJoyCurrent[i] !=9) && (mJoyCurrent[i] !=10) )
@@ -1360,7 +1366,7 @@ profiler_mark(PROFILER_INPUT);
 								impulsecount[ib] = IP_GET_IMPULSE(in);
 								/* the input bit will be toggled later */
 						}
-						else if (in->type & IPF_TOGGLE)
+						else if (in->type & IPF_TOGGLE && options.input_toggle)
 						{
 							if (waspressed[ib] == 0)
 							{

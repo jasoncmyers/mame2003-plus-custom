@@ -40,6 +40,12 @@ struct mame_bitmap
 	void (*plot_box)(struct mame_bitmap *bitmap,int x,int y,int width,int height,pen_t pen);
 };
 
+#define BITMAP_ADDR(bitmap, type, y, x)	\
+	((type *)(bitmap)->base + (y) * (bitmap)->rowpixels + (x))
+
+#define BITMAP_ADDR8(bitmap, y, x)	BITMAP_ADDR(bitmap, UINT8, y, x)
+#define BITMAP_ADDR16(bitmap, y, x)	BITMAP_ADDR(bitmap, UINT16, y, x)
+#define BITMAP_ADDR32(bitmap, y, x)	BITMAP_ADDR(bitmap, UINT32, y, x)
 
 struct RomModule
 {
@@ -97,7 +103,7 @@ struct GameSamples
 	struct GameSample *sample[1];	/* extendable */
 };
  
-#define	GAME_SAMPLE_LARGE		10000000 // 10MB
+#define	GAME_SAMPLE_LARGE		10000000 /* 10MB */
 
 /***************************************************************************
 
@@ -557,6 +563,14 @@ void printromlist(const struct RomModule *romp,const char *name);
          (BIT(val, B2) <<  2) | \
          (BIT(val, B1) <<  1) | \
          (BIT(val, B0) <<  0))
+
+/* Standard MIN/MAX macros */
+#ifndef MIN
+#define MIN(x,y)			((x) < (y) ? (x) : (y))
+#endif
+#ifndef MAX
+#define MAX(x,y)			((x) > (y) ? (x) : (y))
+#endif
 
 
 #ifdef __cplusplus

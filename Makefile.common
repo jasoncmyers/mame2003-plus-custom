@@ -68,6 +68,7 @@ SOURCES_C += \
 	$(CORE_DIR)/x86drc.c
 
 SOURCES_C += \
+	$(CORE_DIR)/machine/fd1089.c \
 	$(CORE_DIR)/machine/6522via.c \
 	$(CORE_DIR)/machine/6532riot.c \
 	$(CORE_DIR)/machine/6821pia.c \
@@ -1043,8 +1044,10 @@ SOURCES_C += \
 	$(CORE_DIR)/machine/model1_machine.c $(CORE_DIR)/vidhrdw/model1_vidhrdw.c $(CORE_DIR)/drivers/model1.c \
 	$(CORE_DIR)/drivers/calorie.c \
 	$(CORE_DIR)/machine/mc8123.c \
-	$(CORE_DIR)/machine/namcoio_machine.c
-
+	$(CORE_DIR)/machine/namcoio_machine.c \
+	$(CORE_DIR)/drivers/tatsumi.c $(CORE_DIR)/vidhrdw/tatsumi.c $(CORE_DIR)/machine/tatsumi.c \
+	$(CORE_DIR)/vidhrdw/resnet.c
+	
 
 
 # List of CPU core (and, for a debug build, disassembler) object files

@@ -135,6 +135,7 @@ Changes:
 ***************************************************************************/
 
 #include "driver.h"
+#include "dkong.h"
 #include "vidhrdw/generic.h"
 #include "cpu/i8039/i8039.h"
 #include "cpu/s2650/s2650.h"
@@ -218,36 +219,6 @@ static int page = 0,mcustatus;
 static int p[8] = { 255,255,255,255,255,255,255,255 };
 static int t[2] = { 1,1 };
 
-
-extern WRITE_HANDLER( radarscp_grid_enable_w );
-extern WRITE_HANDLER( radarscp_grid_color_w );
-extern WRITE_HANDLER( dkong_flipscreen_w );
-extern WRITE_HANDLER( dkongjr_gfxbank_w );
-extern WRITE_HANDLER( dkong3_gfxbank_w );
-extern WRITE_HANDLER( dkong_palettebank_w );
-
-extern WRITE_HANDLER( dkong_videoram_w );
-
-extern PALETTE_INIT( dkong );
-extern PALETTE_INIT( dkong3 );
-extern VIDEO_START( dkong );
-extern VIDEO_UPDATE( radarscp );
-extern VIDEO_UPDATE( dkong );
-extern VIDEO_UPDATE( pestplce );
-extern VIDEO_UPDATE( spclforc );
-
-extern WRITE_HANDLER( dkong_sh_w );
-extern WRITE_HANDLER( dkongjr_sh_death_w );
-extern WRITE_HANDLER( dkongjr_sh_drop_w );
-extern WRITE_HANDLER( dkongjr_sh_roar_w );
-extern WRITE_HANDLER( dkongjr_sh_jump_w );
-extern WRITE_HANDLER( dkongjr_sh_walk_w );
-extern WRITE_HANDLER( dkongjr_sh_climb_w );
-extern WRITE_HANDLER( dkongjr_sh_land_w );
-extern WRITE_HANDLER( dkongjr_sh_snapjaw_w );
-
-extern WRITE_HANDLER( dkong_sh1_w );
-
 #define ACTIVELOW_PORT_BIT(P,A,D)   ((P & (~(1 << A))) | ((D ^ 1) << A))
 
 
@@ -312,6 +283,7 @@ static WRITE_HANDLER( dkong_sh_p2_w )
 	decay = !(data & 0x80);
 	page = (data & 0x47);
 	mcustatus = ((~data & 0x10) >> 4);
+	p02_b5_enable = BIT(data,4);
 }
 
 
@@ -358,15 +330,15 @@ static MEMORY_READ_START( dkong3_readmem )
 	{ 0x8000, 0x9fff, MRA_ROM },	/* DK3 and bootleg DKjr only */
 MEMORY_END
 
+
 static MEMORY_WRITE_START( radarscp_writemem )
 	{ 0x0000, 0x5fff, MWA_ROM },
 	{ 0x6000, 0x68ff, MWA_RAM },
 	{ 0x6900, 0x6a7f, MWA_RAM, &spriteram, &spriteram_size },
-	{ 0x6a80, 0x6fff, MWA_RAM },
+	{ 0x6a80, 0x6fcf, MWA_RAM },
 	{ 0x7000, 0x73ff, MWA_RAM },    /* ???? */
 	{ 0x7400, 0x77ff, dkong_videoram_w, &videoram },
-	{ 0x7800, 0x7803, MWA_RAM },	/* ???? */
-	{ 0x7808, 0x7808, MWA_RAM },	/* ???? */
+	{ 0x7800, 0x780f, MWA_NOP },	/* ???? */
 	{ 0x7c00, 0x7c00, dkong_sh_tuneselect_w },
 	{ 0x7c80, 0x7c80, radarscp_grid_color_w },
 	{ 0x7d00, 0x7d02, dkong_sh1_w },	/* walk/jump/boom sample trigger */
@@ -378,7 +350,7 @@ static MEMORY_WRITE_START( radarscp_writemem )
 	{ 0x7d82, 0x7d82, dkong_flipscreen_w },
 	{ 0x7d83, 0x7d83, MWA_RAM },
 	{ 0x7d84, 0x7d84, interrupt_enable_w },
-	{ 0x7d85, 0x7d85, MWA_RAM },
+	{ 0x7d85, 0x7d85, MWA_NOP },
 	{ 0x7d86, 0x7d87, dkong_palettebank_w },
 MEMORY_END
 
@@ -437,7 +409,7 @@ static MEMORY_READ_START( hunchbkd_readmem )
 	{ 0x1400, 0x1400, input_port_0_r },		/* IN0 */
 	{ 0x1480, 0x1480, input_port_1_r },		/* IN1 */
 	{ 0x1500, 0x1500, input_port_2_r },		/* IN2/DSW2 */
-/*	{ 0x1507, 0x1507, herbiedk_iack_r },  	 // Clear Int /*/
+/*	{ 0x1507, 0x1507, herbiedk_iack_r },  	  Clear Int */
 	{ 0x1580, 0x1580, input_port_3_r },		/* DSW1 */
 	{ 0x1600, 0x1bff, MRA_RAM },			/* video RAM */
 	{ 0x1c00, 0x1fff, MRA_RAM },
@@ -576,6 +548,10 @@ READ_HANDLER( shootgal_port0_r )
 
 static PORT_WRITE_START( hunchbkd_writeport )
 	{ S2650_DATA_PORT, S2650_DATA_PORT, hunchbkd_data_w },
+PORT_END
+
+static PORT_WRITE_START( spclforc_writeport )
+  { S2650_DATA_PORT, S2650_DATA_PORT, SN76496_0_w },
 PORT_END
 
 static PORT_READ_START( hunchbkd_readport )
@@ -1049,10 +1025,10 @@ INPUT_PORTS_START( dkrdemo )
 	PORT_DIPSETTING(    0x03, "9" )
 	PORT_DIPNAME( 0x0c, 0x00, DEF_STR( Bonus_Life ) )
 	PORT_DIPSETTING(    0x00, "10000" )
-	PORT_DIPSETTING(    0x04, "15000" ) // and each additional 150k
-	PORT_DIPSETTING(    0x08, "25000" ) // and each additional 250k
-	PORT_DIPSETTING(    0x0c, "35000" ) // and each additional 350k
-	PORT_DIPNAME( 0x30, 0x00, DEF_STR( Coinage ) ) 
+	PORT_DIPSETTING(    0x04, "15000" ) /* and each additional 150k */
+	PORT_DIPSETTING(    0x08, "25000" ) /* and each additional 250k */
+	PORT_DIPSETTING(    0x0c, "35000" ) /* and each additional 350k */
+	PORT_DIPNAME( 0x30, 0x00, DEF_STR( Coinage ) )
 	PORT_DIPSETTING(    0x30, "Free Play" )
 	PORT_DIPSETTING(    0x10, DEF_STR( 2C_1C ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( 1C_1C ) )
@@ -1559,6 +1535,51 @@ INPUT_PORTS_START( strtheat )
 	PORT_DIPSETTING(    0x00, DEF_STR( Cocktail ) )
 INPUT_PORTS_END
 
+INPUT_PORTS_START( shootgal )
+	PORT_START      /* IN0 */
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_X | IPF_REVERSE, 50, 4, 0, 255)
+
+	PORT_START      /* IN1 */
+	PORT_ANALOG( 0xff, 0x80, IPT_LIGHTGUN_Y | IPF_REVERSE, 50, 4, 0, 255)
+
+	PORT_START      /* IN2 */
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_UNKNOWN )
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_UNKNOWN )
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_BUTTON1 )
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_START2 )
+	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_UNKNOWN )
+	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_UNKNOWN )
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_UNKNOWN )
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_COIN1 )
+
+	PORT_START      /* DSW0 */
+	PORT_DIPNAME( 0x01, 0x00, "1" )
+	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x01, DEF_STR( On ) )
+	PORT_DIPNAME( 0x02, 0x00, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x02, DEF_STR( On ) )
+	PORT_DIPNAME( 0x04, 0x00, "Time" )
+	PORT_DIPSETTING(    0x00, "60" )
+	PORT_DIPSETTING(    0x04, "100" )
+	PORT_DIPNAME( 0x08, 0x00, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x08, DEF_STR( On ) )
+	PORT_DIPNAME( 0x10, 0x00, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x10, DEF_STR( On ) )
+	PORT_DIPNAME( 0x20, 0x00, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x20, DEF_STR( On ) )
+	PORT_DIPNAME( 0x40, 0x00, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x40, DEF_STR( On ) )
+	PORT_SERVICE( 0x80, IP_ACTIVE_HIGH )
+
+	PORT_START /* Sense */
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_VBLANK )
+INPUT_PORTS_END
+
 static struct GfxLayout charlayout =
 {
 	8,8,	/* 8*8 characters */
@@ -1586,15 +1607,14 @@ static struct GfxLayout spritelayout =
 static struct GfxLayout pestplce_spritelayout =
 {
 	16,16,	/* 16*16 sprites */
-	128,	/* 128 sprites */
+	256,	/* 256 sprites */
 	2,	/* 2 bits per pixel */
-	{ 256*16*16, 0 },	/* the two bitplanes are separated */
-	{ 128*16*16+0, 128*16*16+1, 128*16*16+2, 128*16*16+3, 128*16*16+4, 128*16*16+5, 128*16*16+6, 128*16*16+7,  /* the two halves of the sprite are separated */
-		0, 1, 2, 3, 4, 5, 6, 7 },
+	{ 0, 256*16*16 },	/* the two bitplanes are separated */
+	{ 0, 1, 2, 3, 4, 5, 6, 7,		/* the two halves of the sprite are separated */
+			256*16*8+0, 256*16*8+1, 256*16*8+2, 256*16*8+3, 256*16*8+4, 256*16*8+5, 256*16*8+6, 256*16*8+7 },
 	{ 0*8, 1*8, 2*8, 3*8, 4*8, 5*8, 6*8, 7*8,
 			8*8, 9*8, 10*8, 11*8, 12*8, 13*8, 14*8, 15*8 },
-	16*8	/* every sprite takes 16 consecutive bytes */
-};
+	16*8	/* every sprite takes 16 consecutive bytes */};
 
 static struct GfxDecodeInfo gfxdecodeinfo[] =
 {
@@ -1659,6 +1679,7 @@ static struct Samplesinterface dkongjr_samples_interface =
 	dkongjr_sample_names
 };
 
+
 static MACHINE_DRIVER_START( radarscp )
 
 	/* basic machine hardware */
@@ -1676,14 +1697,14 @@ static MACHINE_DRIVER_START( radarscp )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256+2)
-	MDRV_COLORTABLE_LENGTH(64*4)	/* two extra colors for stars and radar grid */
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
-	MDRV_PALETTE_INIT(dkong)
-	MDRV_VIDEO_START(dkong)
+	MDRV_PALETTE_INIT(radarscp)
+	MDRV_VIDEO_START(radarscp)
 	MDRV_VIDEO_UPDATE(radarscp)
 
 	/* sound hardware */
@@ -1708,11 +1729,12 @@ static MACHINE_DRIVER_START( dkong )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256)
-	MDRV_COLORTABLE_LENGTH(64*4)
+
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
 	MDRV_PALETTE_INIT(dkong)
 	MDRV_VIDEO_START(dkong)
@@ -1742,11 +1764,11 @@ static MACHINE_DRIVER_START( braze )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256)
-	MDRV_COLORTABLE_LENGTH(64*4)
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
 	MDRV_PALETTE_INIT(dkong)
 	MDRV_VIDEO_START(dkong)
@@ -1780,11 +1802,11 @@ static MACHINE_DRIVER_START( hunchbkd )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256)
-	MDRV_COLORTABLE_LENGTH(64*4)
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
 	MDRV_PALETTE_INIT(dkong)
 	MDRV_VIDEO_START(dkong)
@@ -1804,19 +1826,27 @@ static MACHINE_DRIVER_START( herbiedk )
 	MDRV_VBLANK_DURATION(1000)
 MACHINE_DRIVER_END
 
+static struct SN76496interface sn76496_interface =
+{
+	1,	/* 1 chip */
+	{ 3072000 },	/* ? MHz */
+	{ 50 }
+};
+
 static MACHINE_DRIVER_START( spclforc )
 
 	/* basic machine hardware */
 	MDRV_IMPORT_FROM(hunchbkd)
 	MDRV_CPU_MODIFY("main")
-	MDRV_CPU_PORTS(spclforc_readport,hunchbkd_writeport)
+	MDRV_CPU_PORTS(spclforc_readport,spclforc_writeport)
 
 	MDRV_CPU_REMOVE("sound")
 
 	/* video hardware */
 	MDRV_VIDEO_UPDATE(spclforc)
 
-	/* analog sound */
+	/* sound hardware */
+	MDRV_SOUND_ADD(SN76496, sn76496_interface)
 MACHINE_DRIVER_END
 
 static MACHINE_DRIVER_START( eightact )
@@ -1852,11 +1882,11 @@ static MACHINE_DRIVER_START( dkongjr )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256)
-	MDRV_COLORTABLE_LENGTH(64*4)
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
 	MDRV_PALETTE_INIT(dkong)
 	MDRV_VIDEO_START(dkong)
@@ -1866,6 +1896,16 @@ static MACHINE_DRIVER_START( dkongjr )
 	MDRV_SOUND_ADD(DAC, dkong_dac_interface)
 	MDRV_SOUND_ADD(SAMPLES, dkongjr_samples_interface)
 MACHINE_DRIVER_END
+
+
+static MACHINE_DRIVER_START( dkong3b )
+
+    /* basic machine hardware */
+    MDRV_IMPORT_FROM(dkongjr)
+    MDRV_PALETTE_INIT(dkong3)
+MACHINE_DRIVER_END
+
+
 
 static MACHINE_DRIVER_START( pestplce )
 
@@ -1884,11 +1924,11 @@ static MACHINE_DRIVER_START( pestplce )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(pestplce_gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256)
-	MDRV_COLORTABLE_LENGTH(64*4)
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
 	MDRV_PALETTE_INIT(dkong)
 	MDRV_VIDEO_START(dkong)
@@ -1919,11 +1959,11 @@ static MACHINE_DRIVER_START( strtheat )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256)
-	MDRV_COLORTABLE_LENGTH(64*4)
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
 	MDRV_PALETTE_INIT(dkong)
 	MDRV_VIDEO_START(dkong)
@@ -1965,11 +2005,11 @@ static MACHINE_DRIVER_START( dkong3 )
 
 	/* video hardware */
 	MDRV_VIDEO_ATTRIBUTES(VIDEO_TYPE_RASTER)
-	MDRV_SCREEN_SIZE(32*8, 32*8)
-	MDRV_VISIBLE_AREA(0*8, 32*8-1, 2*8, 30*8-1)
+	MDRV_SCREEN_SIZE(OLD_HTOTAL, OLD_VTOTAL)
+	MDRV_VISIBLE_AREA(OLD_HBEND, OLD_HBSTART-1, OLD_VBEND, OLD_VBSTART -1)
 	MDRV_GFXDECODE(gfxdecodeinfo)
-	MDRV_PALETTE_LENGTH(256)
-	MDRV_COLORTABLE_LENGTH(64*4)
+	MDRV_PALETTE_LENGTH(DK2B_PALETTE_LENGTH)
+	MDRV_COLORTABLE_LENGTH(DK2B_PALETTE_LENGTH)
 
 	MDRV_PALETTE_INIT(dkong3)
 	MDRV_VIDEO_START(dkong)
@@ -1985,35 +2025,118 @@ MACHINE_DRIVER_END
   Game driver(s)
 ***************************************************************************/
 
+/* A newer revision based on ROM labels, legitimate looking code changes, although in MAME it has some misplaced sprites flicking in the top left part of the screen near the score as the enemies appear */
+/* Does this glitch happen on the PCB? */
 ROM_START( radarscp )
-	ROM_REGION( 0x10000, REGION_CPU1, 0 )	/* 64k for code */
-	ROM_LOAD( "trs2c5fc",     0x0000, 0x1000, CRC(40949e0d) SHA1(94717b9d027600e25b863e89900df41325875961) )
-	ROM_LOAD( "trs2c5gc",     0x1000, 0x1000, CRC(afa8c49f) SHA1(25880e9dcf2dc8862f7f3c38687f01dfe2424293) )
-	ROM_LOAD( "trs2c5hc",     0x2000, 0x1000, CRC(51b8263d) SHA1(09687f2c40cf09ffc2aeddde4a4fa32800847f01) )
-	ROM_LOAD( "trs2c5kc",     0x3000, 0x1000, CRC(1f0101f7) SHA1(b9f988847fdefa64dfeae06c2244215cb0d64dbe) )
-	/* space for diagnostic ROM */
+	ROM_REGION( 0x10000, REGION_CPU1, 0 )
+	ROM_LOAD( "trs2c5fd",     0x0000, 0x1000, CRC(80bbcbb3) SHA1(3af0ac3a267cdc819ccf5a279a78cdb16ee0360b) )
+	ROM_LOAD( "trs2c5gd",     0x1000, 0x1000, CRC(afa8c49f) SHA1(25880e9dcf2dc8862f7f3c38687f01dfe2424293) ) /* == trs2c5gc */
+	ROM_LOAD( "trs2c5hd",     0x2000, 0x1000, CRC(e3ad4239) SHA1(f28469bc3388b4fdc14e2a095d8e117af6643b46) )
+	ROM_LOAD( "trs2c5kd",     0x3000, 0x1000, CRC(260a3ec4) SHA1(d5e7941a56457cd222cb018ab17a8eee2a9134b9) )
+	/*empty socket on position 5L on pcb labeled "Test", 0x4000, 0x1000 */
 
-	ROM_REGION( 0x1000, REGION_CPU2, 0 )	/* sound */
+	ROM_REGION( 0x1800, REGION_CPU2, 0 ) /* sound */
 	ROM_LOAD( "trs2s3i",      0x0000, 0x0800, CRC(78034f14) SHA1(548b44ac69f39df6687da1c0f60968009b1e0767) )
+	ROM_RELOAD(               0x0800, 0x0800 )
+	ROM_FILL(                 0x1000, 0x0800, 0x00 )
 	/* socket 3J is empty */
 
-	ROM_REGION( 0x1000, REGION_GFX1, ROMREGION_DISPOSE )
+	ROM_REGION( 0x1000, REGION_GFX1, 0 )
 	ROM_LOAD( "trs2v3gc",     0x0000, 0x0800, CRC(f095330e) SHA1(dd3de744f28ff108630d3336bd246d3323fa34af) )
 	ROM_LOAD( "trs2v3hc",     0x0800, 0x0800, CRC(15a316f0) SHA1(8785a996c6433882a0a7150693c329a4247bb77e) )
 
-	ROM_REGION( 0x2000, REGION_GFX2, ROMREGION_DISPOSE )
+	ROM_REGION( 0x2000, REGION_GFX2, 0 )
 	ROM_LOAD( "trs2v3dc",     0x0000, 0x0800, CRC(e0bb0db9) SHA1(b570439ea1b5d34d0ac938ac9157f22f319b786d) )
 	ROM_LOAD( "trs2v3cc",     0x0800, 0x0800, CRC(6c4e7dad) SHA1(54e6a5005c44261dc4ba845dcd5ff62ea1402d26) )
 	ROM_LOAD( "trs2v3bc",     0x1000, 0x0800, CRC(6fdd63f1) SHA1(2eb09ab0759e4c8df9188fb833440d8fc94f6172) )
 	ROM_LOAD( "trs2v3ac",     0x1800, 0x0800, CRC(bbf62755) SHA1(cb4ca8d4fe689ca0011a4b6c0a2dbd4c764ac70a) )
 
-	ROM_REGION( 0x0800, REGION_GFX3, 0 )	/* radar/star timing table */
+	ROM_REGION( 0x0800, REGION_GFX3, 0 ) /* radar/star timing table */
 	ROM_LOAD( "trs2v3ec",     0x0000, 0x0800, CRC(0eca8d6b) SHA1(8358b5131d082b2fb8dd793d2e5382daeef6f75c) )
 
 	ROM_REGION( 0x0300, REGION_PROMS, 0 )
 	ROM_LOAD( "rs2-x.xxx",    0x0000, 0x0100, CRC(54609d61) SHA1(586620ecc61f3e55258fe6360bcacad5f570f29c) ) /* palette low 4 bits (inverted) */
 	ROM_LOAD( "rs2-c.xxx",    0x0100, 0x0100, CRC(79a7d831) SHA1(475ec991929d43b2bcd4b5aee144249f487d0b5b) ) /* palette high 4 bits (inverted) */
 	ROM_LOAD( "rs2-v.1hc",    0x0200, 0x0100, CRC(1b828315) SHA1(00c9f8c5ae86b68d38c66f9071b5f1ef421c1005) ) /* character color codes on a per-column basis */
+ROM_END
+
+/* unclear which boardset this comes from, probably a TRS-02 based on ROM labels; there existed a 5 pcb stack with TRS-03 (no voice) sound board on top, and a 4 board as well as a 2 board pcb stack */
+ROM_START( radarscpc )
+	ROM_REGION( 0x10000, REGION_CPU1, 0 )
+	ROM_LOAD( "trs2c5fc",     0x0000, 0x1000, CRC(40949e0d) SHA1(94717b9d027600e25b863e89900df41325875961) )
+	ROM_LOAD( "trs2c5gc",     0x1000, 0x1000, CRC(afa8c49f) SHA1(25880e9dcf2dc8862f7f3c38687f01dfe2424293) )
+	ROM_LOAD( "trs2c5hc",     0x2000, 0x1000, CRC(51b8263d) SHA1(09687f2c40cf09ffc2aeddde4a4fa32800847f01) )
+	ROM_LOAD( "trs2c5kc",     0x3000, 0x1000, CRC(1f0101f7) SHA1(b9f988847fdefa64dfeae06c2244215cb0d64dbe) )
+	/*empty socket on position 5L on pcb labeled "Test", 0x4000, 0x1000 */
+
+	ROM_REGION( 0x1800, REGION_CPU2, 0 ) /* sound */
+	ROM_LOAD( "trs2s3i",      0x0000, 0x0800, CRC(78034f14) SHA1(548b44ac69f39df6687da1c0f60968009b1e0767) )
+	ROM_RELOAD(               0x0800, 0x0800 )
+	ROM_FILL(                 0x1000, 0x0800, 0x00 )
+	/* socket 3J is empty */
+
+	ROM_REGION( 0x1000, REGION_GFX1, 0 )
+	ROM_LOAD( "trs2v3gc",     0x0000, 0x0800, CRC(f095330e) SHA1(dd3de744f28ff108630d3336bd246d3323fa34af) )
+	ROM_LOAD( "trs2v3hc",     0x0800, 0x0800, CRC(15a316f0) SHA1(8785a996c6433882a0a7150693c329a4247bb77e) )
+
+	ROM_REGION( 0x2000, REGION_GFX2, 0 )
+	ROM_LOAD( "trs2v3dc",     0x0000, 0x0800, CRC(e0bb0db9) SHA1(b570439ea1b5d34d0ac938ac9157f22f319b786d) )
+	ROM_LOAD( "trs2v3cc",     0x0800, 0x0800, CRC(6c4e7dad) SHA1(54e6a5005c44261dc4ba845dcd5ff62ea1402d26) )
+	ROM_LOAD( "trs2v3bc",     0x1000, 0x0800, CRC(6fdd63f1) SHA1(2eb09ab0759e4c8df9188fb833440d8fc94f6172) )
+	ROM_LOAD( "trs2v3ac",     0x1800, 0x0800, CRC(bbf62755) SHA1(cb4ca8d4fe689ca0011a4b6c0a2dbd4c764ac70a) )
+
+	ROM_REGION( 0x0800, REGION_GFX3, 0 ) /* radar/star timing table */
+	ROM_LOAD( "trs2v3ec",     0x0000, 0x0800, CRC(0eca8d6b) SHA1(8358b5131d082b2fb8dd793d2e5382daeef6f75c) )
+
+	ROM_REGION( 0x0300, REGION_PROMS, 0 )
+	ROM_LOAD( "rs2-x.xxx",    0x0000, 0x0100, CRC(54609d61) SHA1(586620ecc61f3e55258fe6360bcacad5f570f29c) ) /* palette low 4 bits (inverted) */
+	ROM_LOAD( "rs2-c.xxx",    0x0100, 0x0100, CRC(79a7d831) SHA1(475ec991929d43b2bcd4b5aee144249f487d0b5b) ) /* palette high 4 bits (inverted) */
+	ROM_LOAD( "rs2-v.1hc",    0x0200, 0x0100, CRC(1b828315) SHA1(00c9f8c5ae86b68d38c66f9071b5f1ef421c1005) ) /* character color codes on a per-column basis */
+ROM_END
+
+/* TRS01 5-pcb stack with TRS01 "Voice" pcb on top containing the sound cpu and the m58817 speech chip and the m58819 speech serial rom emulator chip */
+
+ROM_START( radarscp1 )
+	ROM_REGION( 0x10000, REGION_CPU1, 0 )
+	ROM_LOAD( "trs01_5f",     0x0000, 0x1000, CRC(40949e0d) SHA1(94717b9d027600e25b863e89900df41325875961) )
+	ROM_LOAD( "trs01_5g",     0x1000, 0x1000, CRC(afa8c49f) SHA1(25880e9dcf2dc8862f7f3c38687f01dfe2424293) )
+	ROM_LOAD( "trs01_5h",     0x2000, 0x1000, CRC(51b8263d) SHA1(09687f2c40cf09ffc2aeddde4a4fa32800847f01) )
+	ROM_LOAD( "trs01_5k",     0x3000, 0x1000, CRC(1f0101f7) SHA1(b9f988847fdefa64dfeae06c2244215cb0d64dbe) )
+	/*empty socket on position 5L on pcb labeled "Test", 0x4000, 0x1000 */
+
+	ROM_REGION( 0x1800, REGION_CPU2, 0 ) /* sound */
+	ROM_LOAD( "trs-s__5a.5a", 0x0000, 0x0800, CRC(5166554c) SHA1(00bf501ca448929f6187598da6fdbc1ea488745a) ) /* 5A on the 'voice' board on top of the 5-pcb stack; eprom label is "TRS-S ['S' overstrikes a '1'] // 5A [stamped '8' or 'a' in red ink]" */
+	ROM_RELOAD(               0x0800, 0x0800 )
+	ROM_FILL(                 0x1000, 0x0800, 0xFF )
+
+	ROM_REGION( 0x0800, REGION_USER2, 0 )  /* speech rom */
+	ROM_LOAD( "trs-s__4h.4h",      0x0000, 0x0800, CRC(d1f1b48c) SHA1(ee5584368d2e9f7bde271f5004585b53f5ff5c3f) ) /* 4H on the 'voice' board on top of the 5-pcb stack; eprom label is "TRS-S ['S' overstrikes a '1'] // 4H [stamped '8' or 'a' in red ink]" */
+
+	ROM_REGION( 0x1000, REGION_GFX1, 0 )
+	ROM_LOAD( "trs01v3f",     0x0000, 0x0800, CRC(f095330e) SHA1(dd3de744f28ff108630d3336bd246d3323fa34af) )
+	ROM_LOAD( "trs01v3g",     0x0800, 0x0800, CRC(15a316f0) SHA1(8785a996c6433882a0a7150693c329a4247bb77e) )
+
+	ROM_REGION( 0x2000, REGION_GFX2, 0 )
+	ROM_LOAD( "trs01v3d",     0x0000, 0x0800, CRC(e0bb0db9) SHA1(b570439ea1b5d34d0ac938ac9157f22f319b786d) )
+	ROM_LOAD( "trs01v3c",     0x0800, 0x0800, CRC(6c4e7dad) SHA1(54e6a5005c44261dc4ba845dcd5ff62ea1402d26) )
+	ROM_LOAD( "trs01v3b",     0x1000, 0x0800, CRC(6fdd63f1) SHA1(2eb09ab0759e4c8df9188fb833440d8fc94f6172) )
+	ROM_LOAD( "trs01v3a",     0x1800, 0x0800, CRC(bbf62755) SHA1(cb4ca8d4fe689ca0011a4b6c0a2dbd4c764ac70a) )
+
+	ROM_REGION( 0x0800, REGION_GFX3, 0 ) /* radar/star timing table */
+	ROM_LOAD( "trs011ha.bin",    0x0000, 0x0800, CRC(dbcc50c2) SHA1(1e438057d4d93ba22794ab0a9bf41bb49ac28a35) ) /* star /grid */
+
+	ROM_REGION( 0x0100, "gfx4", 0 ) /* priority based on hor. pos */
+	ROM_LOAD( "trs01e3k.bin",    0x0000, 0x0100, CRC(6c6f989c) SHA1(d4b90e43d93ef141a8002b88ce5e33411b870ced) )
+
+	ROM_REGION( 0x0400, REGION_PROMS, 0 )
+	ROM_LOAD( "trs01c2j.bin",    0x0000, 0x0100, CRC(2a087c87) SHA1(dbf0c6173583dc4fa5d3f34d2f42cbaf2bd4b167) ) /* blue */
+	ROM_LOAD( "trs01c2k.bin",    0x0100, 0x0100, CRC(650c5daf) SHA1(72f91ee2fab9eee58ee42881327e6345aa70b7f9) ) /* green */
+	ROM_LOAD( "trs01c2l.bin",    0x0200, 0x0100, CRC(23087910) SHA1(afc05c322b11fefaf0af857fee06a5afd0d4593e) ) /* red */
+	/* Hack! The prom at pos 1D on video board has not been dumped
+	 * Rom 1D is a MB7051, only 5 address lines
+	 * Rom below from TRS02 dump: rs2-v.1hc
+	 */
+	ROM_LOAD( "trs01v1d.bin",    0x0300, 0x0100, BAD_DUMP CRC(1b828315) SHA1(00c9f8c5ae86b68d38c66f9071b5f1ef421c1005) ) /* character color codes on a per-column basis */
 ROM_END
 
 ROM_START( dkong )
@@ -2462,23 +2585,20 @@ ROM_START( pestplce )
 	ROM_LOAD( "pest.4",       0x0000, 0x1000, CRC(715da5f8) SHA1(f708c3fd374da65cbd9fe2e191152f5d865414a0) )
 
 	ROM_REGION( 0x2000, REGION_GFX1, ROMREGION_DISPOSE )
-	/* this has FIXED BITS (xxxxxxxxxx1xxxxx)*/
-	ROM_LOAD( "pest.o",       0x0000, 0x1000, BAD_DUMP CRC(22874444) SHA1(23d4744c99d48ae9f5e1ef8a214ff279a1fa0a3e) )
+	ROM_LOAD( "pest.o",       0x0000, 0x1000, CRC(03939ece) SHA1(a776558eba2f8a2bc16933555d41a4532b627bff) )
 	ROM_LOAD( "pest.k",       0x1000, 0x1000, CRC(2acacedf) SHA1(f91863f46aeb8986226b0b0854bac00217d6e7cf) )
-	ROM_RELOAD(				  0x0000, 0x1000 ) /* for now we overwrite the bad rom*/
 
-	/* all have FIRST AND SECOND HALF IDENTICAL*/
 	ROM_REGION( 0x4000, REGION_GFX2, ROMREGION_DISPOSE )
-	ROM_LOAD( "pest.a",       0x0000, 0x1000, CRC(22d89c23) SHA1(c5dbf97c8d7ef7acff8395ae083ce29c0c203160) )
-	ROM_LOAD( "pest.b",       0x1000, 0x1000, CRC(543b15ae) SHA1(486152fa86aa5b01f1364ff95462f71ce2a93f92) )
-	ROM_LOAD( "pest.c",       0x2000, 0x1000, CRC(ebf68c21) SHA1(9a734f13e2b89c72a71bce77dd0d5ed54f2c6ae5) )
-	ROM_LOAD( "pest.d",       0x3000, 0x1000, CRC(3c6781ac) SHA1(61c53d9d27e0c78a3a152ea45b7e686850e8a5e1) )
+	ROM_LOAD( "pest.a",        0x1000, 0x1000, CRC(1958346e) SHA1(c4053dafc904b5e202e4a1acc48dd3e22db05c74) )
+	ROM_LOAD( "pest.b",        0x0000, 0x1000, CRC(e760073e) SHA1(917e74a4efa62b7404a03f094f3f4047dda8feda) )
+	ROM_LOAD( "pest.c",        0x3000, 0x1000, CRC(bf08f2a3) SHA1(c755f7463ac46054c65248d91b8e8da9cd379bf5) )
+	ROM_LOAD( "pest.d",        0x2000, 0x1000, CRC(3a993c17) SHA1(af7048576aa3185b051518663693802ec9014a74) )
 
-	/* are these the same as dkongjr ?*/
-	ROM_REGION( 0x0300, REGION_PROMS, 0 )
-	ROM_LOAD( "pest-2e.bpr",  0x0000, 0x0100, NO_DUMP/*BAD_DUMP CRC(463dc7ad) SHA1(b2c9f22facc8885be2d953b056eb8dcddd4f34cb)*/ )	/* palette low 4 bits (inverted) */
-	ROM_LOAD( "pest-2f.bpr",  0x0100, 0x0100, NO_DUMP/*BAD_DUMP CRC(47ba0042) SHA1(dbec3f4b8013628c5b8f83162e5f8b1f82f6ee5f)*/ )	/* palette high 4 bits (inverted) */
-	ROM_LOAD( "pest-2n.bpr",  0x0200, 0x0100, NO_DUMP/*BAD_DUMP CRC(dbf185bf) SHA1(2697a991a4afdf079dd0b7e732f71c7618f43b70)*/ )	/* character color codes on a per-column basis */
+	/* not standard dkong layout */
+	ROM_REGION( 0x0300, REGION_PROMS, ROMREGION_INVERT )
+	ROM_LOAD( "n82s129a.bin",  0x0000, 0x0100, CRC(0330f35f) SHA1(5bd50cdd738b258dd3cfcd0e1dd8d37c927edc4b) )
+	ROM_LOAD( "n82s129b.bin",  0x0100, 0x0100, CRC(ba88311b) SHA1(b4388ebd3984bdb966d850cfb7d34c3ebce230b7) )
+/*	ROM_LOAD( "sn74s288n.bin", 0x0200, 0x0020, CRC(a5a6f2ca) SHA1(5507fb6f5c8845c4421c2996e9f76c818d987623) ) */
 ROM_END
 
 ROM_START( dkong3 )
@@ -2504,10 +2624,10 @@ ROM_START( dkong3 )
 	ROM_LOAD( "dk3v.7e",      0x2000, 0x1000, CRC(0c0af3fb) SHA1(03e0c3f51bc3c20f95cb02f76f2d80188d5dbe36) )
 	ROM_LOAD( "dk3v.7f",      0x3000, 0x1000, CRC(55c58662) SHA1(7f3d5a1b386cc37d466e42392ffefc928666a8dc) )
 
-	ROM_REGION( 0x0300, REGION_PROMS, 0 )
+	ROM_REGION( 0x0500, REGION_PROMS, 0 )
 	ROM_LOAD( "dkc1-c.1d",    0x0000, 0x0200, CRC(df54befc) SHA1(7912dbf0a0c8ef68f4ae0f95e55ab164da80e4a1) ) /* palette red & green component */
-	ROM_LOAD( "dkc1-c.1c",    0x0100, 0x0200, CRC(66a77f40) SHA1(c408d65990f0edd78c4590c447426f383fcd2d88) ) /* palette blue component */
-	ROM_LOAD( "dkc1-v.2n",    0x0200, 0x0100, CRC(50e33434) SHA1(b63da9bed9dc4c7da78e4c26d4ba14b65f2b7e72) )	/* character color codes on a per-column basis */
+	ROM_LOAD( "dkc1-c.1c",    0x0200, 0x0200, CRC(66a77f40) SHA1(c408d65990f0edd78c4590c447426f383fcd2d88) ) /* palette blue component */
+	ROM_LOAD( "dkc1-v.2n",    0x0400, 0x0100, CRC(50e33434) SHA1(b63da9bed9dc4c7da78e4c26d4ba14b65f2b7e72) )	/* character color codes on a per-column basis */
 ROM_END
 
 ROM_START( dkong3j )
@@ -2533,10 +2653,10 @@ ROM_START( dkong3j )
 	ROM_LOAD( "dk3v.7e",      0x2000, 0x1000, CRC(0c0af3fb) SHA1(03e0c3f51bc3c20f95cb02f76f2d80188d5dbe36) )
 	ROM_LOAD( "dk3v.7f",      0x3000, 0x1000, CRC(55c58662) SHA1(7f3d5a1b386cc37d466e42392ffefc928666a8dc) )
 
-	ROM_REGION( 0x0300, REGION_PROMS, 0 )
+	ROM_REGION( 0x0500, REGION_PROMS, 0 )
 	ROM_LOAD( "dkc1-c.1d",    0x0000, 0x0200, CRC(df54befc) SHA1(7912dbf0a0c8ef68f4ae0f95e55ab164da80e4a1) ) /* palette red & green component */
-	ROM_LOAD( "dkc1-c.1c",    0x0100, 0x0200, CRC(66a77f40) SHA1(c408d65990f0edd78c4590c447426f383fcd2d88) ) /* palette blue component */
-	ROM_LOAD( "dkc1-v.2n",    0x0200, 0x0100, CRC(50e33434) SHA1(b63da9bed9dc4c7da78e4c26d4ba14b65f2b7e72) )	/* character color codes on a per-column basis */
+	ROM_LOAD( "dkc1-c.1c",    0x0200, 0x0200, CRC(66a77f40) SHA1(c408d65990f0edd78c4590c447426f383fcd2d88) ) /* palette blue component */
+	ROM_LOAD( "dkc1-v.2n",    0x0400, 0x0100, CRC(50e33434) SHA1(b63da9bed9dc4c7da78e4c26d4ba14b65f2b7e72) )	/* character color codes on a per-column basis */
 ROM_END
 
 ROM_START( dkong3b )
@@ -2567,10 +2687,10 @@ ROM_START( dkong3b )
 	ROM_LOAD( "7e.bin",       0x2000, 0x1000, CRC(0c0af3fb) SHA1(03e0c3f51bc3c20f95cb02f76f2d80188d5dbe36) )
 	ROM_LOAD( "7f.bin",       0x3000, 0x1000, CRC(55c58662) SHA1(7f3d5a1b386cc37d466e42392ffefc928666a8dc) )
 
-	ROM_REGION( 0x0300, REGION_PROMS, 0 )
-	ROM_LOAD( "dk3b-c.1d",    0x0000, 0x0200, BAD_DUMP CRC(df54befc) SHA1(7912dbf0a0c8ef68f4ae0f95e55ab164da80e4a1) ) /* palette red & green component */
-	ROM_LOAD( "dk3b-c.1c",    0x0100, 0x0200, BAD_DUMP CRC(66a77f40) SHA1(c408d65990f0edd78c4590c447426f383fcd2d88) ) /* palette blue component */
-	ROM_LOAD( "dk3b-v.2n",    0x0200, 0x0100, BAD_DUMP CRC(50e33434) SHA1(b63da9bed9dc4c7da78e4c26d4ba14b65f2b7e72) )	/* character color codes on a per-column basis */
+	ROM_REGION( 0x0500, REGION_PROMS, 0 )
+	ROM_LOAD( "dk3b-c.1d",    0x0000, 0x0200, CRC(df54befc) SHA1(7912dbf0a0c8ef68f4ae0f95e55ab164da80e4a1) ) /* palette red & green component */
+	ROM_LOAD( "dk3b-c.1c",    0x0200, 0x0200, CRC(66a77f40) SHA1(c408d65990f0edd78c4590c447426f383fcd2d88) ) /* palette blue component */
+	ROM_LOAD( "dk3b-v.2n",    0x0400, 0x0100, CRC(50e33434) SHA1(b63da9bed9dc4c7da78e4c26d4ba14b65f2b7e72) ) /* character color codes on a per-column basis */
 ROM_END
 
 ROM_START( hunchbkd )
@@ -2872,20 +2992,20 @@ ROM_END
 
 ROM_START( shootgal )
 	ROM_REGION( 0x8000, REGION_CPU1, 0 )
-	ROM_LOAD( "sg-01-5b",    0x0000, 0x1000, CRC(1066ea33) SHA1(822d45cf4b5ef8f7a527e07063989caf623fab15) )
-	ROM_CONTINUE(			 0x6000, 0x1000 )
+	ROM_LOAD( "cpu.5e",       0x0000, 0x1000, CRC(c6d61b9c) SHA1(de3f4cf559313c4e5c5f7019aa6f68b3334e05c1) )
+	ROM_LOAD( "cpu.5a",       0x6000, 0x1000, CRC(5dabe5e3) SHA1(7a36d97b2604aa61fe468863651cf67b851bbfca) )
 
 	ROM_REGION( 0x1000, REGION_CPU2, 0 )
 	ROM_LOAD( "sg-01-3h",    0x0000, 0x1000, CRC(80be5915) SHA1(a4f7d6a8319065a7a712df0195a3f8695d8f99f9) )
 
-	ROM_REGION( 0x8000, REGION_CPU3, 0 )
+	ROM_REGION( 0x0800, REGION_CPU3, 0 )
 	ROM_LOAD( "sg-01-0",     0x0000, 0x0800, CRC(f055a624) SHA1(5dfe89d7271092e665cdd5cd59d15a2b70f92f43) )
 
-	ROM_REGION( 0x8000, REGION_CPU4, 0 )
-	ROM_LOAD( "sg-01snd",    0x0000, 0x1000, CRC(644a0728) SHA1(e249fd57bc49572a2246aaf7c68a547f319f51bc) ) /*sg-01-snd*/
-	ROM_LOAD( "sg-01spk",    0x1000, 0x0800, CRC(aacaf730) SHA1(cd562093ab8931d165cb0877e332474fce131c67) ) /*sg-01-spk*/
+	ROM_REGION( 0x1800, REGION_SOUND1, 0 )
+	ROM_LOAD( "sg-01snd",    0x0000, 0x1000, CRC(644a0728) SHA1(e249fd57bc49572a2246aaf7c68a547f319f51bc) ) /* sg-01-snd */
+	ROM_LOAD( "sg-01spk",    0x1000, 0x0800, CRC(aacaf730) SHA1(cd562093ab8931d165cb0877e332474fce131c67) ) /* sg-01-spk */
 
-	ROM_REGION( 0x2000, REGION_USER1, 0 ) /* gun proms?*/
+	ROM_REGION( 0x2000, REGION_USER1, 0 ) // gun proms?
 	ROM_LOAD( "sg-1",        0x0000, 0x0200, CRC(fda82517) SHA1(b36bac69b6f8218b280aae59133ea0d22d7a99f6) )
 	ROM_LOAD( "sg-2",        0x0200, 0x091d, CRC(6e065613) SHA1(26d048af5c302f921de8e2c1bc7c7bf48dc21b5a) )
 
@@ -2899,7 +3019,7 @@ ROM_START( shootgal )
 	ROM_LOAD( "sg-01-7e",    0x1000, 0x0800, CRC(65d11685) SHA1(4e4b0b60ca4c16e26d842e142002887456d98ea4) )
 	ROM_LOAD( "sg-01-7f",    0x1800, 0x0800, CRC(44fe71a2) SHA1(ff4442a5601ac2ed63c57e22977299b5b5499c93) )
 
-	ROM_REGION( 0x0600, REGION_PROMS, 0 ) /*ok?*/
+	ROM_REGION( 0x0600, REGION_PROMS, 0 )
 	ROM_LOAD( "sg-01-2e",    0x0000, 0x0200, CRC(34fb23ea) SHA1(6bd6de791c9e0a5f9c833c287663e9755e01c573) )
 	ROM_LOAD( "sg-01-2f",    0x0100, 0x0200, CRC(c29b880a) SHA1(950017a0298f91e41db9865ed8ce388f4095f6cf) )
 	ROM_LOAD( "sg-01-2n",    0x0200, 0x0200, CRC(e08ed788) SHA1(6982f6bcc70dbf4c75ff538a5df70da11bc89bb4) )
@@ -2925,7 +3045,6 @@ static DRIVER_INIT( herodk )
 	}
 }
 
-
 static DRIVER_INIT( radarscp )
 {
 	UINT8 *RAM = memory_region(REGION_CPU1);
@@ -2934,8 +3053,11 @@ static DRIVER_INIT( radarscp )
 	/* TODO: Radarscope does a check on bit 6 of 7d00 which prevent it from working. */
 	/* It's a sound status flag, maybe signaling when a tune is finished. */
 	/* For now, we comment it out. */
+
+	/* I uncommented below and it boots fine will leave it on in case it causes issues else where */
 	RAM[0x1e9c] = 0xc3;
 	RAM[0x1e9d] = 0xbd;
+	set_var();
 }
 
 static DRIVER_INIT( dkong2 )
@@ -2945,7 +3067,7 @@ static DRIVER_INIT( dkong2 )
 	memset (memory_region(REGION_CPU1), 0, 0x10000);
 
 	banks = 0;
-	memcpy (memory_region(REGION_CPU1) + 0x0000, memory_region(REGION_USER1) + 0x10000, 0x06000); 
+	memcpy (memory_region(REGION_CPU1) + 0x0000, memory_region(REGION_USER1) + 0x10000, 0x06000);
 	memcpy (memory_region(REGION_CPU1) + 0x8000, memory_region(REGION_USER1) + 0x10000, 0x08000); /* ?*/
 
 	install_mem_write_handler(0, 0xe000, 0xe000,  braze_a15_w);
@@ -2953,47 +3075,48 @@ static DRIVER_INIT( dkong2 )
 	install_mem_read_handler(0,  0xc800, 0xc800,  braze_eeprom_r);
 }
 
+GAMEX(1980, radarscp,  0,        radarscp, dkong,    radarscp, ROT270, "Nintendo", "Radar Scope (TRS02, rev. D)", GAME_IMPERFECT_SOUND )
+GAMEX(1980, radarscpc, radarscp, radarscp, dkong,    radarscp, ROT270, "Nintendo", "Radar Scope (TRS02?, rev. C)", GAME_IMPERFECT_SOUND )
+GAMEX(1980, radarscp1, radarscp, radarscp, dkong,    radarscp, ROT270, "Nintendo", "Radar Scope (TRS01)", GAME_IMPERFECT_SOUND | GAME_IMPERFECT_GRAPHICS )
 
-GAMEX(1980, radarscp, 0,        radarscp, dkong,    radarscp, ROT90, "Nintendo", "Radar Scope", GAME_IMPERFECT_SOUND | GAME_IMPERFECT_GRAPHICS )
+GAME (1981, dkong,     0,        dkong,    dkong,    0,        ROT270, "Nintendo of America", "Donkey Kong (US set 1)" )
+GAME (1981, dkongo,    dkong,    dkong,    dkong,    0,        ROT270, "Nintendo", "Donkey Kong (US set 2)" )
+GAME (1981, dkongjp,   dkong,    dkong,    dkong,    0,        ROT270, "Nintendo", "Donkey Kong (Japan set 1)" )
+GAME (1981, dkongjo,   dkong,    dkong,    dkong,    0,        ROT270, "Nintendo", "Donkey Kong (Japan set 2)" )
+GAME (1981, dkongjo1,  dkong,    dkong,    dkong,    0,        ROT270, "Nintendo", "Donkey Kong (Japan set 3) (bad dump[Q])" )
+GAME (2013, dkongpe,   dkong,    dkong,    dkong,    0,        ROT270,  "hack", "Donkey Kong - Pauline Edition" ) /* from Clay Cowgill's Romhack */
+GAME (2015, dkrdemo,   dkong,    dkong,    dkrdemo,  0,        ROT270, "bootleg",  "Donkey Kong Remix" )
 
-GAME (1981, dkong,    0,        dkong,    dkong,    0,        ROT90, "Nintendo of America", "Donkey Kong (US set 1)" )
-GAME (1981, dkongo,   dkong,    dkong,    dkong,    0,        ROT90, "Nintendo", "Donkey Kong (US set 2)" )
-GAME (1981, dkongjp,  dkong,    dkong,    dkong,    0,        ROT90, "Nintendo", "Donkey Kong (Japan set 1)" )
-GAME (1981, dkongjo,  dkong,    dkong,    dkong,    0,        ROT90, "Nintendo", "Donkey Kong (Japan set 2)" )
-GAME (1981, dkongjo1, dkong,    dkong,    dkong,    0,        ROT90, "Nintendo", "Donkey Kong (Japan set 3) (bad dump[Q])" )
-GAME (2013, dkongpe,  dkong,    dkong,    dkong,    0,        ROT90,  "hack", "Donkey Kong - Pauline Edition" ) /* from Clay Cowgill's Romhack */
+GAME (2008, dkongx,    dkong,    braze,    dkong2,   dkong2,   ROT270, "bootleg",  "Donkey Kong II - Jumpman Returns (Hack)" )
 
-GAME (2008, dkongx,   dkong,    braze,    dkong2,   dkong2,   ROT90, "bootleg",  "Donkey Kong II - Jumpman Returns (Hack)" )
-GAME (2015, dkrdemo,  dkong,    dkong,    dkrdemo,  0,        ROT90, "bootleg",  "Donkey Kong Remix" )
+GAME( 1982, dkongjr,   0,        dkongjr,  dkong,    0,        ROT270, "Nintendo of America", "Donkey Kong Junior (US)" )
+GAME( 1982, dkongjrj,  dkongjr,  dkongjr,  dkong,    0,        ROT270, "Nintendo", "Donkey Kong Jr. (Japan)" )
+GAME( 1982, dkngjnrj,  dkongjr,  dkongjr,  dkong,    0,        ROT270, "Nintendo", "Donkey Kong Junior (Japan[Q])" )
+GAME( 1982, dkongjrb,  dkongjr,  dkongjr,  dkong,    0,        ROT270, "bootleg", "Donkey Kong Jr. (bootleg)" )
+GAME( 1982, dkngjnrb,  dkongjr,  dkongjr,  dkong,    0,        ROT270, "Nintendo of America", "Donkey Kong Junior (bootleg[Q])" )
 
-GAME( 1982, dkongjr,  0,        dkongjr,  dkong,    0,        ROT90, "Nintendo of America", "Donkey Kong Junior (US)" )
-GAME( 1982, dkongjrj, dkongjr,  dkongjr,  dkong,    0,        ROT90, "Nintendo", "Donkey Kong Jr. (Japan)" )
-GAME( 1982, dkngjnrj, dkongjr,  dkongjr,  dkong,    0,        ROT90, "Nintendo", "Donkey Kong Junior (Japan[Q])" )
-GAME( 1982, dkongjrb, dkongjr,  dkongjr,  dkong,    0,        ROT90, "bootleg", "Donkey Kong Jr. (bootleg)" )
-GAME( 1982, dkngjnrb, dkongjr,  dkongjr,  dkong,    0,        ROT90, "Nintendo of America", "Donkey Kong Junior (bootleg[Q])" )
+GAME( 1983, dkong3,    0,        dkong3,   dkong3,   0,        ROT270, "Nintendo of America", "Donkey Kong 3 (US)" )
+GAME( 1983, dkong3j,   dkong3,   dkong3,   dkong3,   0,        ROT270, "Nintendo", "Donkey Kong 3 (Japan)" )
+GAME(1984,  dkong3b,   dkong3,   dkong3b,  dkong3b,  0,        ROT270, "bootleg", "Donkey Kong 3 (bootleg on Donkey Kong Jr. hardware)" )
 
-GAME( 1983, dkong3,   0,        dkong3,   dkong3,   0,        ROT90, "Nintendo of America", "Donkey Kong 3 (US)" )
-GAME( 1983, dkong3j,  dkong3,   dkong3,   dkong3,   0,        ROT90, "Nintendo", "Donkey Kong 3 (Japan)" )
-GAMEX(1984, dkong3b,  dkong3,	dkongjr,  dkong3b,  0,        ROT90, "bootleg", "Donkey Kong 3 (bootleg on Donkey Kong Jr. hardware)", GAME_WRONG_COLORS )
+GAME( 1984, herbiedk,  huncholy, herbiedk, herbiedk, 0,        ROT270, "CVS", "Herbie at the Olympics (DK conversion)")
 
-GAME( 1984, herbiedk, huncholy, herbiedk, herbiedk, 0,        ROT90, "CVS", "Herbie at the Olympics (DK conversion)")
+GAMEX(1983, hunchbkd,  hunchbak, hunchbkd, hunchbkd, 0,        ROT270, "Century Electronics", "Hunchback (DK conversion)", GAME_WRONG_COLORS )
 
-GAMEX(1983, hunchbkd, hunchbak, hunchbkd, hunchbkd, 0,        ROT90, "Century Electronics", "Hunchback (DK conversion)", GAME_WRONG_COLORS )
+GAME( 1984, sbdk,      superbik, hunchbkd, sbdk,     0,        ROT270, "Century Electronics", "Super Bike (DK conversion)" )
 
-GAME( 1984, sbdk,     superbik,	hunchbkd, sbdk,	    0,        ROT90, "Century Electronics", "Super Bike (DK conversion)" )
+GAME( 1984, herodk,    hero,     hunchbkd, herodk,   herodk,   ROT270, "Seatongrove Ltd (Crown license)", "Hero in the Castle of Doom (DK conversion)" )
+GAME( 1984, herodku,   hero,     hunchbkd, herodk,   0,        ROT270, "Seatongrove Ltd (Crown license)", "Hero in the Castle of Doom (DK conversion not encrypted)" )
 
-GAME( 1984, herodk,   hero,     hunchbkd, herodk,   herodk,   ROT90, "Seatongrove Ltd (Crown license)", "Hero in the Castle of Doom (DK conversion)" )
-GAME( 1984, herodku,  hero,     hunchbkd, herodk,   0,        ROT90, "Seatongrove Ltd (Crown license)", "Hero in the Castle of Doom (DK conversion not encrypted)" )
+GAME( 1984, 8ballact,  0,        eightact, 8ballact, 0,        ROT270, "Seatongrove Ltd (Magic Eletronics USA licence)", "Eight Ball Action (DK conversion)" )
+GAME( 1984, 8ballat2,  8ballact, eightact, 8ballact, 0,        ROT270, "Seatongrove Ltd (Magic Eletronics USA licence)", "Eight Ball Action (DKJr conversion)" )
 
-GAME( 1984, 8ballact, 0,    	eightact, 8ballact, 0,        ROT90, "Seatongrove Ltd (Magic Eletronics USA licence)", "Eight Ball Action (DK conversion)" )
-GAME( 1984, 8ballat2, 8ballact,	eightact, 8ballact, 0,        ROT90, "Seatongrove Ltd (Magic Eletronics USA licence)", "Eight Ball Action (DKJr conversion)" )
+GAMEX(1984, shootgal,  0,        shootgal, shootgal, 0,        ROT0,   "Seatongrove Ltd (Zaccaria licence)", "Shooting Gallery", GAME_IMPERFECT_SOUND )
 
-GAMEX(1984, shootgal, 0,	shootgal, hunchbkd, 0,		  ROT180, "Seatongrove Ltd (Zaccaria licence)", "Shooting Gallery", GAME_NOT_WORKING )
+GAMEX(1983, pestplce,  mario,    pestplce, pestplce, 0,        ROT180, "bootleg", "Pest Place", GAME_WRONG_COLORS | GAME_IMPERFECT_SOUND )
 
-GAMEX(1983, pestplce, mario,	pestplce, pestplce, 0,        ROT180, "bootleg", "Pest Place", GAME_WRONG_COLORS | GAME_IMPERFECT_SOUND )
+GAME( 1985, spclforc,  0,        spclforc, spclforc, 0,        ROT270, "Senko Industries (Magic Eletronics Inc. licence)", "Special Forces" )
+GAME( 1985, spcfrcii,  0,        spclforc, spclforc, 0,        ROT270, "Senko Industries (Magic Eletronics Inc. licence)", "Special Forces II" )
 
-GAMEX(1985, spclforc, 0,	spclforc, spclforc, 0,        ROT90, "Senko Industries (Magic Eletronics Inc. licence)", "Special Forces", GAME_NO_SOUND )
-GAMEX(1985, spcfrcii, 0,	spclforc, spclforc, 0,        ROT90, "Senko Industries (Magic Eletronics Inc. licence)", "Special Forces II", GAME_NO_SOUND )
-
-GAMEX(198?, drakton,  0,        dkong,    dkong,    0,        ROT90, "Epos Corporation", "Drakton", GAME_NOT_WORKING )
-GAMEX(1985, strtheat, 0,        strtheat, strtheat, 0,        ROT90, "Epos Corporation", "Street Heat - Cardinal Amusements", GAME_NO_SOUND)
+GAMEX(198?, drakton,   0,        dkong,    dkong,    0,        ROT270, "Epos Corporation", "Drakton", GAME_NOT_WORKING )
+GAMEX(1985, strtheat,  0,        strtheat, strtheat, 0,        ROT270, "Epos Corporation", "Street Heat - Cardinal Amusements", GAME_NO_SOUND)

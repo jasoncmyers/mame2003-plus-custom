@@ -207,7 +207,6 @@ struct GameOptions
   unsigned input_interface;                         /* can be set to RETRO_DEVICE_JOYPAD, RETRO_DEVICE_KEYBOARD, or 0 (both simultaneously) */
   unsigned active_control_type[MAX_PLAYER_COUNT];   /* register to indicate the default control layout for each player as currently set in the frontend */
   bool     restrict_4_way;                          /* simulate 4-way joystick restrictor */
-  unsigned deadzone;                                /* analog deadzone in percent. 20 corresponds to 20% */
   unsigned tate_mode;
 
   int      crosshair_enable;
@@ -254,6 +253,7 @@ struct GameOptions
   int      debug_depth;	         /* requested depth of debugger bitmap */
   bool     cheat_input_ports;     /*cheat input ports enable/disable */
   int      override_ad_stick;
+  bool     input_toggle;
   bool     digital_joy_centering; /* center digital joysticks enable/disable */
   double   cpu_clock_scale;
   int      autosave_hiscore;      /* default saves on exit / recursively saves every number of frames defined in hiscore.c / disabled bypasses hiscore implementation entirely */

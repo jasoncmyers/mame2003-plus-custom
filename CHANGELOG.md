@@ -27,6 +27,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Bare Knuckle II (chinese bootleg of Megadrive version)
 * Bare Knuckle III (bootleg of Megadrive version)
 * Baryon: Future Assault
+* Big Fight - Big Trouble In The Atlantic Ocean
 * Bomb Kick
 * Boogie Wings
 * Born To Fight
@@ -51,11 +52,13 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Counter Run (Bootleg, Set 1)
 * Crossed Swords 2
 * Cute Fighter
+* Cycle Warriors
 * Daikaiju no Gyakushu
 * Danger Express (prototype)
 * Deluxe 5
 * Denjin Makai 
 * Deer Hunting
+* Deroon DeroDero 
 * Dice - The Dice Game
 * Diet Go Go
 * Digger (CVS)
@@ -66,6 +69,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Double Wings
 * Dragon Bowl
 * Dream World
+* Dunk shot all sets
 * Dyna Gear
 * Eeekk!
 * ESPGaluda
@@ -132,6 +136,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Ms. Pacman Twin
 * Mrs. Dynamite
 * Multi Champ Deluxe * Mature *
+* Ninja Kazan
 * Oo Parts (Japan, Prototype)
 * Opa Opa (Rev A Unprotected)
 * Oriental Legend Special - Xi You Shi E Zhuan Super (ver. 101, Korean Board)
@@ -159,6 +164,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Recalhorn (prototype)
 * Riot
 * Rolling Crush
+* Round Up 5 - Super Delta Force
 * Rumba Lumber
 * Samurai Shodown V
 * Samurai Shodown V Special
@@ -209,6 +215,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Thunder Heroes
 * Thunder Hoop
 * Title Fight
+* Touki Denshou -Angel Eyes
 * Trophy Hunting Bear & Moose
 * Turkey Hunting
 * Twin Action
@@ -245,6 +252,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * DoDonPachi Dai-Ou-Jou (Black Label)
 * Double Dragon 3 - The Rosetta Stone (Japan)
 * Dunk Dream '95
+* E.D.F. : Earth Defense Force (North America)
 * Escape Kids (Asia 4 Players)
 * Fishing
 * Flower (bootleg)
@@ -360,6 +368,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Find Out - Romset `findout` - colors fixed
 * Fire Barrel - Romset `firebarr`
 * Flower - Romset `flower`
+* Free Kick - Romset `freekick`
 * Funky Jet - Romset `funkyjet`
 * Gardia - Romset `gardia`
 * Get Star / Guardian - Romsets `getstar` and `getstarj`
@@ -489,6 +498,8 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Sky Alert
 * Sky Diver
 * Space Chaser (CV version)
+* Special Forces
+* Special Forces II
 * Super Slam
 * Super Spacefortress Macross
 * Teki Paki
@@ -591,7 +602,6 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Destination Earth - lrescue
 * Frogs
 * Galaxy Rescue - lrescue
-* Ghox (Toaplan Samples)
 * Journey
 * Lunar Rescue - lrescue
 * NATO Defense
@@ -603,6 +613,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Tailgunner
 * Thief
 * Two Tigers - `twotigra` romset
+* Zero Hour
 
 
 ## Games supporting new and improved samples
@@ -918,3 +929,22 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added support for a bootleg version of Sonic The Hedgehog 2 to the segac2 driver and made Lode Runner The Dig Fight default to the English World Region [MAMEDev, arcadez]
 * Added Deco Cassette Type A bios fixed Highway Chase sorted colours for all games then updated some parts of the machine and video code to MAME146 [MAMEDev, arcadez]
 * Added support for Angler Dangler, Manhattan, Oozumou - The Grand Sumo, Skater, and Super Doubles Tennis to the Deco Cassette driver [MAMEDev, arcadez]
+* Added support for resnet dkong and dkong3 machines are hooked up atm [MistyDreams]
+* Fixed Dragon Gun from locking up on the final boss and sorted an issue with the energy bar being missing also on the final boss [MAMEDev, arcadez]
+* Added support for the USA version of Night Slashers to the deco32.c driver [arcadez]
+* Sorted broken dip switches in Mr Do's Castle, Do! Run Run and Mr Do's Wild Ride plus fixed the sound for Indoor Soccer [MAMEDev, arcadez, SapphireDrew]
+* Fixed broken sound in Hachoo and Kick Goal plus sorted some graphical priority issues for 64th. Street - A Detective Story [MAMEDev, arcadez]
+* Added sprite buffering to the megasys1 driver improving the gfx for 64th. Street - A Detective Story, Avenging Spirit, Chimera Beast, Cybattler
+* E.D.F. : Earth Defense Force, Hachoo, In Your Face, Legend of Makai, P-47 - The Phantom Fighter, Ninja Kazan, Plus Alpha, Rod-Land, Saint Dragon
+* Shingen Samurai-Fighter, The Astyanax + more also added missing prio prom dumps for the games that did not have em already [MAMEDev, arcadez]
+* Added support for Ninja Kazan the English version of Iga Ninjyutsuden and E.D.F. : Earth Defense Force (North America) to megasys1.c [arcadez]
+* Fixed some serious graphical problems affecting Zero Hour wrong colours bullet width tilemaps etc etc Red Clash will also benefit from this [Hap, dink, arcadez]
+* Added sound sample support for Zero Hour which was totally silent previously [dink, Otto_Pylotte, MistyDreams, arcadez]
+* Added sega fd089 added all dunkshot sets and aurail sets, also added sdib,destroyer sets [mamedev backports]
+* Improved mario palette we now use resnet mamedev backports]
+* Fixed the official andparent romset for Free Kick and hooked up missing button 2 for Free kick. Gigas and Giga Mark II [MAMEDev, arcadez]
+* Added a previously missing graphical effect for Mega Blast in taito_f2.c now when you get the green pickup the shield orb on your ship can be seen [HAZE, arcadez]
+* Added support for the Tatsumi driver supporting Big Fight - Big Trouble In The Atlantic Ocean, Cycle Warriors and Round Up 5 - Super Delta Force [Mame2003 Dev Team]
+* Updated the Tecmo Sys driver to MAME126 both Deroon DeroDero and Touki Denshou - Angel Eyes are now playable [Haze, Arcadez, dink]
+* Hooked up the missing SN76496 sound for Special Forces and Special Forces II in the dkong.c driver both games now have Sfx and music [arcadez]
+* Fixed sound popping on B-Rap Boys and some sound banking niggles with The Great Thousand Mile Rally games [Mistydreams, arcadez]

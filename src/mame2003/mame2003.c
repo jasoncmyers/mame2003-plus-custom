@@ -271,7 +271,7 @@ bool retro_load_game(const struct retro_game_info *game)
       options.romset_filename_noext = driver_lookup;
       break;
     }
-    if(driverIndex == total_drivers -2) // we could fix the total drives in drivers c but the it pointless its taken into account here
+    if(driverIndex == total_drivers -2) /* we could fix the total drives in drivers c but the it pointless its taken into account here */
     {
       log_cb(RETRO_LOG_ERROR, LOGPRE "Driver index counter: %d. Game driver not found for %s!\n", driverIndex, driver_lookup);
       return false;
@@ -554,11 +554,11 @@ int osd_update_audio_stream(INT16 *buffer)
 		}
 
 
-		//process next frame
+		/*process next frame */
 
 		if ( samples_per_frame  != orig_samples_per_frame ) samples_per_frame = orig_samples_per_frame;
 
-		// dont drop any sample frames some games like mk will drift with time
+		/* dont drop any sample frames some games like mk will drift with time */
 
 		delta_samples += (Machine->sample_rate / Machine->drv->frames_per_second) - orig_samples_per_frame;
 		if ( delta_samples >= 1.0f )
@@ -1257,8 +1257,8 @@ void osd_analogjoy_read(int player, int analog_axis[MAX_ANALOG_AXES], InputCode 
   for(axis = 0; axis < MAX_ANALOG_AXES; axis++)
   {
     int osd_code;
-    int deadzone = round(((float)options.deadzone / 100) * 128);
     value = 0;
+
     if(analogjoy_input[axis] != CODE_NONE)
     {
       osd_code = decode_osd_joycode(analogjoy_input[axis]);
@@ -1274,9 +1274,6 @@ void osd_analogjoy_read(int player, int analog_axis[MAX_ANALOG_AXES], InputCode 
 
       else if(osd_code == OSD_ANALOG_RIGHT_NEGATIVE_Y || osd_code == OSD_ANALOG_RIGHT_POSITIVE_Y)
         value = rescale_analog(input_cb(player, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y));
-
-      /* check against deadzone */
-      if(abs(value) <= deadzone) value = 0; /* falls within the deadzone, report as zero */
 
       /* opposite when reversing axis mapping */
       if((osd_code % 2) == 0) /* if osd_code is an even number */
