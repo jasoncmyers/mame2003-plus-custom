@@ -137,17 +137,20 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 	int src_fx, src_fdx, transparent_pen;
 	UINT32 *pal_base;
 	UINT32 *dst_ptr;
+	UINT32 *dst_end;
 
 	/* outter loop*/
 	int src_fby, src_fdy;
 	int dst_pitch;
 	int src_pitch, src_fbx;
 	UINT8 *src_base;
+	UINT8 *src_end;
 	int dst_w, dst_h;
 
 
 	/* fill internal data structure with default values*/
 	src_base  = memory_region(REGION_GFX2);
+	src_end   = src_base + memory_region_length(REGION_GFX2);
 	src_pitch = sys32sprite_rom_width;
 	src_fw    = sys32sprite_rom_width;
 	src_fh    = sys32sprite_rom_height;
@@ -156,6 +159,11 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 	pal_base  = Machine->gfx[0]->colortable;
 
 	dst_ptr   = bitmap->base;
+	/* Should be (bitmap->height + (2 * BITMAP_SAFETY))
+	 * but BITMAP_SAFETY is defined in src/common.c,
+	 * so inaccessible here...
+	 * > BITMAP_SAFETY == 16 */
+	dst_end   = dst_ptr + (bitmap->width * (bitmap->height + 32));
 	dst_pitch = bitmap->rowpixels;
 	dst_minx  = cliprect->min_x;
 	dst_maxx  = cliprect->max_x;
@@ -214,6 +222,7 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 	if (sys32sprite_rambasedgfx)
 	{
 		src_base = sys32_spriteram8;
+		src_end  = src_base + 0x20000; /* size of sys32_spriteram8 buffer */
 		sys32sprite_rom_offset &= 0x1ffff; /* right mask?*/
 	}
 
@@ -300,6 +309,8 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 		{
 			do {
 				do {
+					if ((src_ptr + edx) >= src_end) return;
+
 					eax = src_ptr[edx];
 					edx = src_fx;
 					if (src_fx & FPONE) eax &= 0xf; else eax >>= 4;
@@ -308,6 +319,8 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 					edx >>= FP+1;
 
 					if (!eax || eax == transparent_pen) continue;
+					if ((dst_ptr + ecx) >= dst_end) return;
+
 					if (eax != 0x0e)
 						dst_ptr[ecx] = idp_cache4[eax];
 					else
@@ -332,6 +345,8 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 		{
 			do {
 				do {
+					if ((src_ptr + edx) >= src_end) return;
+
 					eax = src_ptr[edx];
 					edx = src_fx;
 					if (src_fx & FPONE) eax &= 0xf; else eax >>= 4;
@@ -340,8 +355,9 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 					edx >>= (FP+1);
 
 					if (!eax || eax == transparent_pen) continue;
-					dst_ptr[ecx] = pal_base[eax];
+					if ((dst_ptr + ecx) >= dst_end) return;
 
+					dst_ptr[ecx] = pal_base[eax];
 				} while (++ecx);
 
 				ecx = src_fby;      src_fby += src_fdy;
@@ -357,6 +373,8 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 		{
 			do {
 				do {
+					if ((src_ptr + edx) >= src_end) return;
+
 					eax = src_ptr[edx];
 					edx = src_fx;
 					if (src_fx & FPONE) eax &= 0xf; else eax >>= 4;
@@ -365,8 +383,11 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 					edx >>= (FP+1);
 
 					if (!eax || eax == transparent_pen) continue;
+					if ((dst_ptr + ecx) >= dst_end) return;
+
 					eax = dst_ptr[ecx];
 					eax = (eax>>9&0x7c00) | (eax>>6&0x03e0) | (eax>>3&0x001f);
+
 					dst_ptr[ecx] = ((UINT32*)palette_shadow_table)[eax];
 
 				} while (++ecx);
@@ -391,12 +412,16 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 		{
 			do {
 				do {
+					if ((src_ptr + edx) >= src_end) return;
+
 					eax = src_ptr[edx];
 					edx = src_fx;
 					src_fx += src_fdx;
 					edx >>= FP;
 
 					if (!eax || eax == 0xe0 || eax == transparent_pen) continue;
+					if ((dst_ptr + ecx) >= dst_end) return;
+
 					if (eax != 0xf0)
 						dst_ptr[ecx] = idp_cache8[eax];
 					else
@@ -421,12 +446,16 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 		{
 			do {
 				do {
+					if ((src_ptr + edx) >= src_end) return;
+
 					eax = src_ptr[edx];
 					edx = src_fx;
 					src_fx += src_fdx;
 					edx >>= FP;
 
 					if (!eax || eax == transparent_pen) continue;
+					if ((dst_ptr + ecx) >= dst_end) return;
+
 					dst_ptr[ecx] = pal_base[eax];
 
 				} while (++ecx);
@@ -444,16 +473,20 @@ static INLINE void system32_draw_sprite ( struct mame_bitmap *bitmap, const stru
 		{
 			do {
 				do {
+					if ((src_ptr + edx) >= src_end) return;
+
 					eax = src_ptr[edx];
 					edx = src_fx;
 					src_fx += src_fdx;
 					edx >>= FP;
 
 					if (!eax || eax == transparent_pen) continue;
+					if ((dst_ptr + ecx) >= dst_end) return;
+
 					eax = dst_ptr[ecx];
 					eax = (eax>>9&0x7c00) | (eax>>6&0x03e0) | (eax>>3&0x001f);
-					dst_ptr[ecx] = ((UINT32*)palette_shadow_table)[eax];
 
+					dst_ptr[ecx] = ((UINT32*)palette_shadow_table)[eax];
 				} while (++ecx);
 
 				ecx = src_fby;      src_fby += src_fdy;
@@ -1341,8 +1374,14 @@ void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle
 
 		tableaddress = (tableaddress * 0x200);
 
-		if ((system32_mixerregs[monitor][(0x32+layer*2)/2]&8)>>3) {
-			if (layer==2) tilemap_set_flip(system32_layer_tilemap[layer], TILEMAP_FLIPX);
+		/* workaround for issue with system32_mixerregs. */
+		/* sonic  - trips this during attract mode on the ice level demo, messes up layer 2 bg. */
+		/* alien3 - trips this during the enter initials high score screen, flips the letters. */
+		if ( strcmp(Machine->gamedrv->name,"sonic") && strcmp(Machine->gamedrv->name,"alien3") )
+		{
+			if ((system32_mixerregs[monitor][(0x32+layer*2)/2]&8)>>3) {
+				if (layer==2) tilemap_set_flip(system32_layer_tilemap[layer], TILEMAP_FLIPX);
+			}
 		}
 
 		for (line = 0; line < 224;line++) {
@@ -1372,8 +1411,8 @@ void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle
 			/* Multi32: Shift layer 3's rowscroll left one screen so that it lines up*/
 			tilemap_set_scrollx(system32_layer_tilemap[layer],0, (xscroll & 0x3ff));
 			tilemap_set_scrolly(system32_layer_tilemap[layer],0, (yscroll & 0x1ff));
-			tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[(0x01FF30+layer*4)/2]&0x00ff)+monitor*monitor_res, -(sys32_videoram[(0x01FF30+layer*4)/2]&0x00ff)-monitor*monitor_res);
-			tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[(0x01FF32+layer*4)/2]&0x00ff, -sys32_videoram[(0x01FF32+layer*4)/2]&0x00ff);
+			tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)+monitor*monitor_res, -(sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)-monitor*monitor_res);
+			tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff, -sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff);
 			tilemap_draw(bitmap,&clip,system32_layer_tilemap[layer],trans,0);
 		}
 	}
@@ -1381,8 +1420,8 @@ void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle
 		/* Multi32: Shift layer 3's rowscroll left one screen so that it lines up*/
 		tilemap_set_scrollx(system32_layer_tilemap[layer],0,((sys32_videoram[(0x01FF12+8*layer)/2]) & 0x3ff));
 		tilemap_set_scrolly(system32_layer_tilemap[layer],0,((sys32_videoram[(0x01FF16+8*layer)/2]) & 0x1ff));
-		tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[(0x01FF30+layer*4)/2]&0x00ff)+monitor*monitor_res, -(sys32_videoram[(0x01FF30+layer*4)/2]&0x00ff)-monitor*monitor_res);
-		tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[(0x01FF32+layer*4)/2]&0x00ff, -sys32_videoram[(0x01FF32+layer*4)/2]&0x00ff);
+		tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)+monitor*monitor_res, -(sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)-monitor*monitor_res);
+		tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff, -sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff);
 		tilemap_draw(bitmap,&clip,system32_layer_tilemap[layer],trans,0);
 	}
 }
@@ -1548,7 +1587,59 @@ VIDEO_UPDATE( system32 ) {
 
 	fillbitmap(bitmap, 0, 0);
 
-	/* Priority loop.  Draw layers 1 and 3 on Multi32's Monitor B*/
+	/* Rad Rally (title screen) and Rad Mobile (Winners don't use drugs) use a bitmap ... */
+	/* i think this is wrong tho, rad rally enables it on the 2nd title screen when the
+	   data isn't complete */
+
+	if (sys32_videoram[0x01FF00/2] & 0x0800)  /* wrong? */
+	{
+		int xcnt, ycnt;
+		static UINT32 *destline;
+		struct GfxElement *gfx=Machine->gfx[0];
+
+		const pen_t *paldata = &gfx->colortable[0];
+		static pen_t palcopy[MAX_COLOURS];
+		static int copy_videoram[57505];
+
+		if (paldata[0] == 16316664 && palcopy[0] != 16316664) /* copy palette and videoram for radr in ready state */
+		{
+			int i;
+			for(i = 0; i < MAX_COLOURS; i++)
+				 palcopy[i] = paldata[i];
+
+			for(i = 0; i < 57505; i++)
+				copy_videoram[i] = sys32_videoram[i];
+		}
+    
+		for ( ycnt = 0 ; ycnt < 224 ; ycnt ++ )
+		{
+			destline = (UINT32 *)(bitmap->line[ycnt]);
+
+
+			for ( xcnt = 0 ; xcnt < 160 ; xcnt ++ )
+			{
+				int data2;
+
+				if (!strcmp(Machine->gamedrv->name,"radr")) /* replace with copies */
+				{
+					data2 = copy_videoram[256*ycnt+xcnt];
+					destline[xcnt*2+1] = palcopy[(data2 >> 8)+(0x100*0x1d)]; /* 1d00 */
+					destline[xcnt*2] = palcopy[(data2 &0xff)+(0x100*0x1d)];
+				}
+				else if (!strcmp(Machine->gamedrv->name,"radm"))
+				{
+					data2 = sys32_videoram[256*ycnt+xcnt];
+					destline[xcnt*2+1] = paldata[(data2 >> 8)+(0x100*0x1d)]; /* 1d00 */
+					destline[xcnt*2] = paldata[(data2 &0xff)+(0x100*0x1d)];
+				}
+			}
+
+		}
+	}
+
+
+
+	/* Priority loop.  Draw layers 1 and 3 on Multi32's Monitor B */
 	if (sys32_displayenable & 0x0002) {
 		for (priloop=0; priloop < 0x10; priloop++) {
 			if (priloop == priority0 && (!multi32 || (multi32 && (readinputport(0xf)&1)))) {
@@ -1558,7 +1649,10 @@ VIDEO_UPDATE( system32 ) {
 				if (!(sys32_tmap_disabled & 0x2)) system32_draw_bg_layer (bitmap,cliprect,1);
 			}
 			if (priloop == priority2 && (!multi32 || (multi32 && (readinputport(0xf)&1)))) {
-				if (!(sys32_tmap_disabled & 0x4)) system32_draw_bg_layer (bitmap,cliprect,2);
+				if (!(sys32_tmap_disabled & 0x4)) {
+          if ((!strcmp(Machine->gamedrv->name,"jpark")) && priloop==0xe ) system32_draw_bg_layer (bitmap,cliprect,1); /* mix jeep to both layers */
+          system32_draw_bg_layer (bitmap,cliprect,2);
+        }
 			}
 			if (priloop == priority3 && (!multi32 || (multi32 && (readinputport(0xf)&2)>>1))) {
 				if (!(sys32_tmap_disabled & 0x8)) system32_draw_bg_layer (bitmap,cliprect,3);
@@ -1567,4 +1661,37 @@ VIDEO_UPDATE( system32 ) {
 		}
 	}
 	system32_draw_text_layer (bitmap, cliprect);
+
+#if 0
+	{
+
+		/* custom log */
+
+		static FILE *sys32_logfile;
+
+		/* provide errorlog from here on */
+		sys32_logfile = fopen("sys32vid.log","wa");
+
+		int x;
+
+	  /*	x = rand(); */
+
+		fprintf(sys32_logfile,"Video Regs 0x31ff00 - 0x31ffff\n");
+		for (x = 0x1ff00; x< 0x20000; x+=2)
+		{
+			fprintf(sys32_logfile, "%04x\n", sys32_videoram[x/2] ) ;
+
+		}
+		fprintf(sys32_logfile,"Mixer Regs 0x610000 - 0x6100ff\n");
+		for (x = 0x00; x< 0x100; x+=2)
+		{
+			fprintf(sys32_logfile, "%04x\n", system32_mixerregs[0][x/2] ) ;
+
+		}
+
+
+		fclose (sys32_logfile);
+	}
+#endif
+
 }
