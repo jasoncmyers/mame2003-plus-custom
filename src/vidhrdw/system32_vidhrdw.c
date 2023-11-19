@@ -1310,7 +1310,7 @@ static void system32_recalc_palette( int monitor ) {
 	}
 }
 
-void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle *cliprect, int layer ) {
+void system32_draw_bg_layer_rowscroll ( struct mame_bitmap *bitmap, const struct rectangle *cliprect, int layer ) {
 	int trans = 0;
 	int alphaamount = 0;
 	int rowscroll=0, rowselect=0;
@@ -1324,30 +1324,11 @@ void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle
 		alpha_set_level(alphaamount);
 	}
 
-	/* rowselect / rowscroll
-
-	outrunners road - works ok
-	svf pitch - works ok with tilemap flip / clipping hack
-	brival floor - seems ok
-	arabfgt floor - seems ok, bit shakey
-	rad rally mirror - reasonable but doesn't scroll smoothly
-	rad mobile backgrounds - wrong?
-	sonic title screen background - ok
-
-	what effect does alien3 use? zooming instead?
-	jurassic park enables rowscroll on one of the levels in the attract but its hard to see what for
-
-	*/
-
-	if (layer == 2) {
-		rowscroll = (sys32_videoram[0x01FF04/2] & 0x0001);
-		rowselect = (sys32_videoram[0x01FF04/2] & 0x0004)>>2;
-	}
-
-	if (layer == 3) {
-		rowscroll = (sys32_videoram[0x01FF04/2] & 0x0002)>>1;
-		rowselect = (sys32_videoram[0x01FF04/2] & 0x0008)>>3;
-	}
+	/* determine if row scroll and/or row select is enabled */
+	rowscroll = (sys32_videoram[0x1ff04/2] >> (layer - 2)) & 1;
+	rowselect = (sys32_videoram[0x1ff04/2] >> layer) & 1;
+	if ((sys32_videoram[0x1ff04/2] >> (layer + 2)) & 1)
+		rowscroll = rowselect = 0;
 
 	/* Switch to Machine->visible_area.max_x later*/
 	monitor_res=system32_screen_mode?52*8:40*8;
@@ -1374,15 +1355,9 @@ void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle
 
 		tableaddress = (tableaddress * 0x200);
 
-		/* workaround for issue with system32_mixerregs. */
-		/* sonic  - trips this during attract mode on the ice level demo, messes up layer 2 bg. */
-		/* alien3 - trips this during the enter initials high score screen, flips the letters. */
-		if ( strcmp(Machine->gamedrv->name,"sonic") && strcmp(Machine->gamedrv->name,"alien3") )
-		{
-			if ((system32_mixerregs[monitor][(0x32+layer*2)/2]&8)>>3) {
-				if (layer==2) tilemap_set_flip(system32_layer_tilemap[layer], TILEMAP_FLIPX);
-			}
-		}
+		/* determine if we're flipped */
+		if (((sys32_videoram[0x1ff00/2] >> 9) ^ (sys32_videoram[0x1ff00/2] >> layer)) & 1)
+			if (layer==2) tilemap_set_flip(system32_layer_tilemap[layer], TILEMAP_FLIPX);
 
 		for (line = 0; line < 224;line++) {
 			int xscroll = (sys32_videoram[(0x01FF12+8*layer)/2]);
@@ -1393,26 +1368,11 @@ void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle
 			if (rowscroll) xscroll+=(sys32_videoram[((tableaddress+(layer-2)*0x200)/2)+line]);
 			if (rowselect) yscroll+=(sys32_videoram[((tableaddress+0x400+(layer-2)*0x200)/2)+line])-line;
 
-
-			if ((system32_mixerregs[monitor][(0x32+layer*2)/2]&8)>>3) {
-				/* disable wrap on this tilemap, should be done on the other too but its less important
-				   this is a bit messy because mame has no core functionality for this without resorting
-				   to tilemap_draw_roz which I can't do because of RGB_DIRECT, it might be wrong anyway,
-				   maybe its using the system32 clipping windows somehow */
-				if (layer == 3) {
-					int x2;
-					x2 =xscroll&0x7ff;
-					x2 = 0x7ff-x2;
-					if (x2 > 0x3ff) clip.min_x = 0;
-					else clip.min_x = x2;
-					clip.max_x = 320-1;
-				}
-			}
 			/* Multi32: Shift layer 3's rowscroll left one screen so that it lines up*/
 			tilemap_set_scrollx(system32_layer_tilemap[layer],0, (xscroll & 0x3ff));
 			tilemap_set_scrolly(system32_layer_tilemap[layer],0, (yscroll & 0x1ff));
-			tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)+monitor*monitor_res, -(sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)-monitor*monitor_res);
-			tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff, -sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff);
+			tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[0x1ff30/2 + 2 * layer])+monitor*monitor_res, -(sys32_videoram[0x1ff30/2 + 2 * layer])-monitor*monitor_res);
+			tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[0x1ff32/2 + 2 * layer], -sys32_videoram[0x1ff32/2 + 2 * layer]);
 			tilemap_draw(bitmap,&clip,system32_layer_tilemap[layer],trans,0);
 		}
 	}
@@ -1420,10 +1380,71 @@ void system32_draw_bg_layer ( struct mame_bitmap *bitmap, const struct rectangle
 		/* Multi32: Shift layer 3's rowscroll left one screen so that it lines up*/
 		tilemap_set_scrollx(system32_layer_tilemap[layer],0,((sys32_videoram[(0x01FF12+8*layer)/2]) & 0x3ff));
 		tilemap_set_scrolly(system32_layer_tilemap[layer],0,((sys32_videoram[(0x01FF16+8*layer)/2]) & 0x1ff));
-		tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)+monitor*monitor_res, -(sys32_videoram[(0x01FF30+layer*4)/2]&0x1ff)-monitor*monitor_res);
-		tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff, -sys32_videoram[(0x01FF32+layer*4)/2]&0x1ff);
+		tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[0x1ff30/2 + 2 * layer])+monitor*monitor_res, -(sys32_videoram[0x1ff30/2 + 2 * layer])-monitor*monitor_res);
+		tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[0x1ff32/2 + 2 * layer], -sys32_videoram[0x1ff32/2 + 2 * layer]);
 		tilemap_draw(bitmap,&clip,system32_layer_tilemap[layer],trans,0);
 	}
+}
+
+void system32_draw_bg_layer_zoom ( struct mame_bitmap *bitmap, const struct rectangle *cliprect, int layer ) {
+	int trans = 0;
+	int alphaamount = 0;
+	int monitor = multi32?layer%2:0;
+	int monitor_res = 0;
+  int dstxstep, dstystep;
+	struct rectangle clip;
+
+	if ((system32_mixerregs[monitor][(0x32+2*layer)/2] & 0x1010) == 0x1010) {
+		trans = TILEMAP_ALPHA;
+		alphaamount = 255-((((system32_mixerregs[monitor][0x4e/2])>>8) & 7) <<5); /*umm this is almost certainly wrong*/
+		alpha_set_level(alphaamount);
+	}
+
+	/* Switch to Machine->visible_area.max_x later*/
+	monitor_res=system32_screen_mode?52*8:40*8;
+
+	if (multi32) {
+		/*			clip.min_x = Machine->visible_area.min_x;*/
+		/*			clip.max_x = Machine->visible_area.max_x;*/
+		clip.min_x = (layer%2)*monitor_res;
+		clip.max_x = (layer%2+1)*monitor_res;
+		clip.min_y = 0;
+		clip.max_y = 28*8;
+	}
+	else {
+		clip.min_x = Machine->visible_area.min_x;
+		clip.max_x = Machine->visible_area.max_x;
+		clip.min_y = Machine->visible_area.min_y;
+		clip.max_y = Machine->visible_area.max_y;
+	}
+
+	/* extract the X/Y step values (these are in destination space!) */
+	dstxstep = sys32_videoram[0x1ff50/2 + 2 * layer] & 0xfff;
+	if (sys32_videoram[0x1ff00/2] & 0x4000)
+		dstystep = sys32_videoram[0x1ff52/2 + 2 * layer] & 0xfff;
+	else
+		dstystep = dstxstep;
+
+	/* clamp the zoom factors */
+	if (dstxstep < 0x80)
+		dstxstep = 0x80;
+	if (dstystep < 0x80)
+		dstystep = 0x80;
+
+	/* Draw */
+	tilemap_set_scrollx(system32_layer_tilemap[layer],0,((sys32_videoram[(0x01FF12+8*layer)/2]) & 0x3ff));
+	tilemap_set_scrolly(system32_layer_tilemap[layer],0,((sys32_videoram[(0x01FF16+8*layer)/2]) & 0x1ff));
+	tilemap_set_scrolldx(system32_layer_tilemap[layer], (sys32_videoram[0x1ff30/2 + 2 * layer])+monitor*monitor_res, -(sys32_videoram[0x1ff30/2 + 2 * layer])-monitor*monitor_res);
+	tilemap_set_scrolldy(system32_layer_tilemap[layer], sys32_videoram[0x1ff32/2 + 2 * layer], -sys32_videoram[0x1ff32/2 + 2 * layer]);
+	tilemap_draw(bitmap,&clip,system32_layer_tilemap[layer],trans,0);
+
+	/* enable this code below to display zoom information */
+#if 0
+	if (dstxstep != 0x200 || dstystep != 0x200)
+		usrintf_showmessage("Zoom=%03X,%03X  Cent=%03X,%03X", dstxstep, dstystep,
+			sys32_videoram[0x1ff30/2 + 2 * layer],
+			sys32_videoram[0x1ff32/2 + 2 * layer]);
+#endif
 }
 
 VIDEO_UPDATE( system32 ) {
@@ -1588,8 +1609,8 @@ VIDEO_UPDATE( system32 ) {
 	fillbitmap(bitmap, 0, 0);
 
 	/* Rad Rally (title screen) and Rad Mobile (Winners don't use drugs) use a bitmap ... */
-	/* i think this is wrong tho, rad rally enables it on the 2nd title screen when the
-	   data isn't complete */
+	/* experimental, we copy the data once the datastream stabilizes, then continue to    */
+  /* use this copy to correctly draw the bitmap on each sequential call */
 
 	if (sys32_videoram[0x01FF00/2] & 0x0800)  /* wrong? */
 	{
@@ -1598,43 +1619,46 @@ VIDEO_UPDATE( system32 ) {
 		struct GfxElement *gfx=Machine->gfx[0];
 
 		const pen_t *paldata = &gfx->colortable[0];
-		static pen_t palcopy[MAX_COLOURS];
-		static int copy_videoram[57505];
+		static pen_t palcopy[MAX_COLOURS] = { 0 };
+		static int copy_videoram[57505] = { 0 };
+		static bool enable_copy = true;
+		bool ready_state = true;
+		int i;
 
-		if (paldata[0] == 16316664 && palcopy[0] != 16316664) /* copy palette and videoram for radr in ready state */
+		/* filter out games without a known bitmap */
+		if (strcmp(Machine->gamedrv->name,"radr") && strcmp(Machine->gamedrv->name,"radm"))
+			{ enable_copy = false; ready_state = false; }
+
+		if (enable_copy)
 		{
-			int i;
-			for(i = 0; i < MAX_COLOURS; i++)
-				 palcopy[i] = paldata[i];
+			for(i = 0; i < MAX_COLOURS; i++) {
+				if (palcopy[i] != paldata[i])
+					ready_state = false;
+				palcopy[i] = paldata[i];
+			}
 
-			for(i = 0; i < 57505; i++)
+			for(i = 0; i < 57505; i++) {
+				if (copy_videoram[i] != sys32_videoram[i])
+					ready_state = false;
 				copy_videoram[i] = sys32_videoram[i];
+			}
 		}
-    
-		for ( ycnt = 0 ; ycnt < 224 ; ycnt ++ )
-		{
-			destline = (UINT32 *)(bitmap->line[ycnt]);
 
+		if (ready_state && enable_copy)
+			enable_copy = false;
 
-			for ( xcnt = 0 ; xcnt < 160 ; xcnt ++ )
-			{
-				int data2;
+		if (ready_state) {
+			for ( ycnt = 0 ; ycnt < 224 ; ycnt ++ ) {
+				destline = (UINT32 *)(bitmap->line[ycnt]);
 
-				if (!strcmp(Machine->gamedrv->name,"radr")) /* replace with copies */
-				{
-					data2 = copy_videoram[256*ycnt+xcnt];
+				for ( xcnt = 0 ; xcnt < 160 ; xcnt ++ ) {
+					int data2 = copy_videoram[256*ycnt+xcnt];
 					destline[xcnt*2+1] = palcopy[(data2 >> 8)+(0x100*0x1d)]; /* 1d00 */
 					destline[xcnt*2] = palcopy[(data2 &0xff)+(0x100*0x1d)];
 				}
-				else if (!strcmp(Machine->gamedrv->name,"radm"))
-				{
-					data2 = sys32_videoram[256*ycnt+xcnt];
-					destline[xcnt*2+1] = paldata[(data2 >> 8)+(0x100*0x1d)]; /* 1d00 */
-					destline[xcnt*2] = paldata[(data2 &0xff)+(0x100*0x1d)];
-				}
 			}
-
 		}
+
 	}
 
 
@@ -1643,19 +1667,19 @@ VIDEO_UPDATE( system32 ) {
 	if (sys32_displayenable & 0x0002) {
 		for (priloop=0; priloop < 0x10; priloop++) {
 			if (priloop == priority0 && (!multi32 || (multi32 && (readinputport(0xf)&1)))) {
-				if (!(sys32_tmap_disabled & 0x1)) system32_draw_bg_layer (bitmap,cliprect,0);
+				if (!(sys32_tmap_disabled & 0x1)) system32_draw_bg_layer_zoom (bitmap,cliprect,0);
 			}
 			if (priloop == priority1 && (!multi32 || (multi32 && (readinputport(0xf)&2)>>1))) {
-				if (!(sys32_tmap_disabled & 0x2)) system32_draw_bg_layer (bitmap,cliprect,1);
+				if (!(sys32_tmap_disabled & 0x2)) system32_draw_bg_layer_zoom (bitmap,cliprect,1);
 			}
 			if (priloop == priority2 && (!multi32 || (multi32 && (readinputport(0xf)&1)))) {
 				if (!(sys32_tmap_disabled & 0x4)) {
-          if ((!strcmp(Machine->gamedrv->name,"jpark")) && priloop==0xe ) system32_draw_bg_layer (bitmap,cliprect,1); /* mix jeep to both layers */
-          system32_draw_bg_layer (bitmap,cliprect,2);
+          if ((!strcmp(Machine->gamedrv->name,"jpark")) && priloop==0xe ) system32_draw_bg_layer_zoom (bitmap,cliprect,1); /* mix jeep to both layers */
+          system32_draw_bg_layer_rowscroll (bitmap,cliprect,2);
         }
 			}
 			if (priloop == priority3 && (!multi32 || (multi32 && (readinputport(0xf)&2)>>1))) {
-				if (!(sys32_tmap_disabled & 0x8)) system32_draw_bg_layer (bitmap,cliprect,3);
+				if (!(sys32_tmap_disabled & 0x8)) system32_draw_bg_layer_rowscroll (bitmap,cliprect,3);
 			}
 			system32_process_spritelist (bitmap, cliprect);
 		}

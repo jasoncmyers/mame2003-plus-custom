@@ -2,7 +2,7 @@
 
 * Current repository maintainers: arcadez, mahoneyt944, markwkidd, twinaphex
 * Past repository maintiners: arnoldsecret, grant2258
-* Significant code contributors to this project: AMadvanceMAME, BritneysPAIRS, dink, FBN Dev, grant2258, iq_132, MAME Dev, ShmupMAME
+* Significant code contributors to this project: AMadvanceMAME, BritneysPAIRS, dink, FBN Dev, grant2258, iq_132, MAME Dev, Mistydreams, ShmupMAME
 
 The list of direct contributors to the MAME 2003-Plus github repository can be found at https://github.com/libretro/mame2003-plus-libretro/graphs/contributors. Additional contributor credits can be found in LICENSE.md, CHANGELOG.old, and in the individual driver source files.
 
@@ -50,6 +50,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Cosmic Monsters II
 * Cotton (set 4, World) (unprotected of FD1094 317-0181a set)
 * Counter Run (Bootleg, Set 1)
+* Counter Run (Bootleg, Set 3)
 * Crossed Swords 2
 * Cute Fighter
 * Cycle Warriors
@@ -124,6 +125,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Marble Madness II (prototype)
 * Master's Fury
 * Match It II * Mature *
+* Maze Invaders 
 * Megumi Rescue
 * Metal Slug 4
 * Metal Slug 5
@@ -131,8 +133,10 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Mighty Warriors
 * Mirax
 * Mobile Suit Gundam Final Shooting
+* Monsters World (Bootleg Of Super Pang)
 * Monster Maulers
 * More More
+* Mortal Race
 * Mouse Shooter GoGo
 * Ms. Pacman Twin
 * Mrs. Dynamite
@@ -148,6 +152,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Parallel Turn
 * Party Time: Gonta the Diver II / Ganbare! Gonta!! 2 * Mature *
 * Penky
+* Photo Y2K 2
 * Pirate Treasure
 * Planet Probe
 * Pochi & Nyaa
@@ -160,6 +165,8 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Puzz Loop 2 (All Sets)
 * Puzzle Break
 * Puzzle Star
+* Puzzli 2
+* Puzzli 2 Super
 * Racing Beat
 * Rage Of The Dragons
 * Recalhorn (prototype)
@@ -254,6 +261,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * DoDonPachi Dai-Ou-Jou (Black Label)
 * Double Dragon 3 - The Rosetta Stone (Japan)
 * Dunk Dream '95
+* Dogyuun (8/25/1992 location test)
 * E.D.F. : Earth Defense Force (North America)
 * Escape Kids (Asia 4 Players)
 * Fishing
@@ -358,6 +366,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Die Hard Arcade - Romset `diehard` - Requires a fast system; video and sound issues remain
 * Discs Of Tron - Romsets `dotron` and `dotrone`
 * DJ Boy - Romset `djboy`
+* Dragon Ball Z V.R.V.S. - Romset `dbzvrvs`
 * Driving Force (galaxian hardware) - Romset `drivfrcg` - colors fixed
 * Domino Man - Romset `domino`
 * Dragon World - Romset `drgnwrld`
@@ -366,6 +375,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Eight Ball Action (Pacman conversion) - Romset `8bpm` - colors fixed
 * F-1 Grand Prix Star II - Romset `f1gpstr2`
 * F1 Super Lap (Japan) - Romset `f1lapj`
+* Fantastic Journey - Romset `fanjour`
 * Fighters History - Romsets `fghthist`, `fghthsta`, and `fghthstw` - Playable with minor remaining unemulated protection
 * Find Out - Romset `findout` - colors fixed
 * Fire Barrel - Romset `firebarr`
@@ -465,6 +475,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Acrobat Mission
 * Altered Beast (version 2)
 * Asura Blade
+* Atomic Boy / Wily Tower
 * Balloon Bomber
 * Batsugun (Partial)
 * Bio-ship Paladin
@@ -472,6 +483,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Cross Pang
 * Daitoride
 * Dharma Doujou
+* Dogyuun (8/25/1992 location test)
 * Fire Shark
 * Ghox
 * GunNail
@@ -570,6 +582,7 @@ The list of direct contributors to the MAME 2003-Plus github repository can be f
 * Pole Position II
 * Rampage World Tour
 * Revolution X
+* Rim Rockin Basketball (commentary voices)
 * Rohga Armor Force
 * R-Type Leo
 * Shark Attack
@@ -756,7 +769,7 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Added support for 1943 - The Battle Of Midway Mark II to 1943.c [arcadez]
 * Updated the legionnaire driver and video code to MAME142 added seicop protection Denjin Makai now playable [arcadez]
 * Added a small hack to the seibu soundcore to fix music and sfx in Denjin Makai [arcadez]
-* Added a working bootleg of Counter Run to freekick.c [BritneysPAIRS]
+* Added two working bootlegs of Counter Run to freekick.c [BritneysPAIRS, arcadez]
 * Updated the rohga.c driver to support the rare prototype Hang-Zo [arcadez]
 * Added support for Hyper Crash to nemesis.c [arcadez]
 * Added support for In Your Face a rare basketball prototype to the megasys1.c driver [arcadez]
@@ -952,3 +965,20 @@ Gun & Fronter, Metal Black, Ninja Kids, and Pulirula [arcadez]
 * Fixed sound popping on B-Rap Boys and some sound banking niggles with The Great Thousand Mile Rally games [Mistydreams, arcadez]
 * Added support for Top Driving to the kickgoal.c driver [HAZE, arcadez]
 * Added a rare Atari Prototype Gut's N' Glory to the eprom.c driver [arcadez, mahoneyt944]
+* Updated the stlforce driver adding support for Mortal Race then backported some video fixes for it and Steel Force from later MAME [Mistydreams]
+* Added support for Dogyuun (8/25/1992 location test) to toaplan2 this version has full sound and music [arcadez, grant2258]
+* Added Photo Y2K 2 Puzzli 2 and Puzzli 2 Super to the pgm driver [arcadez, IQ_132, Haze]
+* Switched Contra to use the HD6309 for the main CPU to get rid of slowdowns and fix a crash after 2nd enemy base [arcadez]
+* Backported a fix from later MAME which gets rid of sprites sticking on the screen in Contra [Kale, mahoneyt944]
+* Fixed sprite prios and some bullets being hidden behind the bosses in Flak Attack / MX5000 [dink, KALE, arcadez]
+* Fixed missing commentary voices and correctly hooked up player 3 and 4 inputs for Rim Rockin Basketball [arcadez]
+* Fixed some graphical niggles and hooked up full sound and music for IREM's Atomic Boy / Wily Tower [MAMEDev, arcadez]
+* Fixed WWF Superstars bad sprites with some of Randy Macho Man Savage moves eg back suplex etc etc [MAMEDev, arcadez]
+* Hacked around some game breaking protection calls in Solomon's Key which could make levels unplayable [MAMEDEv, arcadez]
+* Added Maze Invaders Atari prototype to the centipede driver [MAMEDEv, arcadez]
+* Fixed Dragonball Z VRVS in the system32.c driver and Fantastic Journey in the konamigx.c driver [grant2258, arcadez]
+* Updated the romset for Pack N' Bang Bang to use the final released version rather than the unfinished prototype [arcadez]
+* Added the English language version of Dragon Might to the konamigx.c driver [arcadez, grant2258]
+* Added support for Monsters World (Bootleg Of Super Pang) to the mitchell.c driver [arcadez]
+* Fixed some graphical niggles in Cannon Dancer / Osman such as some objects didn't move previously eg trucks on final level [FBN Dev, MAMEDev, arcadez]
+
