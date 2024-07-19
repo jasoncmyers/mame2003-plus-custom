@@ -2691,7 +2691,7 @@ static INLINE void f3_drawgfx( struct mame_bitmap *dest_bmp,const struct GfxElem
 /*				if (dest_bmp->depth == 32)*/
 				{
 					int y=ey-sy;
-					int x=(ex-sx-1)|(tile_opaque_sp[code]<<4);
+					int x=(ex-sx-1)|(tile_opaque_sp[code % gfx->total_elements]<<4);
 					UINT8 *source0 = gfx->gfxdata + (source_base+y_index) * 16 + x_index_base;
 					UINT32 *dest0 = (UINT32 *)dest_bmp->line[sy]+sx;
 					UINT8 *pri0 = (UINT8 *)pri_alp_bitmap->line[sy]+sx;
@@ -3124,16 +3124,10 @@ static void get_sprite_info(const data32_t *spriteram32_ptr)
 		if (flipscreen)
 		{
 			int tx,ty;
-			if (f3_game == GSEEKER )
-			{
-				tx = 512-x_addition-x-44;
-				ty = 256-y_addition-y+17;
-			}
-			else
-			{
-				tx = 512-x_addition-x;
-				ty = 256-y_addition-y;
-			}
+
+			tx = 512-x_addition-x;
+			ty = 256-y_addition-y;
+
 			if (tx+x_addition<=min_x || tx>max_x || ty+y_addition<=min_y || ty>max_y) continue;
 			sprite_ptr->x = tx;
 			sprite_ptr->y = ty;

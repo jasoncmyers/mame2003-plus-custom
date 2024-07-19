@@ -1758,6 +1758,8 @@ const struct GameDriver *test_drivers[] =
 	DRIVER( pbobbl2u )	/* E10 (c) 1995 Taito America Corporation (US) */
 	DRIVER( pbobbl2x )	/* E10 (c) 1995 Taito Corporation (Japan) */
 	DRIVER( gekirido )	/* E11 (c) 1995 Taito Corporation (Japan) */
+	DRIVER( tcobra2 )	/* E15 (c) 1995 Taito Corporation (Japan) */
+	DRIVER( tcobra2u )	/* E15 (c) 1995 Taito Corporation (Japan) */
 	DRIVER( ktiger2 )	/* E15 (c) 1995 Taito Corporation (Japan) */
 	DRIVER( bubblem )	/* E21 (c) 1995 Taito Corporation Japan (World) */
 	DRIVER( bubblemj )	/* E21 (c) 1995 Taito Corporation (Japan) */
@@ -1952,6 +1954,7 @@ V-V                           TP-027
 	DRIVER( ddonpchj )	/* (c) 1997 Atlus/Cave */
 	DRIVER( ddonpacha )	/* (c) 2012 Trap15 Hack */
 	DRIVER( dfeveron )	/* (c) 1998 Cave + Nihon System license */
+	DRIVER( feversos )	/* (c) 1998 Cave + Nihon System license */
 	DRIVER( esprade )	/* (c) 1998 Atlus/Cave */
 	DRIVER( espradej )	/* (c) 1998 Atlus/Cave (Japan) */
 	DRIVER( espradeo )	/* (c) 1998 Atlus/Cave (Japan) */
@@ -2995,7 +2998,7 @@ DokiDoki Penguin Land *not confirmed
 	DRIVER( ryukyu )	/* (protected) */
 	DRIVER( suprleag )  /* (protected) */
 	DRIVER( thndrbld )	/* (protected) */
-	DRIVER( thndrbdj )  /* (protected?) */
+	DRIVER( thndrbld1 ) /* (protected?) */
 
 	/* Working */
 	DRIVER( aburner )	/* (c) 1987 */
@@ -3103,30 +3106,31 @@ Sep.1994 Quiz Ghost Hunter
 	DRIVER( svs )		/* (c) 1994 */
 	DRIVER( jleague )	/* (c) 1994 (Japan) */
 	DRIVER( brival )	/* (c) 1992 (Japan) */
-	DRIVER( radm )
+	DRIVER( radm )    /* (c) 1991 */
 	DRIVER( radr )		/* (c) 1991 */
-	DRIVER( f1en )
+	DRIVER( f1en )    /* (c) 1991 */
 	DRIVER( alien3 )	/* (c) 1993 */
 	DRIVER( sonic )		/* (c) 1992 (Japan) */
 	DRIVER( sonicp )	/* (c) 1992 (Japan) */
 	DRIVER( jpark )		/* (c) 1994 */
-	DRIVER( ga2 )		/* (c) 1992 */
+	DRIVER( ga2 )		  /* (c) 1992 */
 	DRIVER( ga2j )		/* (c) 1992 */
 	DRIVER( spidey )	/* (c) 1991 */
 	DRIVER( spideyj )	/* (c) 1991 (Japan) */
 	DRIVER( arabfgt )	/* (c) 1991 */
 	DRIVER( arescue )	/* (c) 1992 */
-	DRIVER( f1lap )     /* (c) 1993 (World) */
-	DRIVER( f1lapj )    /* (c) 1993 (Japan) */
-	DRIVER( dbzvrvs )
-	DRIVER( darkedge )
-	DRIVER( slipstrm )	/* Capcom */
+	DRIVER( f1lap )   /* (c) 1993 (World) */
+	DRIVER( f1lapj )  /* (c) 1993 (Japan) */
+	DRIVER( dbzvrvs ) /* (c) 1994 */
+	DRIVER( darkedge ) /* (c) 1992 */
+	DRIVER( slipstrm ) /* (c) 1995 (Brazil) Capcom */
+  DRIVER( slipstrh ) /* (c) 1995 (Hispanic) Capcom */
 
 	/* Sega Multi System 32 games */
 	DRIVER( orunners )	/* (c) 1992 (US) */
 	DRIVER( harddunk )	/* (c) 1994 (World) */
 	DRIVER( harddunj )	/* (c) 1994 (Japan) */
-	DRIVER( titlef )
+	DRIVER( titlef )    /* (c) 1992 */
 	DRIVER( scross )	/* (c) 1992 (World) */
 
 	/* Sega ST-V games */
